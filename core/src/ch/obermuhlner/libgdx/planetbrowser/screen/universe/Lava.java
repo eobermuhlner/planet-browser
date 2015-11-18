@@ -1,9 +1,5 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
-import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.MID_0;
-import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.SQRT_MID_0;
-import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.POWER_2_MID_0;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
@@ -16,6 +12,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public class Lava extends AbstractPlanet {
@@ -27,7 +24,8 @@ public class Lava extends AbstractPlanet {
 //		Texture texture = PlanetBrowser.getTexture("lava_colors.png");
 //		materialAttributes.add(TextureAttribute.createDiffuse(texture));
 		
-		String heightFunction = random.next(MID_0, SQRT_MID_0, POWER_2_MID_0);
+		float heightPower = MathUtil.pow(10, random.nextFloat(-1f, 1f));
+		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower);
 		
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, new Color[] {
 				Color.RED,
@@ -51,7 +49,7 @@ public class Lava extends AbstractPlanet {
 			Texture textureNormal = renderTextureNormal(material, new TerrestrialPlanetShader.Provider());
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
 
-			float emissive = 0.4f;
+			float emissive = 0.5f;
 			materialAttributes.add(new ColorAttribute(ColorAttribute.Emissive, emissive, emissive, emissive, 1.0f));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Emissive, textureDiffuse));
 		
