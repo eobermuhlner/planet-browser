@@ -94,4 +94,8 @@ public class MathUtil {
 	public static int powerOfTwo(int value) {
 		return (int) (Math.pow(2, value) + 0.5);
 	}
+
+	public static float pow(float x, float y) {
+		return (float) Math.pow(x, y);
+	}
 }
