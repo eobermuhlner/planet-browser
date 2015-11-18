@@ -1,0 +1,97 @@
+{
+//com.badlogic.gdx.graphics.g2d.BitmapFont: { default-font: { file: default.fnt }, small-font: { file: default.fnt } , large-font: { file: default.fnt } },
+// TTF fonts loaded programmatically in class GameSkin
+com.badlogic.gdx.graphics.Color: {
+	white:  { r: 1, g: 1, b: 1, a: 1 },
+	black:  { r: 0, g: 0, b: 0, a: 1 },
+	red:    { r: 1, g: 0, b: 0, a: 1 },
+	green:  { r: 0, g: 1, b: 0, a: 1 },
+	blue:   { r: 0, g: 0, b: 1, a: 1 },
+	light-blue:   { r: 0.5, g: 0.5, b: 1, a: 1 },
+	yellow: { r: 1, g: 1, b: 0, a: 1 },
+	gray:   { r: 0.6, g: 0.6, b: 0.6, a: 1 },
+	
+	alpha50: { r: 1, g: 1, b: 1, a: 0.5 },
+	alpha30: { r: 1, g: 1, b: 1, a: 0.2 },
+	alpha20: { r: 1, g: 1, b: 1, a: 0.2 },
+	alpha10: { r: 1, g: 1, b: 1, a: 0.1 },
+},
+com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
+	dialog: { name: white, color: alpha50 },
+	check-on-disabled: { name: check-on, color: alpha20 },
+	check-off-disabled: { name: check-off, color: alpha20 },
+	default-select-disabled: { name: default-select, color: alpha20 },
+	default-round-disabled: { name: default-round, color: alpha20 },
+	table: { name: default-round, color: alpha20 },
+	ship-default-round: { name: default-round, color: alpha50 },
+	ship-default-round-down: { name: default-round-down, color: alpha50 },
+	crosshair-mini-white: { name: crosshair-mini, color: white },
+	crosshair-box-red: { name: crosshair-box, color: red },
+	crosshair-box-green: { name: crosshair-box, color: green },
+	crosshair-box-blue: { name: crosshair-box, color: light-blue },
+	crosshair-box-yellow: { name: crosshair-box, color: yellow },
+	crosshair-box-selected-red: { name: crosshair-box-selected, color: red },
+	crosshair-box-selected-green: { name: crosshair-box-selected, color: green },
+	crosshair-box-selected-blue: { name: crosshair-box-selected, color: light-blue },
+	crosshair-box-selected-yellow: { name: crosshair-box-selected, color: yellow },
+},
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	default: { up: default-round , down: default-round-down },
+	toggle: { up: default-round, down: default-round-down, checked: default-round-down },
+	crosshair: { up: crosshair-box-blue, down: crosshair-box, checked: crosshair-box-selected-blue},
+},
+com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+	default: { down: default-round-down, up: default-round, disabled: default-round-disabled, font: default-font, fontColor: white },
+	toggle: { down: default-round-down, up: default-round, checked: default-round-down, font: default-font, fontColor: white, downFontColor: red },
+	ship: { down: default-round-down, up: ship-default-round, disabled: default-round-disabled, font: default-font, fontColor: white },
+},
+com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+	default: { vScroll: default-scroll, hScrollKnob: default-round-large, hScroll: default-scroll, vScrollKnob: default-round-large },
+},
+com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+	default: {
+		font: default-font, fontColor: white, background: default-select, backgroundDisabled: default-select-disabled, scrollStyle: default,
+		listStyle: { font: default-font, selection: default-select-selection, background: default-rect },
+	}
+},
+com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
+	default-vertical: { handle: default-splitpane-vertical },
+	default-horizontal: { handle: default-splitpane },
+},
+com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+	default: { titleFont: default-font, background: default-window, titleFontColor: white },
+	dialog: { titleFont: default-font, background: default-window, titleFontColor: white, stageBackground: dialog },
+},
+com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
+	default-horizontal: { background: default-slider, knob: default-slider-knob },
+	default-vertical: { background: default-slider, knob: default-round-large },
+},
+com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
+	default-horizontal: { background: default-slider, knob: default-slider-knob },
+	default-vertical: { background: default-slider, knob: default-round-large },
+},
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	default: { font: default-font, fontColor: white },
+	title: { font: large-font, fontColor: yellow },
+	header: { font: large-font, fontColor: yellow },
+	good: { font: default-font, fontColor: green },
+	bad: { font: default-font, fontColor: red },
+	disabled: { font: default-font, fontColor: alpha20 },
+	crosshair: { font: small-font, fontColor: light-blue },
+},
+com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+	default: { selection: selection, background: textfield, font: default-font, fontColor: white, cursor: cursor },
+},
+com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+	default: { checkboxOn: check-on, checkboxOff: check-off, checkboxOnDisabled: check-on-disabled, checkboxOffDisabled: check-off-disabled, font: default-font, fontColor: white },
+},
+com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+	default: { fontColorUnselected: white, selection: selection, fontColorSelected: white, font: default-font },
+},
+com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle: {
+	default: { background: default-pane, knob: default-round-large },
+},
+com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
+	default: { minus: tree-minus, plus: tree-plus, selection: default-select-selection },
+}
+}
