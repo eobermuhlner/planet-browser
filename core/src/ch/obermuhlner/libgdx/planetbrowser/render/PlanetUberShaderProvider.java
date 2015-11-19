@@ -11,10 +11,6 @@ public class PlanetUberShaderProvider extends UberShaderProvider  {
 
 	@Override
 	protected Shader createShader(Renderable renderable) {
-		if (renderable.material.get(AtmosphereAttribute.Atmosphere) != null) {
-			return new AtmosphereShader(renderable);
-		}
-		
 		return super.createShader(renderable);
 	}
 }

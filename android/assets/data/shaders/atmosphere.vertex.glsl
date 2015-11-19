@@ -37,9 +37,9 @@ void main() {
 	//v_lightVecTangent = normalize (vec3(dot (strongestLightDir, t), dot (strongestLightDir, b), dot (strongestLightDir, n)));
 
 	// normalized vector from vertex position to camera position
-	vec3 viewVecNorm = normalize(u_cameraPosition.xyz - position.xyz);
+	vec3 viewVec = normalize(u_cameraPosition.xyz - position.xyz);
 	// lambert factor represents angle between vertex normal and vector to camera 
-	v_lambertFactor = clamp(dot(normal, viewVecNorm), 0.0, 1.0);
+	v_lambertFactor = clamp(dot(normal, viewVec), 0.0, 1.0);
 
 	gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);
 }

@@ -1,4 +1,5 @@
-varying vec3 v_debug_vec3;
+
+//varying vec3 v_debug_vec3;
 
 #if defined(diffuseTextureFlag) || defined(emissiveTextureFlag) || defined(specularTextureFlag)
 #define textureFlag
@@ -8,8 +9,13 @@ varying vec3 v_debug_vec3;
 #define specularFlag
 #endif
 
-#if defined(specularFlag) || defined(fogFlag) || defined(normalTextureFlag) || defined (emissiveColorFlag)
+#if defined(specularFlag) || defined(fogFlag) || defined(normalTextureFlag) || defined (emissiveColorFlag) || defined (atmosphereFlag)
 #define cameraPositionFlag
+#endif
+
+#if defined(atmosphereFlag)
+#define normalFlag
+#define blendedFlag
 #endif
 
 attribute vec3 a_position;
@@ -156,6 +162,10 @@ uniform vec4 u_cameraPosition;
 varying float v_fog;
 #endif // fogFlag
 
+#ifdef atmosphereFlag
+varying float v_lambertFactorNormalToCamera;
+#endif
+
 #if defined(numDirectionalLights) && (numDirectionalLights > 0)
 struct DirectionalLight
 {
@@ -231,8 +241,6 @@ float luminance(vec3 color) {
 }
 
 void main() {
-	v_debug_vec3 = vec3(0.0, 0.0, 0.0);
-
 	#ifdef textureFlag
 		v_texCoords0 = a_texCoord0;
 	#endif // textureFlag
@@ -318,6 +326,14 @@ void main() {
         vec3 flen = u_cameraPosition.xyz - pos.xyz;
         float fog = dot(flen, flen) * u_cameraPosition.w;
         v_fog = min(fog, 1.0);
+    #endif
+    
+    #ifdef atmosphereFlag
+    	// normalized vector from vertex position to camera position
+		vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
+		// lambert factor represents angle between vertex normal and vector to camera 
+		v_lambertFactorNormalToCamera = clamp(dot(normal, viewVec), 0.0, 1.0);
+		v_opacity = 1.0;
     #endif
 
 	#if defined(normalTextureFlag)
@@ -433,6 +449,5 @@ void main() {
 		
 		// normalized vector from vertex position to light position in tangent space - passed to fragment shader
 		v_lightVecTangent = normalize (vec3(dot (strongestLightDir, t), dot (strongestLightDir, b), dot (strongestLightDir, n)));
-		v_debug_vec3 = vec3(t);
 	#endif // normalTextureFlag
 }

@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package ch.obermuhlner.libgdx.planetbrowser.render;
 
 import com.badlogic.gdx.Gdx;
@@ -41,6 +25,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader.Uniform;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -118,6 +103,10 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform pointLights = new Uniform("u_pointLights");
 		public final static Uniform spotLights = new Uniform("u_spotLights");
 		public final static Uniform environmentCubemap = new Uniform("u_environmentCubemap");
+		
+		public final static Uniform atmosphereCenterColor = new Uniform("u_atmosphereCenterColor", AtmosphereAttribute.Atmosphere);
+		public final static Uniform atmosphereHorizonColor = new Uniform("u_atmosphereHorizonColor", AtmosphereAttribute.Atmosphere);
+		public final static Uniform atmosphereSpaceColor = new Uniform("u_atmosphereSpaceColor", AtmosphereAttribute.Atmosphere);
 	}
 
 	public static class Setters {
@@ -328,6 +317,24 @@ public class DefaultShader extends BaseShader {
 				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
 			}
 		};
+		public final static Setter atmosphereCenterColor = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((AtmosphereAttribute)(combinedAttributes.get(AtmosphereAttribute.Atmosphere))).centerColor);
+			}
+		};		
+		public final static Setter atmosphereHorizonColor = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((AtmosphereAttribute)(combinedAttributes.get(AtmosphereAttribute.Atmosphere))).horizonColor);
+			}
+		};		
+		public final static Setter atmosphereSpaceColor = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((AtmosphereAttribute)(combinedAttributes.get(AtmosphereAttribute.Atmosphere))).spaceColor);
+			}
+		};		
 
 		public static class ACubemap extends LocalSetter {
 			private final static float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -459,7 +466,12 @@ public class DefaultShader extends BaseShader {
 	protected final int u_shadowMapProjViewTrans = register(new Uniform("u_shadowMapProjViewTrans"));
 	protected final int u_shadowTexture = register(new Uniform("u_shadowTexture"));
 	protected final int u_shadowPCFOffset = register(new Uniform("u_shadowPCFOffset"));
-	// FIXME Cache vertex attribute locations...
+
+	public final int u_atmosphereCenterColor;
+	public final int u_atmosphereHorizonColor;
+	public final int u_atmosphereSpaceColor;
+	
+// FIXME Cache vertex attribute locations...
 
 	protected int dirLightsLoc;
 	protected int dirLightsColorOffset;
@@ -574,6 +586,10 @@ public class DefaultShader extends BaseShader {
 		u_ambientTexture = register(Inputs.ambientTexture, Setters.ambientTexture);
 		u_ambientUVTransform = register(Inputs.ambientUVTransform, Setters.ambientUVTransform);
 		u_alphaTest = register(Inputs.alphaTest);
+
+		u_atmosphereCenterColor = register(Inputs.atmosphereCenterColor, Setters.atmosphereCenterColor);
+		u_atmosphereHorizonColor = register(Inputs.atmosphereHorizonColor, Setters.atmosphereHorizonColor);
+		u_atmosphereSpaceColor = register(Inputs.atmosphereSpaceColor, Setters.atmosphereSpaceColor);
 
 		u_ambientCubemap = lighting ? register(Inputs.ambientCube, new Setters.ACubemap(config.numDirectionalLights,
 			config.numPointLights)) : -1;
@@ -698,7 +714,12 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define " + FloatAttribute.ShininessAlias + "Flag\n";
 		if ((attributesMask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
 			prefix += "#define " + FloatAttribute.AlphaTestAlias + "Flag\n";
-		if (renderable.bones != null && config.numBones > 0) prefix += "#define numBones " + config.numBones + "\n";
+		if ((attributesMask & AtmosphereAttribute.Atmosphere) == AtmosphereAttribute.Atmosphere) {
+			prefix += "#define " + AtmosphereAttribute.AtmosphereAlias + "Flag\n";			
+		}
+		if (renderable.bones != null && config.numBones > 0)
+			prefix += "#define numBones " + config.numBones + "\n";
+
 		return prefix;
 	}
 
@@ -747,7 +768,7 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public void render (Renderable renderable, Attributes combinedAttributes) {
-		if (!combinedAttributes.has(BlendingAttribute.Type))
+		if (!combinedAttributes.has(BlendingAttribute.Type) && !combinedAttributes.has(AtmosphereAttribute.Atmosphere))
 			context.setBlending(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		bindMaterial(combinedAttributes);
 		if (lighting) bindLights(renderable, combinedAttributes);
@@ -771,6 +792,9 @@ public class DefaultShader extends BaseShader {
 			if (BlendingAttribute.is(t)) {
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
 				set(u_opacity, ((BlendingAttribute)attr).opacity);
+			} else  if ((t & AtmosphereAttribute.Atmosphere) == AtmosphereAttribute.Atmosphere) {
+				context.setBlending(true, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+				set(u_opacity, 1.0f);
 			} else if ((t & IntAttribute.CullFace) == IntAttribute.CullFace)
 				cullFace = ((IntAttribute)attr).value;
 			else if ((t & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)

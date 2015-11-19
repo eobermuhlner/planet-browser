@@ -9,7 +9,7 @@ precision mediump float;
 #define HIGH
 #endif
 
-varying vec3 v_debug_vec3;
+//varying vec3 v_debug_vec3;
 
 #if defined(specularTextureFlag) || defined(specularColorFlag)
 #define specularFlag
@@ -21,6 +21,14 @@ varying vec3 v_normal;
 
 #if defined(colorFlag)
 varying vec4 v_color;
+#endif
+
+#ifdef atmosphereFlag
+#define blendedFlag;
+uniform vec4 u_atmosphereCenterColor;
+uniform vec4 u_atmosphereHorizonColor;
+uniform vec4 u_atmosphereSpaceColor;
+varying float v_lambertFactorNormalToCamera;
 #endif
 
 #ifdef blendedFlag
@@ -164,7 +172,21 @@ void main() {
 	#elif defined(colorFlag)
 		vec4 diffuse = v_color;
 	#else
-		vec4 diffuse = vec4(0.0);
+		#if defined(atmosphereFlag)
+			float atmosphereFactor = 1.0 - v_lambertFactorNormalToCamera;
+			atmosphereFactor = atmosphereFactor * atmosphereFactor;
+		
+			float atmosphereEnd = 0.5;
+			vec4 diffuse = mix(u_atmosphereCenterColor, u_atmosphereHorizonColor, atmosphereFactor / atmosphereEnd);
+		
+			if (atmosphereFactor > atmosphereEnd) {
+				float atmosphereFadeout = (atmosphereFactor - atmosphereEnd) / (1.0 - atmosphereEnd);
+				atmosphereFadeout = sqrt(atmosphereFadeout);
+				diffuse = mix(u_atmosphereHorizonColor, u_atmosphereCenterColor, atmosphereFadeout);
+			}
+		#else
+			vec4 diffuse = vec4(0.0);
+		#endif
 	#endif
 
 	#if defined(normalTextureFlag)

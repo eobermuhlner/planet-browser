@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
@@ -66,19 +64,8 @@ public class Earth extends AbstractPlanet {
 		
 		return material;
 	}
-	
-	@Override
-	protected Material createAtmosphereMaterial(Random random) {
-		Array<Attribute> materialAttributes = new Array<Attribute>();
 
-//		float blend = 0.5f;
-//		materialAttributes.add(new BlendingAttribute(blend));
-//		materialAttributes.add(ColorAttribute.createDiffuse(new Color(0.0f, 0.0f, 1.0f, 0.5f)));
-		
-		materialAttributes.add(new AtmosphereAttribute(Color.RED, Color.CYAN));
-
-		Material material = new Material(materialAttributes);
-		return material;
+	protected AtmosphereAttribute getAtmosphereAttribute(Random random) {
+		return new AtmosphereAttribute(new Color(0.8f, 0.8f, 1.0f, 1.0f));
 	}
-
 }

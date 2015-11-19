@@ -58,5 +58,4 @@ public class Lava extends AbstractPlanet {
 
 		return new Material(materialAttributes);
 	}
-
 }

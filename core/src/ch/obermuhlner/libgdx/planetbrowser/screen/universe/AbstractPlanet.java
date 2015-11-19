@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.Config;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
+import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
@@ -58,11 +60,25 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	}
 	
 	protected abstract Material createPlanetMaterial(Random random);
-	
-	protected Material createAtmosphereMaterial(Random random) {
+
+	protected AtmosphereAttribute getAtmosphereAttribute(Random random) {
 		return null;
 	}
 	
+	protected Material createAtmosphereMaterial(Random random) {
+		AtmosphereAttribute atmosphereAttribute = getAtmosphereAttribute(random);
+		if (atmosphereAttribute == null) {
+			return null;
+		}
+		
+		Array<Attribute> materialAttributes = new Array<Attribute>();
+
+		materialAttributes.add(atmosphereAttribute);
+
+		Material material = new Material(materialAttributes);
+		return material;
+	}
+
 	protected float getPlanetRadius() {
 		return 3.0f;
 	}
