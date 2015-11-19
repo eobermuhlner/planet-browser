@@ -3,7 +3,6 @@ package ch.obermuhlner.libgdx.planetbrowser.render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 
 public class UberShaderProvider extends BaseShaderProvider {
