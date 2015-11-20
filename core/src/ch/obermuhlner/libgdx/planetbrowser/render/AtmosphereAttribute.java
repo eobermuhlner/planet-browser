@@ -10,23 +10,26 @@ public class AtmosphereAttribute extends Attribute {
 	public final Color centerColor;
 	public final Color horizonColor;
 	public final Color spaceColor;
+	public final Color refractionColor;
 	
-	public AtmosphereAttribute(Color color) {
-		this(color, 0.0f, 0.6f, 0.0f);
+	public AtmosphereAttribute(Color color, Color refractionColor) {
+		this(color, 0.0f, 0.4f, 0.0f, refractionColor);
 	}
 
-	public AtmosphereAttribute(Color color, float centerAlpha, float horizonAlpha, float spaceAlpha) {
+	public AtmosphereAttribute(Color color, float centerAlpha, float horizonAlpha, float spaceAlpha, Color refractionColor) {
 		this(new Color(color.r, color.g, color.b, centerAlpha),
 			new Color(color.r, color.g, color.b, horizonAlpha),
-			new Color(color.r, color.g, color.b, spaceAlpha));
+			new Color(color.r, color.g, color.b, spaceAlpha),
+			refractionColor);
 	}
 
-	public AtmosphereAttribute(Color centerColor, Color horizonColor, Color spaceColor) {
+	public AtmosphereAttribute(Color centerColor, Color horizonColor, Color spaceColor, Color refractionColor) {
 		super(Atmosphere);
 		
 		this.centerColor = centerColor;
 		this.horizonColor = horizonColor;
 		this.spaceColor = spaceColor;
+		this.refractionColor = refractionColor;
 	}
 
 	@Override
@@ -41,12 +44,15 @@ public class AtmosphereAttribute extends Attribute {
 		if (cmp == 0) {
 			cmp = other.spaceColor.toIntBits() - spaceColor.toIntBits();
 		}
+		if (cmp == 0) {
+			cmp = other.refractionColor.toIntBits() - refractionColor.toIntBits();
+		}
 		return cmp;
 	}
 
 	@Override
 	public Attribute copy() {
-		return new AtmosphereAttribute(centerColor, horizonColor, spaceColor);
+		return new AtmosphereAttribute(centerColor, horizonColor, spaceColor, refractionColor);
 	}
 
 }

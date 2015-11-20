@@ -164,6 +164,7 @@ varying float v_fog;
 
 #ifdef atmosphereFlag
 varying float v_lambertFactorNormalToCamera;
+varying float v_lambertFactorLightToCamera;
 #endif
 
 #if defined(numDirectionalLights) && (numDirectionalLights > 0)
@@ -328,15 +329,7 @@ void main() {
         v_fog = min(fog, 1.0);
     #endif
     
-    #ifdef atmosphereFlag
-    	// normalized vector from vertex position to camera position
-		vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
-		// lambert factor represents angle between vertex normal and vector to camera 
-		v_lambertFactorNormalToCamera = clamp(dot(normal, viewVec), 0.0, 1.0);
-		v_opacity = 1.0;
-    #endif
-
-	#if defined(normalTextureFlag)
+	#if defined(normalTextureFlag) || defined (atmosphereFlag)
 		vec3 strongestLightDir = vec3(0.0, 0.0, 1.0);
 	#endif // normalTextureFlag
 
@@ -397,7 +390,7 @@ void main() {
 				vec3 lightDir = -u_dirLights[i].direction;
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
 				vec3 value = u_dirLights[i].color * NdotL;
-				#if defined(normalTextureFlag)
+				#if defined(normalTextureFlag) || defined (atmosphereFlag)
 					#if (numDirectionalLights == 1) && (!defined(numPointLights) || numPointLights == 0)
 						strongestLightDir = normalize(lightDir);
 					#else
@@ -422,7 +415,7 @@ void main() {
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
 				vec3 value = u_pointLights[i].color * NdotL;
 				//vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));
-				#if defined(normalTextureFlag)
+				#if defined(normalTextureFlag) || defined (atmosphereFlag)
 					#if (numPointLights == 1) && (!defined (numDirectionalLights) || numDirectionalLights == 0)
 						strongestLightDir = normalize(lightDir);
 					#else
@@ -440,6 +433,15 @@ void main() {
 		#endif // numPointLights
 
 	#endif // lightingFlag
+
+    #ifdef atmosphereFlag
+    	// normalized vector from vertex position to camera position
+		vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
+		// lambert factor represents angle between vertex normal and vector to camera 
+		v_lambertFactorNormalToCamera = clamp(dot(normal, viewVec), 0.0, 1.0);
+		v_lambertFactorLightToCamera = clamp(dot(strongestLightDir, viewVec), 0.0, 1.0);
+		v_opacity = 1.0; // TODO why necessary?
+    #endif
 
 	#if defined(normalTextureFlag)
 		// matrix to convert eye space into tangent space

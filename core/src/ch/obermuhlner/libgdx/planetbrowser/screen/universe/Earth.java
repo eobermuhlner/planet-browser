@@ -66,6 +66,8 @@ public class Earth extends AbstractPlanet {
 	}
 
 	protected AtmosphereAttribute getAtmosphereAttribute(Random random) {
-		return new AtmosphereAttribute(new Color(0.8f, 0.8f, 1.0f, 1.0f));
+		return new AtmosphereAttribute(
+				new Color(0.8f, 0.8f, 1.0f, 1.0f),
+				new Color(0.9f, 0.4f, 0.4f, 1.0f));
 	}
 }
