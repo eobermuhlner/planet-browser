@@ -193,8 +193,6 @@ void main() {
 				diffuse *= 1.0 - atmosphereFadeout;
 				emissive *= 1.0 - atmosphereFadeout;
 			}
-
-			diffuse *= 1.0 - atmosphereRefractionFactor;
 		#else
 			vec4 diffuse = vec4(0.0);
 		#endif
