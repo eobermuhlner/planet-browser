@@ -88,8 +88,8 @@ public class PlanetScreen extends AbstractScreen {
 		camera.lookAt(0, 0, 0);
 		camera.update(true);
 		
-		float ambientLight = 0.1f;
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight, ambientLight, ambientLight, 1f));
+//		float ambientLight = 0.1f;
+//		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight, ambientLight, ambientLight, 1f));
 
 		PointLight light = new PointLight();
 		light.set(Color.WHITE, 0f, 0f, 50f, 1.0f);
