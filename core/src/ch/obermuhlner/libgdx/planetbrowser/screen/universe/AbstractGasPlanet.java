@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.GasPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 

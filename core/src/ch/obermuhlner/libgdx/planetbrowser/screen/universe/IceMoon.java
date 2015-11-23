@@ -1,14 +1,9 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
-import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.MID_0;
-import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.POWER_2_MID_0;
-import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.SQRT_MID_0;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
@@ -16,7 +11,6 @@ import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
-import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public class IceMoon extends AbstractPlanet {
@@ -31,7 +25,6 @@ public class IceMoon extends AbstractPlanet {
 				new Color(1.0f, 1.0f, 1.0f, 1.0f),
 		}));
 
-		//String heightFunction = random.next(MID_0, SQRT_MID_0, POWER_2_MID_0);
 		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(0.8f);
 
 		float heightMin = 0.3f;

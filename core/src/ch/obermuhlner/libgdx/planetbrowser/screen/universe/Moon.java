@@ -1,7 +1,5 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
-import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.MID_0;
-import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.POWER_3;
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
 import com.badlogic.gdx.Gdx;
@@ -18,7 +16,6 @@ import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
