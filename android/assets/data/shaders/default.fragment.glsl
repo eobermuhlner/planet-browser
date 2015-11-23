@@ -132,6 +132,10 @@ uniform vec4 u_fogColor;
 varying float v_fog;
 #endif // fogFlag
 
+float transform(float fromMin, float fromMax, float toMin, float toMax, float value) {
+		return (value - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
+}
+
 void main() {
 	#if defined(normalFlag)
 		#if defined(normalTextureFlag)
@@ -182,8 +186,9 @@ void main() {
 		
 			vec4 diffuse = mix(u_atmosphereCenterColor, u_atmosphereHorizonColor, atmosphereReflectionFactor / atmosphereEnd);
 		
-			float atmosphereRefractionFactor = (1.0 - v_lambertFactorLightToCamera) * 0.6;
-			atmosphereRefractionFactor = atmosphereRefractionFactor * atmosphereRefractionFactor; 
+			//float atmosphereRefractionFactor = (1.0 - v_lambertFactorLightToCamera) * 0.6;
+			float atmosphereRefractionFactor = clamp(transform(-0.30, 0.5, 1.0, 0.0, v_lambertFactorLightToCamera), 0.0, 1.0);
+			atmosphereRefractionFactor *= 0.5;
 			
 			emissive = u_atmosphereRefractionColor * atmosphereRefractionFactor * (atmosphereReflectionFactor / atmosphereEnd);
 
@@ -193,6 +198,8 @@ void main() {
 				diffuse *= 1.0 - atmosphereFadeout;
 				emissive *= 1.0 - atmosphereFadeout;
 			}
+			
+			//emissive = vec4(vec3(transform(-1.0, 1.0, 0.0, 1.0, v_lambertFactorLightToCamera)), 0.5);
 		#else
 			vec4 diffuse = vec4(0.0);
 		#endif
