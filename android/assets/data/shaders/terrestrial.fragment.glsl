@@ -208,25 +208,15 @@ vec4 if_then_else(float condition, vec4 trueValue, vec4 falseValue) {
 }
 
 float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
-	vec2 r1 = vec2(u_random0+u_random4, u_random1+u_random6);
-	vec2 r2 = vec2(u_random2+u_random4, u_random3+u_random6);
-	vec2 r3 = vec2(u_random4+u_random4, u_random5+u_random6);
-	vec2 r4 = vec2(u_random6+u_random4, u_random7+u_random6);
-	vec2 r5 = vec2(u_random8+u_random4, u_random9+u_random6);
-	vec2 r6 = vec2(u_random0+u_random5, u_random7+u_random7);
-	vec2 r7 = vec2(u_random2+u_random5, u_random5+u_random7);
-	vec2 r8 = vec2(u_random4+u_random5, u_random3+u_random7);
-	vec2 r9 = vec2(u_random6+u_random5, u_random1+u_random7);
-
 	float noise = 0.0;
-	noise += pnoise2(P+r1, baseFrequency * 1.0) * baseFactor / 1.0;
-	noise += pnoise2(P+r2, baseFrequency * 2.0) * baseFactor / 2.0;
-	noise += pnoise2(P+r3, baseFrequency * 4.0) * baseFactor / 4.0;
-	noise += pnoise2(P+r4, baseFrequency * 8.0) * baseFactor / 8.0;
-	noise += pnoise2(P+r5, baseFrequency * 16.0) * baseFactor / 16.0;
-	noise += pnoise2(P+r6, baseFrequency * 32.0) * baseFactor / 32.0;
-	noise += pnoise2(P+r7, baseFrequency * 64.0) * baseFactor / 64.0;
-	noise += pnoise2(P+r8, baseFrequency * 128.0) * baseFactor / 128.0;
+	noise += pnoise2(P+vec2(u_random0+u_random4, u_random1+u_random6), baseFrequency * 1.0) * baseFactor / 1.0;
+	noise += pnoise2(P+vec2(u_random2+u_random4, u_random3+u_random6), baseFrequency * 2.0) * baseFactor / 2.0;
+	noise += pnoise2(P+vec2(u_random4+u_random4, u_random5+u_random6), baseFrequency * 4.0) * baseFactor / 4.0;
+	noise += pnoise2(P+vec2(u_random6+u_random4, u_random7+u_random6), baseFrequency * 8.0) * baseFactor / 8.0;
+	noise += pnoise2(P+vec2(u_random8+u_random4, u_random9+u_random6), baseFrequency * 16.0) * baseFactor / 16.0;
+	noise += pnoise2(P+vec2(u_random0+u_random5, u_random7+u_random7), baseFrequency * 32.0) * baseFactor / 32.0;
+	noise += pnoise2(P+vec2(u_random2+u_random5, u_random5+u_random7), baseFrequency * 64.0) * baseFactor / 64.0;
+	noise += pnoise2(P+vec2(u_random4+u_random5, u_random3+u_random7), baseFrequency * 128.0) * baseFactor / 128.0;
 	return noise;
 }
 
@@ -242,14 +232,6 @@ float heightTransform(float h) {
 
 float calculateHeight(vec2 P) {
 	vec2 r1 = vec2(u_random0+u_random1, u_random1+u_random0);
-	vec2 r2 = vec2(u_random2+u_random1, u_random3+u_random0);
-	vec2 r3 = vec2(u_random4+u_random1, u_random5+u_random0);
-	vec2 r4 = vec2(u_random6+u_random1, u_random7+u_random0);
-	vec2 r5 = vec2(u_random8+u_random1, u_random9+u_random0);
-	vec2 r6 = vec2(u_random0+u_random3, u_random7+u_random2);
-	vec2 r7 = vec2(u_random2+u_random3, u_random5+u_random2);
-	vec2 r8 = vec2(u_random4+u_random3, u_random3+u_random2);
-	vec2 r9 = vec2(u_random6+u_random3, u_random1+u_random2);
 
 	float baseHeight = u_heightMin + (u_heightMax - u_heightMin) / 2.0; 
 	float base = u_heightFrequency;
@@ -261,7 +243,7 @@ float calculateHeight(vec2 P) {
 	#ifdef mountainsFlag
 		float mountainFrequency = u_heightFrequency;
 		float mountainHeight = ridge(2.0 * fractalNoise(P, 2.0, 1.0) - 1.0) * u_heightMountains;
-		float mountainFactor = smoothstep(0.0, 0.6, ((pnoise2(P+r9, mountainFrequency) + 1.0) * 0.5));
+		float mountainFactor = smoothstep(0.0, 0.6, ((pnoise2(P+r1, mountainFrequency) + 1.0) * 0.5));
 		height = max(height, mountainHeight * mountainFactor);
 	#endif
 	
@@ -276,21 +258,12 @@ float dummyHeight(vec2 P) {
 
 #ifdef planetColorsFlag
 vec3 planetColor(vec2 P, float height, float distEquator) {
-	float r1 = u_random0 + u_random7;
-	float r2 = u_random1 + u_random7;
-	float r3 = u_random2 + u_random7;
-	float r4 = u_random3 + u_random7;
-	float r5 = u_random4 + u_random7;
-	float r6 = u_random5 + u_random7;
-	float r7 = u_random6 + u_random7;
-	float r8 = u_random7 + u_random7;
-
 	vec3 color1 = u_planetColor0; 
 	vec3 color2 = u_planetColor1; 
 	vec3 color3 = u_planetColor2; 
 
 	float v1 = clamp(height, u_heightMin, u_heightMax);
-	float v2 = pnoise2(P+r2, 8.0) * 0.5 + 0.5;
+	float v2 = pnoise2(P+vec2(u_random0 + u_random7), 8.0) * 0.5 + 0.5;
 
 	vec3 mix1 = mix(color1, color2, v1);
 	vec3 mix2 = mix(mix1, color3, v2);

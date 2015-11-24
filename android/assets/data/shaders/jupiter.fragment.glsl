@@ -161,47 +161,27 @@ vec3 toColor(float value) {
 }
 
 float planetNoise(vec2 P) {
-	vec2 rv1 = vec2(u_random0, u_random1);
-	vec2 rv2 = vec2(u_random2, u_random3);
-	vec2 rv3 = vec2(u_random4, u_random5);
-	vec2 rv4 = vec2(u_random6, u_random7);
-	vec2 rv5 = vec2(u_random8, u_random9);
-
-	float r1 = u_random0 + u_random9;
-	float r2 = u_random1 + u_random9;
-	float r3 = u_random2 + u_random9;
-	float r4 = u_random3 + u_random9;
-	float r5 = u_random4 + u_random9;
-
 	float noise = 0.0; 
-	noise += pnoise2(P+rv1, 10.0) * (0.2 + r1 * 0.4);
-	noise += pnoise2(P+rv2, 50.0) * (0.2 + r2 * 0.4);
-	noise += pnoise2(P+rv3, 100.0) * (0.3 + r3 * 0.2);
-	noise += pnoise2(P+rv4, 200.0) * (0.05 + r4 * 0.1);
-	noise += pnoise2(P+rv5, 500.0) * (0.02 + r4 * 0.15);
+	noise += pnoise2(P+vec2(u_random0, u_random1), 10.0) * (0.2 + (u_random0 + u_random9) * 0.4);
+	noise += pnoise2(P+vec2(u_random2, u_random3), 50.0) * (0.2 + (u_random1 + u_random9) * 0.4);
+	noise += pnoise2(P+vec2(u_random4, u_random5), 100.0) * (0.3 + (u_random2 + u_random9) * 0.2);
+	noise += pnoise2(P+vec2(u_random6, u_random7), 200.0) * (0.05 + (u_random3 + u_random9) * 0.1);
+	noise += pnoise2(P+vec2(u_random8, u_random9), 500.0) * (0.02 + (u_random4 + u_random9) * 0.15);
 
 	return noise;
 }
 
 float jupiterNoise(vec2 texCoords) {
-	float r1 = u_random0 + u_random8;
-	float r2 = u_random1 + u_random8;
-	float r3 = u_random2 + u_random8;
-	float r4 = u_random3 + u_random8;
-	float r5 = u_random4 + u_random8;
-	float r6 = u_random5 + u_random8;
-	float r7 = u_random6 + u_random8;
-	
 	float distEquator = abs(texCoords.t - 0.5) * 2.0;
 	float noise = planetNoise(vec2(texCoords.x+distEquator*0.6, texCoords.y));
 	
 	float distPol = 1.0 - distEquator;
 	float disturbance = 0.0;
-	disturbance += pnoise1(distPol+r1, 3.0+r4*3.0) * 1.0;
-	disturbance += pnoise1(distPol+r2, 9.0+r5*5.0) * 0.5;
-	disturbance += pnoise1(distPol+r3, 20.0+r6*10.0) * 0.1;
+	disturbance += pnoise1(distPol+(u_random0 + u_random8), 3.0+(u_random3 + u_random8)*3.0) * 1.0;
+	disturbance += pnoise1(distPol+(u_random1 + u_random8), 9.0+(u_random4 + u_random8)*5.0) * 0.5;
+	disturbance += pnoise1(distPol+(u_random2 + u_random8), 20.0+(u_random5 + u_random8)*10.0) * 0.1;
 	disturbance = disturbance*disturbance*2.0;
-	float noiseFactor = r7 * 0.3;
+	float noiseFactor = (u_random6 + u_random8) * 0.3;
 	float noiseDistEquator = distEquator + noise * noiseFactor * disturbance;
 	return noiseDistEquator;
 }
@@ -211,21 +191,12 @@ float jupiterHeight(float noise) {
 }
 
 vec3 planetColor(float distEquator) {
-	float r1 = u_random0 + u_random7;
-	float r2 = u_random1 + u_random7;
-	float r3 = u_random2 + u_random7;
-	float r4 = u_random3 + u_random7;
-	float r5 = u_random4 + u_random7;
-	float r6 = u_random5 + u_random7;
-	float r7 = u_random6 + u_random7;
-	float r8 = u_random7 + u_random7;
-
 	vec3 color1 = u_planetColor0; 
 	vec3 color2 = u_planetColor1; 
 	vec3 color3 = u_planetColor2; 
 
-	float v1 = pnoise1(distEquator+r1, 2.0 + r4*15.0) * r7;
-	float v2 = pnoise1(distEquator+r2, 2.0 + r5*15.0) * r8;
+	float v1 = pnoise1(distEquator+(u_random0 + u_random7), 2.0 + (u_random3 + u_random7)*15.0) * (u_random5 + u_random7);
+	float v2 = pnoise1(distEquator+(u_random1 + u_random7), 2.0 + (u_random4 + u_random7)*15.0) * (u_random7 + u_random7);
 
 	vec3 mix1 = mix(color1, color2, v1);
 	vec3 mix2 = mix(mix1, color3, v2);
