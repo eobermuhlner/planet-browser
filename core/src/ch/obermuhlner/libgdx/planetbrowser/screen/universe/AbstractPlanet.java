@@ -25,6 +25,8 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public abstract class AbstractPlanet implements ModelInstanceFactory {
 
+	private static final float ATMOSPHERE_FACTOR = 1.02f;
+
 	private static final int DIVISIONS = 40;
 	
 	protected ModelBuilder modelBuilder = new ModelBuilder();
@@ -44,8 +46,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		{
 			Material material = createAtmosphereMaterial(random);
 			if (material != null) {
-				float atmosphereSize = 1.05f;
-				Model model = createSphere(size * atmosphereSize, material);
+				Model model = createSphere(size * ATMOSPHERE_FACTOR, material);
 				modelInstances.add(new ModelInstance(model));
 			}
 		}

@@ -179,7 +179,7 @@ void main() {
 		vec4 diffuse = v_color;
 	#else
 		#if defined(atmosphereFlag)
-			float atmosphereEnd = 0.5;
+			float atmosphereEnd = 0.7;
 
 			float atmosphereReflectionFactor = 1.0 - v_lambertFactorNormalToCamera;
 			atmosphereReflectionFactor = atmosphereReflectionFactor * atmosphereReflectionFactor;
