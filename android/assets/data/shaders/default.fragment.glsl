@@ -27,8 +27,9 @@ varying vec4 v_color;
 #define blendedFlag;
 uniform vec4 u_atmosphereCenterColor;
 uniform vec4 u_atmosphereHorizonColor;
-uniform vec4 u_atmosphereSpaceColor;
 uniform vec4 u_atmosphereRefractionColor;
+uniform float u_atmosphereEnd;
+uniform float u_atmosphereRefractionFactor;
 varying float v_lambertFactorNormalToCamera;
 varying float v_lambertFactorLightToCamera;
 #endif
@@ -179,24 +180,25 @@ void main() {
 		vec4 diffuse = v_color;
 	#else
 		#if defined(atmosphereFlag)
-			float atmosphereEnd = 0.7;
+			//float atmosphereEnd = 0.7;
 
 			float atmosphereReflectionFactor = 1.0 - v_lambertFactorNormalToCamera;
 			atmosphereReflectionFactor = atmosphereReflectionFactor * atmosphereReflectionFactor;
 		
-			vec4 diffuse = mix(u_atmosphereCenterColor, u_atmosphereHorizonColor, atmosphereReflectionFactor / atmosphereEnd);
+			vec4 diffuse = mix(u_atmosphereCenterColor, u_atmosphereHorizonColor, atmosphereReflectionFactor / u_atmosphereEnd);
 		
-			//float atmosphereRefractionFactor = (1.0 - v_lambertFactorLightToCamera) * 0.6;
 			float atmosphereRefractionFactor = clamp(transform(-0.30, 0.5, 1.0, 0.0, v_lambertFactorLightToCamera), 0.0, 1.0);
-			atmosphereRefractionFactor *= 0.5;
+			atmosphereRefractionFactor *= u_atmosphereRefractionFactor;
 			
-			emissive = u_atmosphereRefractionColor * atmosphereRefractionFactor * (atmosphereReflectionFactor / atmosphereEnd);
+			emissive = u_atmosphereRefractionColor * atmosphereRefractionFactor * (atmosphereReflectionFactor / u_atmosphereEnd);
 
-			if (atmosphereReflectionFactor > atmosphereEnd) {
-				float atmosphereFadeout = (atmosphereReflectionFactor - atmosphereEnd) / (1.0 - atmosphereEnd);
+			if (atmosphereReflectionFactor > u_atmosphereEnd) {
+				float atmosphereFadeout = (atmosphereReflectionFactor - u_atmosphereEnd) / (1.0 - u_atmosphereEnd);
+				atmosphereFadeout = 1.0 - atmosphereFadeout;
+				atmosphereFadeout = atmosphereFadeout * atmosphereFadeout;
 				
-				diffuse *= 1.0 - atmosphereFadeout;
-				emissive *= 1.0 - atmosphereFadeout;
+				diffuse *= atmosphereFadeout;
+				emissive *= atmosphereFadeout;
 			}
 			
 			//emissive = vec4(vec3(transform(-1.0, 1.0, 0.0, 1.0, v_lambertFactorLightToCamera)), 0.5);

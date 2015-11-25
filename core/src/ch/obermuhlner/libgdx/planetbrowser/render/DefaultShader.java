@@ -106,8 +106,9 @@ public class DefaultShader extends BaseShader {
 		
 		public final static Uniform atmosphereCenterColor = new Uniform("u_atmosphereCenterColor", AtmosphereAttribute.Atmosphere);
 		public final static Uniform atmosphereHorizonColor = new Uniform("u_atmosphereHorizonColor", AtmosphereAttribute.Atmosphere);
-		public final static Uniform atmosphereSpaceColor = new Uniform("u_atmosphereSpaceColor", AtmosphereAttribute.Atmosphere);
 		public final static Uniform atmosphereRefractionColor = new Uniform("u_atmosphereRefractionColor", AtmosphereAttribute.Atmosphere);
+		public final static Uniform atmosphereRefractionFactor = new Uniform("u_atmosphereRefractionFactor", AtmosphereAttribute.Atmosphere);
+		public final static Uniform atmosphereEnd = new Uniform("u_atmosphereEnd", AtmosphereAttribute.Atmosphere);
 	}
 
 	public static class Setters {
@@ -330,16 +331,22 @@ public class DefaultShader extends BaseShader {
 				shader.set(inputID, ((AtmosphereAttribute)(combinedAttributes.get(AtmosphereAttribute.Atmosphere))).horizonColor);
 			}
 		};		
-		public final static Setter atmosphereSpaceColor = new LocalSetter() {
-			@Override
-			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				shader.set(inputID, ((AtmosphereAttribute)(combinedAttributes.get(AtmosphereAttribute.Atmosphere))).spaceColor);
-			}
-		};		
 		public final static Setter atmosphereRefractionColor = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, ((AtmosphereAttribute)(combinedAttributes.get(AtmosphereAttribute.Atmosphere))).refractionColor);
+			}
+		};		
+		public final static Setter atmosphereRefractionFactor = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((AtmosphereAttribute)(combinedAttributes.get(AtmosphereAttribute.Atmosphere))).refractionFactor);
+			}
+		};		
+		public final static Setter atmosphereEnd = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((AtmosphereAttribute)(combinedAttributes.get(AtmosphereAttribute.Atmosphere))).atmosphereEnd);
 			}
 		};		
 
@@ -476,8 +483,9 @@ public class DefaultShader extends BaseShader {
 
 	public final int u_atmosphereCenterColor;
 	public final int u_atmosphereHorizonColor;
-	public final int u_atmosphereSpaceColor;
 	public final int u_atmosphereRefractionColor;
+	public final int u_atmosphereRefractionFactor;
+	public final int u_atmosphereEnd;
 	
 // FIXME Cache vertex attribute locations...
 
@@ -597,8 +605,9 @@ public class DefaultShader extends BaseShader {
 
 		u_atmosphereCenterColor = register(Inputs.atmosphereCenterColor, Setters.atmosphereCenterColor);
 		u_atmosphereHorizonColor = register(Inputs.atmosphereHorizonColor, Setters.atmosphereHorizonColor);
-		u_atmosphereSpaceColor = register(Inputs.atmosphereSpaceColor, Setters.atmosphereSpaceColor);
 		u_atmosphereRefractionColor = register(Inputs.atmosphereRefractionColor, Setters.atmosphereRefractionColor);
+		u_atmosphereRefractionFactor = register(Inputs.atmosphereRefractionFactor, Setters.atmosphereRefractionFactor);
+		u_atmosphereEnd = register(Inputs.atmosphereEnd, Setters.atmosphereEnd);
 
 		u_ambientCubemap = lighting ? register(Inputs.ambientCube, new Setters.ACubemap(config.numDirectionalLights,
 			config.numPointLights)) : -1;

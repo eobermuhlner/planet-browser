@@ -9,27 +9,40 @@ public class AtmosphereAttribute extends Attribute {
 
 	public final Color centerColor;
 	public final Color horizonColor;
-	public final Color spaceColor;
 	public final Color refractionColor;
-	
-	public AtmosphereAttribute(Color color, Color refractionColor) {
-		this(color, 0.0f, 0.4f, 0.0f, refractionColor);
+	public final float refractionFactor;
+	public final float atmosphereEnd;
+
+	/**
+	 * 
+	 * @param color the atmosphere diffuse color (raleigh scattering). Blue for earth.
+	 * @param refractionColor the atmosphere refraction color (mie scattering). Red for earth.
+	 * @param refractionFactor the factor (strength) for the refraction. 0.5-0.6 are good values.
+	 * @param atmosphereEnd the horizon magic value.
+	 * 	0.8 if atmosphere is 1.01 larger than planet.
+	 * 	0.7 if atmosphere is 1.02 larger than planet.
+	 * 	0.3 if atmosphere is 1.10 larger than planet.
+	 */
+	public AtmosphereAttribute(Color color, Color refractionColor, float refractionFactor, float atmosphereEnd) {
+		this(color, 0.0f, 0.4f, refractionColor, refractionFactor, atmosphereEnd);
 	}
 
-	public AtmosphereAttribute(Color color, float centerAlpha, float horizonAlpha, float spaceAlpha, Color refractionColor) {
+	public AtmosphereAttribute(Color color, float centerAlpha, float horizonAlpha, Color refractionColor, float refractionFactor, float atmosphereEnd) {
 		this(new Color(color.r, color.g, color.b, centerAlpha),
 			new Color(color.r, color.g, color.b, horizonAlpha),
-			new Color(color.r, color.g, color.b, spaceAlpha),
-			refractionColor);
+			refractionColor,
+			refractionFactor,
+			atmosphereEnd);
 	}
 
-	public AtmosphereAttribute(Color centerColor, Color horizonColor, Color spaceColor, Color refractionColor) {
+	public AtmosphereAttribute(Color centerColor, Color horizonColor, Color refractionColor, float refractionFactor, float atmosphereEnd) {
 		super(Atmosphere);
 		
 		this.centerColor = centerColor;
 		this.horizonColor = horizonColor;
-		this.spaceColor = spaceColor;
 		this.refractionColor = refractionColor;
+		this.refractionFactor = refractionFactor;
+		this.atmosphereEnd = atmosphereEnd;
 	}
 
 	@Override
@@ -42,17 +55,20 @@ public class AtmosphereAttribute extends Attribute {
 			cmp = other.horizonColor.toIntBits() - horizonColor.toIntBits();
 		}
 		if (cmp == 0) {
-			cmp = other.spaceColor.toIntBits() - spaceColor.toIntBits();
+			cmp = other.refractionColor.toIntBits() - refractionColor.toIntBits();
 		}
 		if (cmp == 0) {
-			cmp = other.refractionColor.toIntBits() - refractionColor.toIntBits();
+			cmp = Float.compare(other.refractionFactor, refractionFactor);
+		}
+		if (cmp == 0) {
+			cmp = Float.compare(other.atmosphereEnd, atmosphereEnd);
 		}
 		return cmp;
 	}
 
 	@Override
 	public Attribute copy() {
-		return new AtmosphereAttribute(centerColor, horizonColor, spaceColor, refractionColor);
+		return new AtmosphereAttribute(centerColor, horizonColor, refractionColor, refractionFactor, atmosphereEnd);
 	}
 
 }
