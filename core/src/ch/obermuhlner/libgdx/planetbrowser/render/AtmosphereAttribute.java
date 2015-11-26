@@ -21,6 +21,7 @@ public class AtmosphereAttribute extends Attribute {
 	 * @param atmosphereEnd the horizon magic value.
 	 * 	0.8 if atmosphere is 1.01 larger than planet.
 	 * 	0.7 if atmosphere is 1.02 larger than planet.
+	 * 	0.5 if atmosphere is 1.04 larger than planet.
 	 * 	0.3 if atmosphere is 1.10 larger than planet.
 	 */
 	public AtmosphereAttribute(Color color, Color refractionColor, float refractionFactor, float atmosphereEnd) {

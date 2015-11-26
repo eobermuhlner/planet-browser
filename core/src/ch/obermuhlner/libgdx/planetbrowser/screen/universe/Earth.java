@@ -67,10 +67,16 @@ public class Earth extends AbstractPlanet {
 
 	@Override
 	protected AtmosphereAttribute getAtmosphereAttribute(Random random, float atmosphereSize) {
+		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);
+		float centerAlpha = random.nextFloat(0.0f, 0.1f);
+		float horizonAlpha = random.nextFloat(0.1f, 0.8f);
+		float refractionFactor = random.nextFloat(0.3f, 0.7f);
 		return new AtmosphereAttribute(
 				new Color(0.8f, 0.8f, 1.0f, 1.0f),
+				centerAlpha,
+				horizonAlpha,
 				new Color(0.9f, 0.4f, 0.4f, 1.0f),
-				0.5f,
-				0.5f);
+				refractionFactor,
+				atmosphereEnd);
 	}
 }
