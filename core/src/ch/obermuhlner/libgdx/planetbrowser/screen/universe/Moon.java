@@ -15,41 +15,31 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
+import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public class Moon extends AbstractPlanet {
 
 	private static final Color[][] MOON_COLORS_VARIANTS = new Color[][] {
 		{
-			new Color(0.4000f, 0.4000f, 0.4000f, 1.0f),
-		},
-		{
-			new Color(0.5000f, 0.5000f, 0.5000f, 1.0f),
-		},
-		{
-			new Color(0.8000f, 0.8000f, 0.8000f, 1.0f),
-		},
-		{
-			new Color(0.5000f, 0.5000f, 0.5000f, 1.0f),
-			new Color(0.6000f, 0.6000f, 0.6000f, 1.0f),
-			new Color(0.7000f, 0.7000f, 0.7000f, 1.0f),
-		},
-		{
-			// Enceladus: ice over water
-			new Color(0.9000f, 0.9000f, 1.0000f, 1.0f),
-			new Color(1.0000f, 1.0000f, 1.0000f, 1.0f),
-		},
+			new Color(0.6f, 0.6f, 0.6f, 1.0f),
+			new Color(0.7f, 0.7f, 0.7f, 1.0f),
+			new Color(0.8f, 0.8f, 0.8f, 1.0f),
+		}
+		/*,
 		{
 			// Io
-			new Color(0.8000f, 0.5000f, 0.4000f, 1.0f),
-			new Color(0.8000f, 0.7000f, 0.4000f, 1.0f),
-			new Color(0.9000f, 0.8000f, 0.4000f, 1.0f),
-			new Color(0.8000f, 0.9000f, 0.6000f, 1.0f),
-			new Color(0.5000f, 0.5000f, 0.5000f, 1.0f),
+			new Color(0.8f, 0.5f, 0.4f, 1.0f),
+			new Color(0.8f, 0.7f, 0.4f, 1.0f),
+			new Color(0.9f, 0.8f, 0.4f, 1.0f),
+			new Color(0.8f, 0.9f, 0.6f, 1.0f),
+			new Color(0.5f, 0.5f, 0.5f, 1.0f),
 		},
+		*/
 	};
 
 	@Override
@@ -93,22 +83,20 @@ public class Moon extends AbstractPlanet {
 		int water = 0;
 		
 		int areaCount = 100;
-		int craterCount = random.nextInt(100, 100000);
+		int craterCount = random.nextInt(100, 20000);
 		boolean fillWithCraters = craterCount > 10000;
-		craterCount = Math.max(20000, craterCount);
-		float hugeCraterProbability = random.nextBoolean(0.6f) ? 2f : random.nextFloat(0, 100); 
-		float bigCraterProbability = random.nextBoolean(0.6f) ? 20f : random.nextFloat(0, 100); 
-		float mediumCraterProbability = random.nextBoolean(0.6f) ? 100f : random.nextFloat(0, 200); 
-		float areaProbability = random.nextFloat(0, 10);
-		float vulcanoProbability = Math.min(0, random.nextFloat(-10, 2));
+		float hugeCraterProbability = random.nextBoolean(0.6f) ? 2 : random.nextFloat(0, 100); 
+		float bigCraterProbability = random.nextBoolean(0.6f) ? 20 : random.nextFloat(0, 100); 
+		float mediumCraterProbability = random.nextBoolean(0.6f) ? 100 : random.nextFloat(0, 200); 
+		float vulcanoProbability = random.nextBoolean(0.9f) ? 0 : random.nextFloat(0, 2);
 		int softCount = 0;
-		boolean hasAtmosphere = true;
+		boolean hasAtmosphere = random.nextBoolean(0.1);
 		if (hasAtmosphere ) {
-			softCount = random.nextInt(5, 50);
+			softCount = random.nextInt(100, 500);
 			softCount += water;
 		}
 
-		//System.out.println("Generating Normals craters=" + craterCount + " craterFill=" + fillWithCraters + " probHuge=" + hugeCraterProbability + " probBig=" + bigCraterProbability + " probMed=" + mediumCraterProbability + " areaProb=" + areaProbability +" vulcanoProb=" + vulcanoProbability + " softCount=" + softCount);
+		//System.out.println("Generating Normals craters=" + craterCount + " craterFill=" + fillWithCraters + " probHuge=" + hugeCraterProbability + " probBig=" + bigCraterProbability + " probMed=" + mediumCraterProbability +" vulcanoProb=" + vulcanoProbability + " softCount=" + softCount);
 		
 		FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, targetTextureWidth, targetTextureHeight, false);
 		frameBuffer.begin();
@@ -183,14 +171,12 @@ public class Moon extends AbstractPlanet {
 				Texture texture = random.nextProbability(
 						p(5, area1),
 						p(10, area2),
-						p(10, area3),
-						p(10, soft1));
+						p(10, area3));
 				float x = random.nextFloat(0, targetTextureWidth - texture.getWidth());
 				float y = random.nextFloat(0, targetTextureHeight - texture.getHeight());
 				spriteBatch.draw(texture, x, y);
 			}
 		}
-
 
 		for (int i = 0; i < craterCount; i++) {
 			@SuppressWarnings("unchecked")
@@ -219,9 +205,7 @@ public class Moon extends AbstractPlanet {
 					p(vulcanoProbability * 10, vulcanoMedium1),
 					p(vulcanoProbability * 10, vulcanoMedium2),
 					p(vulcanoProbability * 10, vulcanoMedium3),
-					p(vulcanoProbability * 10, vulcanoMedium4),
-					p(areaProbability, area2),
-					p(areaProbability, area3));
+					p(vulcanoProbability * 10, vulcanoMedium4));
 			float x = random.nextFloat(0, targetTextureWidth - texture.getWidth());
 			float y = random.nextFloat(0, targetTextureHeight - texture.getHeight());
 			spriteBatch.draw(texture, x, y);
@@ -231,7 +215,7 @@ public class Moon extends AbstractPlanet {
 			Texture texture = soft1;
 			float x = random.nextFloat(0, targetTextureWidth - texture.getWidth());
 			float y = random.nextFloat(0, targetTextureHeight - texture.getHeight());
-			spriteBatch.draw(area1, x, y);
+			spriteBatch.draw(texture, x, y);
 		}
 
 		spriteBatch.end();
@@ -245,4 +229,21 @@ public class Moon extends AbstractPlanet {
 		return texture;
 	}
 
+	@Override
+	protected AtmosphereAttribute getAtmosphereAttribute(Random random, float atmosphereSize) {
+		if (random.nextBoolean(0.9)) {
+			return null;
+		}
+		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);
+		float centerAlpha = random.nextFloat(0.0f, 0.1f);
+		float horizonAlpha = random.nextFloat(0.1f, 0.8f);
+		float refractionFactor = random.nextFloat(0.3f, 0.7f);
+		return new AtmosphereAttribute(
+				new Color(0.8f, 0.6f, 0.6f, 1.0f),
+				centerAlpha,
+				horizonAlpha,
+				new Color(0.8f, 0.8f, 1.0f, 1.0f),
+				refractionFactor,
+				atmosphereEnd);
+	}
 }
