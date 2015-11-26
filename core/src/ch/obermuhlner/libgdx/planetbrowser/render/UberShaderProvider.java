@@ -23,8 +23,6 @@ public class UberShaderProvider extends BaseShaderProvider {
 		String frag = Gdx.files.internal("data/shaders/" + name + ".fragment.glsl").readString();
 		
 		DefaultShader.Config config = new DefaultShader.Config(vert, frag);
-		config.numDirectionalLights = 0;
-		config.numPointLights = 1;
 		return new DefaultShader(renderable, config);
 	}
 }

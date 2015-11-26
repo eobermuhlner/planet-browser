@@ -381,9 +381,7 @@ void main() {
 			v_emissiveColor = u_emissiveColor * NdotL * 0.75 + u_emissiveColor * 0.25;
 		#endif // emissiveColorFlag
 
-		#if defined(normalTextureFlag)
-			float strongestLuminance = 0.0;
-		#endif // normalTextureFlag
+		float strongestLuminance = 0.0;
 					
 		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numDirectionalLights; i++) {
