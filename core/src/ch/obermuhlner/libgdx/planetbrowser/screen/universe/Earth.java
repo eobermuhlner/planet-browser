@@ -27,12 +27,20 @@ public class Earth extends AbstractPlanet {
 		Texture texture = PlanetBrowser.getTexture("terrestrial_colors.png");
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, texture));
 		
-		float water = random.nextFloat(0.1f, 0.9f);
-		float heightMin = MathUtil.transform(0f, 1f, 0.4f, 0.0f, water);
-		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.6f, water);
+		float temperature = random.nextFloat((float)Units.celsiusToKelvin(-20), (float)Units.celsiusToKelvin(50));
+		float water = random.nextFloat(0.0f, 1.0f) * MathUtil.transform((float)Units.celsiusToKelvin(20), (float)Units.celsiusToKelvin(50), 1.0f, 0.0f, temperature);
+		float heightMin = MathUtil.transform(0f, 1f, 0.6f, 0.0f, water);
+		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.7f, water);
 		int heightFrequency = random.nextInt(0, 5);
-		float temperature =  random.nextFloat((float)Units.celsiusToKelvin(-50), (float)Units.celsiusToKelvin(50));
-		float iceLevel = MathUtil.transform((float)Units.celsiusToKelvin(-50), (float)Units.celsiusToKelvin(50), 1f, -1f, temperature);
+		float iceLevel = MathUtil.transform((float)Units.celsiusToKelvin(-20), (float)Units.celsiusToKelvin(50), 1f, -1f, temperature);
+
+//		System.out.println();
+//		System.out.println("water=" + water);
+//		System.out.println("temperature=" + temperature);
+//		System.out.println("ice=" + iceLevel);
+//		System.out.println("height=" + heightMin + " - " + heightMax);
+//		System.out.println("heightFrequency=" + heightFrequency);
+		
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightWater(0.45f)); // depends on texture
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
