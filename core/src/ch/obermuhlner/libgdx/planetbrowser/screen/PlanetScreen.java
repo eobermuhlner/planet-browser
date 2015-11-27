@@ -1,30 +1,29 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
-import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Earth;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.IceMoon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Jupiter;
@@ -32,21 +31,31 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Lava;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Moon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Neptune;
-import ch.obermuhlner.libgdx.planetbrowser.screen.universe.TexturePlanet;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public class PlanetScreen extends AbstractScreen {
 
-	private final ModelInstanceFactory[] planetFactories = new ModelInstanceFactory[] {
-		//new Jupiter(),
-		//new Neptune(),
+	private static final ModelInstanceFactory[] ALL_PLANET_FACTORIES = new ModelInstanceFactory[] {
+		new Jupiter(),
+		new Neptune(),
 		new Earth(),
-		//new Moon(),
-		//new IceMoon(),
-		//new Lava(),
+		new Moon(),
+		new IceMoon(),
+		new Lava(),
 		//new TexturePlanet("earth.jpg", "earth_normals.jpg"),
 	};
+	private static String currentPlanetFactoryName = "Random";
+	private static final Map<String, ModelInstanceFactory[]> mapPlanetFactories = new HashMap<String, ModelInstanceFactory[]>();
+	{
+		mapPlanetFactories.put("Random", ALL_PLANET_FACTORIES);
+		
+		for (int i = 0; i < ALL_PLANET_FACTORIES.length; i++) {
+			String name = ALL_PLANET_FACTORIES[i].getClass().getSimpleName();
+			ModelInstanceFactory[] factory = new ModelInstanceFactory[] { ALL_PLANET_FACTORIES[i] };
+			mapPlanetFactories.put(name, factory);
+		}
+	}
 
 	private final long randomSeed;
 	
@@ -99,7 +108,7 @@ public class PlanetScreen extends AbstractScreen {
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, cameraInputController));
 
 		Random random = new Random(randomSeed);
-		ModelInstanceFactory modelInstanceFactory = random.next(planetFactories);
+		ModelInstanceFactory modelInstanceFactory = random.next(mapPlanetFactories.get(currentPlanetFactoryName));
 		modelInstances.addAll(modelInstanceFactory.createModelInstance(random));
 	}
 	
@@ -125,12 +134,20 @@ public class PlanetScreen extends AbstractScreen {
 				planetBrowser.setScreen(new PlanetScreen(planetBrowser, randomSeed + 1));
 			}
 		}));
-		table.add(gui.button("Random", new ChangeListener() {
+		
+		final SelectBox<String> selectBox = gui.select(mapPlanetFactories.keySet().toArray(new String[0]));
+		table.add(selectBox);
+		selectBox.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				planetBrowser.setScreen(new PlanetScreen(planetBrowser, new Random(randomSeed).nextLong()));
+				String selected = selectBox.getSelected();
+				if (! currentPlanetFactoryName.equals(selected)) {
+					currentPlanetFactoryName = selected;
+					planetBrowser.setScreen(new PlanetScreen(planetBrowser, randomSeed));
+				}
 			}
-		}));
+		});
+		selectBox.setSelected(currentPlanetFactoryName);
 		
 		stage.addActor(rootTable);
 	}
