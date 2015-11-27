@@ -66,8 +66,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	}
 	
 	protected float getAtmosphereSize(Random random) {
-		return 1.04f;
-		//return random.nextFloat(1.01f, 1.03f);
+		return random.nextFloat(1.01f, 1.1f);
 	}
 	
 	protected Material createAtmosphereMaterial(Random random, float atmosphereSize) {
