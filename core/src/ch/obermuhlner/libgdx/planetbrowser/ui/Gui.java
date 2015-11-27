@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.Config;
 
@@ -52,6 +53,12 @@ public class Gui {
 	}
 
 	public SelectBox<String> select(String... items) {
+		SelectBox<String> selectBox = new SelectBox<String>(skin);
+		selectBox.setItems(items);
+		return selectBox;
+	}
+
+	public SelectBox<String> select(Array<String> items) {
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems(items);
 		return selectBox;
