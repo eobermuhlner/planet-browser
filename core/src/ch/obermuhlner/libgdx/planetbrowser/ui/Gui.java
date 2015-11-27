@@ -1,6 +1,7 @@
 package ch.obermuhlner.libgdx.planetbrowser.ui;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -50,4 +51,9 @@ public class Gui {
 		return new Label(text, skin);
 	}
 
+	public SelectBox<String> select(String... items) {
+		SelectBox<String> selectBox = new SelectBox<String>(skin);
+		selectBox.setItems(items);
+		return selectBox;
+	}
 }
