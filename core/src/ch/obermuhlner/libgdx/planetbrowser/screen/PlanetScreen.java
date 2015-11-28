@@ -17,9 +17,11 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
@@ -49,7 +51,7 @@ public class PlanetScreen extends AbstractScreen {
 	private static final String RANDOM_FACTORY_NAME = "Random";
 	private static String currentPlanetFactoryName = RANDOM_FACTORY_NAME;
 	private static final Map<String, ModelInstanceFactory[]> mapPlanetFactories = new HashMap<String, ModelInstanceFactory[]>();
-	{
+	static {
 		planetFactoryNames.add(RANDOM_FACTORY_NAME);
 		mapPlanetFactories.put(RANDOM_FACTORY_NAME, ALL_PLANET_FACTORIES);
 		
@@ -76,6 +78,8 @@ public class PlanetScreen extends AbstractScreen {
 	private final Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
 	private PlanetBrowser planetBrowser;
+	
+	private Label fpsLabel;
 	
 	public PlanetScreen(PlanetBrowser planetBrowser) {
 		this(planetBrowser, 1);
@@ -153,6 +157,11 @@ public class PlanetScreen extends AbstractScreen {
 		});
 		selectBox.setSelected(currentPlanetFactoryName);
 		
+		fpsLabel = gui.label("");
+		table.add(fpsLabel).align(Align.right);
+		
+		//table.add(gui.label("FPS"));
+		
 		stage.addActor(rootTable);
 	}
 
@@ -186,6 +195,8 @@ public class PlanetScreen extends AbstractScreen {
 		modelBatch.render(modelInstances, environment);
 		
 		modelBatch.end();
+		
+		fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
 		
 		stage.draw();
 	}
