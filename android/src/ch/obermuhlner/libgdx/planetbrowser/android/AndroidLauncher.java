@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ch.obermuhlner.libgdx.planetbrowser.Config;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.Config.SkinFactory;
-import ch.obermuhlner.libgdx.planetbrowser.desktop.DesktopLauncher.DesktopSkinFactory;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
