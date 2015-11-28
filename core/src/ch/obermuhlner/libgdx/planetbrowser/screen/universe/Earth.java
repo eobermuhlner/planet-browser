@@ -21,7 +21,16 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 public class Earth extends AbstractPlanet {
 
 	@Override
-	protected Material createPlanetMaterial(Random random) {
+	protected PlanetData createPlanetData(Random random) {
+		PlanetData planetData = new PlanetData();
+		
+		planetData.hasAtmosphere = true;
+		
+		return planetData;
+	}
+	
+	@Override
+	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		Texture texture = PlanetBrowser.getTexture("terrestrial_colors.png");
@@ -74,7 +83,7 @@ public class Earth extends AbstractPlanet {
 	}
 
 	@Override
-	protected AtmosphereAttribute getAtmosphereAttribute(Random random, float atmosphereSize) {
+	protected AtmosphereAttribute getAtmosphereAttribute(Random random, PlanetData planetData, float atmosphereSize) {
 		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);
 		float centerAlpha = random.nextFloat(0.0f, 0.1f);
 		float horizonAlpha = random.nextFloat(0.1f, 0.8f);

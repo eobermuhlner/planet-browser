@@ -43,12 +43,20 @@ public class Moon extends AbstractPlanet {
 	};
 
 	@Override
-	protected Material createPlanetMaterial(Random random) {
+	protected PlanetData createPlanetData(Random random) {
+		PlanetData planetData = new PlanetData();
+		
+		planetData.hasAtmosphere = random.nextBoolean(0.1);
+		
+		return planetData;
+	}
+
+	@Override
+	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> attributes = new Array<Attribute>();
 		Texture textureDiffuse = renderTextureDiffuse(random);
-		Texture textureNormal = renderTextureNormalsCraters(random);
+		Texture textureNormal = renderTextureNormalsCraters(random, planetData);
 		
-		//attributes.add(ColorAttribute.createDiffuse(Color.RED));
 		attributes.add(TextureAttribute.createDiffuse(textureDiffuse));
 		attributes.add(TextureAttribute.createNormal(textureNormal));
 		
@@ -76,9 +84,9 @@ public class Moon extends AbstractPlanet {
 		}
 	}
 	
-	public Texture renderTextureNormalsCraters (Random random) {
-		final int targetTextureHeight = 1024;
+	public Texture renderTextureNormalsCraters(Random random, PlanetData planetData) {
 		final int targetTextureWidth = 2048;
+		final int targetTextureHeight = 1024;
 		
 		int water = 0;
 		
@@ -90,7 +98,7 @@ public class Moon extends AbstractPlanet {
 		float mediumCraterProbability = random.nextBoolean(0.6f) ? 100 : random.nextFloat(0, 200); 
 		float vulcanoProbability = random.nextBoolean(0.9f) ? 0 : random.nextFloat(0, 2);
 		int softCount = 0;
-		boolean hasAtmosphere = random.nextBoolean(0.1);
+		boolean hasAtmosphere = planetData.hasAtmosphere;
 		if (hasAtmosphere ) {
 			softCount = random.nextInt(100, 500);
 			softCount += water;
@@ -230,8 +238,8 @@ public class Moon extends AbstractPlanet {
 	}
 
 	@Override
-	protected AtmosphereAttribute getAtmosphereAttribute(Random random, float atmosphereSize) {
-		if (random.nextBoolean(0.9)) {
+	protected AtmosphereAttribute getAtmosphereAttribute(Random random, PlanetData planetData, float atmosphereSize) {
+		if (! planetData.hasAtmosphere) {
 			return null;
 		}
 		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);

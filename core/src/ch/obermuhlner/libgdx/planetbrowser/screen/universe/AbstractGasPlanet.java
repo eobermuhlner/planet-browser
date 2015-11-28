@@ -20,7 +20,7 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 	}
 
 	@Override
-	protected Material createPlanetMaterial(Random random) {
+	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomPlanetColors(random, colors, 0.1f)));

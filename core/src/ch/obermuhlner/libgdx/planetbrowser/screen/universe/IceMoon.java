@@ -16,7 +16,16 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 public class IceMoon extends AbstractPlanet {
 
 	@Override
-	protected Material createPlanetMaterial(Random random) {
+	protected PlanetData createPlanetData(Random random) {
+		PlanetData planetData = new PlanetData();
+		
+		planetData.hasAtmosphere = false;
+		
+		return planetData;
+	}
+
+	@Override
+	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, new Color[] {

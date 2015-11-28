@@ -33,17 +33,19 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	public Array<ModelInstance> createModelInstance(Random random) {
 		Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
+		PlanetData planetData = createPlanetData(random);
+		
 		float size = (float) random.nextGaussian(getPlanetRadius());
 
 		{
-			Material material = createPlanetMaterial(random);
+			Material material = createPlanetMaterial(random, planetData);
 			Model model = createSphere(size, material);
 			modelInstances.add(new ModelInstance(model));
 		}
 		
 		{
-			float atmosphereSize = getAtmosphereSize(random);
-			Material material = createAtmosphereMaterial(random, atmosphereSize);
+			float atmosphereSize = getAtmosphereSize(random, planetData);
+			Material material = createAtmosphereMaterial(random, planetData, atmosphereSize);
 			if (material != null) {
 				Model model = createSphere(size * atmosphereSize, material);
 				modelInstances.add(new ModelInstance(model));
@@ -58,19 +60,21 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		Model model = modelBuilder.createSphere(size, size, size, DIVISIONS, DIVISIONS, material, attributes);
 		return model;
 	}
-	
-	protected abstract Material createPlanetMaterial(Random random);
 
-	protected AtmosphereAttribute getAtmosphereAttribute(Random random, float atmosphereSize) {
+	protected abstract PlanetData createPlanetData(Random random);
+	
+	protected abstract Material createPlanetMaterial(Random random, PlanetData planetData);
+
+	protected AtmosphereAttribute getAtmosphereAttribute(Random random, PlanetData planetData, float atmosphereSize) {
 		return null;
 	}
 	
-	protected float getAtmosphereSize(Random random) {
+	protected float getAtmosphereSize(Random random, PlanetData planetData) {
 		return random.nextFloat(1.01f, 1.1f);
 	}
 	
-	protected Material createAtmosphereMaterial(Random random, float atmosphereSize) {
-		AtmosphereAttribute atmosphereAttribute = getAtmosphereAttribute(random, atmosphereSize);
+	protected Material createAtmosphereMaterial(Random random, PlanetData planetData, float atmosphereSize) {
+		AtmosphereAttribute atmosphereAttribute = getAtmosphereAttribute(random, planetData, atmosphereSize);
 		if (atmosphereAttribute == null) {
 			return null;
 		}
