@@ -11,9 +11,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.Config;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
@@ -62,46 +64,43 @@ public class Moon extends AbstractPlanet {
 
 	@Override
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
-		Array<Attribute> attributes = new Array<Attribute>();
-		Texture textureDiffuse = renderTextureDiffuse(random);
-		Texture textureNormal = renderTextureNormalsCraters(random, planetData);
-		
-		attributes.add(TextureAttribute.createDiffuse(textureDiffuse));
-		attributes.add(TextureAttribute.createNormal(textureNormal));
-		
-		return new Material(attributes);
-	}
-	
-	public Texture renderTextureDiffuse(Random random) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		Color[] colors = random.next(MOON_COLORS_VARIANTS);
+		float heightMin = 0.3f;
+		float heightMax = 0.8f;
+		int heightFrequency = random.nextInt(2, 4);
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomPlanetColors(random, colors, 0.02f)));
-
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(random.nextInt(2, 4)));
-
+		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
+		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
+		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(heightFrequency));
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
+		Material material = new Material(materialAttributes);
 		{
-			Material material = new Material(materialAttributes);
 			materialAttributes.clear();
 
 			Texture textureDiffuse = renderTextureDiffuse(material, new TerrestrialPlanetShader.Provider());
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
 
-			return textureDiffuse;
+			Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, new TerrestrialPlanetShader.Provider());
+			materialAttributes.add(TextureAttribute.createNormal(textureNormal));
+
+			material = new Material(materialAttributes);
 		}
+
+		return material;
 	}
 	
-	public Texture renderTextureNormalsCraters(Random random, PlanetData planetData) {
-		final int targetTextureWidth = 2048;
-		final int targetTextureHeight = 1024;
+	public Texture renderTextureNormalsCraters(Random random, PlanetData planetData, Material material, ShaderProvider shaderProvider) {
+		final int targetTextureWidth = Config.textureSize;
+		final int targetTextureHeight = Config.textureSize;
 		
 		int water = 0;
 		
 		int areaCount = 100;
-		int craterCount = random.nextInt(100, 20000);
-		boolean fillWithCraters = craterCount > 10000;
+		int craterCount = random.nextInt(10000, 40000);
+		boolean fillWithCraters = false;
 		float hugeCraterProbability = random.nextBoolean(0.6f) ? 2 : random.nextFloat(0, 100); 
 		float bigCraterProbability = random.nextBoolean(0.6f) ? 20 : random.nextFloat(0, 100); 
 		float mediumCraterProbability = random.nextBoolean(0.6f) ? 100 : random.nextFloat(0, 200); 
@@ -114,7 +113,9 @@ public class Moon extends AbstractPlanet {
 		}
 
 		//System.out.println("Generating Normals craters=" + craterCount + " craterFill=" + fillWithCraters + " probHuge=" + hugeCraterProbability + " probBig=" + bigCraterProbability + " probMed=" + mediumCraterProbability +" vulcanoProb=" + vulcanoProbability + " softCount=" + softCount);
-		
+
+		Texture textureNormal = renderTextureNormal(material, new TerrestrialPlanetShader.Provider());
+
 		FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, targetTextureWidth, targetTextureHeight, false);
 		frameBuffer.begin();
 
@@ -123,10 +124,9 @@ public class Moon extends AbstractPlanet {
 	       
 		SpriteBatch spriteBatch = new SpriteBatch();
 		spriteBatch.begin();
-		
-		Texture area1 = PlanetBrowser.getTexture("normals_area1.png");
-		Texture area2 = PlanetBrowser.getTexture("normals_area2.png");
-		Texture area3 = PlanetBrowser.getTexture("normals_area3.png");
+
+		spriteBatch.draw(textureNormal, 0, 0);
+
 		Texture craterArea1 = PlanetBrowser.getTexture("normals_crater_area1.png");
 		Texture craterArea2 = PlanetBrowser.getTexture("normals_crater_area2.png");
 		Texture craterArea3 = PlanetBrowser.getTexture("normals_crater_area3.png");
@@ -146,7 +146,6 @@ public class Moon extends AbstractPlanet {
 		Texture craterTiny2 = PlanetBrowser.getTexture("normals_crater_tiny2.png");
 		Texture craterTiny3 = PlanetBrowser.getTexture("normals_crater_tiny3.png");
 		Texture mountain1 = PlanetBrowser.getTexture("normals_mountain1.png");
-		Texture mountain2 = PlanetBrowser.getTexture("normals_mountain2.png");
 		Texture vulcanoHuge1 = PlanetBrowser.getTexture("normals_vulcano_huge1.png");
 		Texture vulcanoBig1 = PlanetBrowser.getTexture("normals_vulcano_big1.png");
 		Texture vulcanoBig2 = PlanetBrowser.getTexture("normals_vulcano_big2.png");
@@ -182,17 +181,6 @@ public class Moon extends AbstractPlanet {
 				float y = random.nextFloat(0, targetTextureHeight - texture.getHeight());
 				spriteBatch.draw(texture, x, y);
 			}
-		} else {
-			for (int i = 0; i < areaCount; i++) {
-				@SuppressWarnings("unchecked")
-				Texture texture = random.nextProbability(
-						p(5, area1),
-						p(10, area2),
-						p(10, area3));
-				float x = random.nextFloat(0, targetTextureWidth - texture.getWidth());
-				float y = random.nextFloat(0, targetTextureHeight - texture.getHeight());
-				spriteBatch.draw(texture, x, y);
-			}
 		}
 
 		for (int i = 0; i < craterCount; i++) {
@@ -214,7 +202,6 @@ public class Moon extends AbstractPlanet {
 					p(3000, craterTiny2),
 					p(3000, craterTiny3),
 					p(500, mountain1),
-					p(100, mountain2),
 					p(vulcanoProbability * 1, vulcanoHuge1),
 					p(vulcanoProbability * 5, vulcanoBig1),
 					p(vulcanoProbability * 5, vulcanoBig2),
