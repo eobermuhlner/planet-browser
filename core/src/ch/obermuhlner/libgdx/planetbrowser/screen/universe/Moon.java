@@ -26,10 +26,19 @@ public class Moon extends AbstractPlanet {
 
 	private static final Color[][] MOON_COLORS_VARIANTS = new Color[][] {
 		{
+			// Moon
 			new Color(0.6f, 0.6f, 0.6f, 1.0f),
 			new Color(0.7f, 0.7f, 0.7f, 1.0f),
 			new Color(0.8f, 0.8f, 0.8f, 1.0f),
+		},
+		{
+			// Mars
+			new Color(0xca8c64ff),
+			new Color(0x975036ff),
+			new Color(0x533032ff),
+			//new Color(0x26283aff),
 		}
+		
 		/*,
 		{
 			// Io
