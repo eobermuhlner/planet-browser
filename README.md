@@ -28,12 +28,9 @@ In Eclipse or command line:
 In command line:
 * Go to the working directory of the git repository
 * `./gradlew`
-* `./gradlew :core:eclipse`
-* `./gradlew :desktop:eclipse`
-* `./gradlew :android:eclipse`
-* `./gradlew :html:eclipse`
-* `./gradlew :ios:eclipse`
+* `./gradlew eclipse`
 
 In Eclipse:
 * Import projects from working directory of the git repository
 * Add `assets` directory as source directory (if necessary)
+* Locate class `DesktopLauncher` and execute context menu: `Run as...` / `Java Application`
