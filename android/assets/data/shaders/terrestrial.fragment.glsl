@@ -263,7 +263,7 @@ float dummyHeight(vec2 P) {
 
 #ifdef planetColorsFlag
 vec3 planetColor(vec2 P, float height, float distEquator) {
-	float h = clamp(height, u_heightMin, u_heightMax);
+	float h = (clamp(height, u_heightMin, u_heightMax) - u_heightMin) * (u_heightMax - u_heightMin);
 	float v1 = fractalNoise(P+vec2(u_random0 + u_random7), 4.0, 1.0) * 0.5 + 0.5;
 	float v2 = fractalNoise(P+vec2(u_random0 + u_random6), 4.0, 1.0) * 0.5 + 0.5;
 	float v3 = fractalNoise(P+vec2(u_random0 + u_random5), 4.0, 1.0) * 0.5 + 0.5;
