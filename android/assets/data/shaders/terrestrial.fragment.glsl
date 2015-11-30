@@ -52,6 +52,7 @@ uniform vec3 u_planetColor1;
 uniform vec3 u_planetColor2;
 uniform vec3 u_planetColor3;
 uniform vec3 u_planetColor4;
+uniform vec3 u_planetColor5;
 #endif
 
 //
@@ -263,14 +264,16 @@ float dummyHeight(vec2 P) {
 #ifdef planetColorsFlag
 vec3 planetColor(vec2 P, float height, float distEquator) {
 	float h = clamp(height, u_heightMin, u_heightMax);
-	float v1 = pnoise2(P+vec2(u_random0 + u_random7), 8.0) * 0.5 + 0.5;
-	float v2 = pnoise2(P+vec2(u_random0 + u_random6), 8.0) * 0.5 + 0.5;
-	float v3 = pnoise2(P+vec2(u_random0 + u_random5), 8.0) * 0.5 + 0.5;
+	float v1 = fractalNoise(P+vec2(u_random0 + u_random7), 4.0, 1.0) * 0.5 + 0.5;
+	float v2 = fractalNoise(P+vec2(u_random0 + u_random6), 4.0, 1.0) * 0.5 + 0.5;
+	float v3 = fractalNoise(P+vec2(u_random0 + u_random5), 4.0, 1.0) * 0.5 + 0.5;
+	float v4 = fractalNoise(P+vec2(u_random0 + u_random3), 4.0, 1.0) * 0.5 + 0.5;
 
 	vec3 color1 = mix(u_planetColor0, u_planetColor1, v1);
-	vec3 color2 = mix(u_planetColor2, u_planetColor3, v2);
+	color1 = mix(color1, u_planetColor2, v2);
+	vec3 color2 = mix(u_planetColor3, u_planetColor4, v3);
+	color2 = mix(color2, u_planetColor5, v4);
 	vec3 color = mix(color1, color2, h);
-	color = mix(color, u_planetColor4, v3);
 	return color;
 }
 #endif

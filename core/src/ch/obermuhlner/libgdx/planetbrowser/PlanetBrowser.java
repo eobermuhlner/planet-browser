@@ -38,7 +38,6 @@ public class PlanetBrowser extends Game {
 				"normals_crater_medium1.png", "normals_crater_medium2.png", "normals_crater_medium3.png",
 				"normals_crater_small1.png", "normals_crater_small2.png", "normals_crater_small3.png", "normals_crater_small4.png", "normals_crater_small5.png",
 				"normals_crater_tiny1.png", "normals_crater_tiny2.png", "normals_crater_tiny3.png",
-				"normals_mountain1.png",  
 				"normals_vulcano_huge1.png",
 				"normals_vulcano_big1.png", "normals_vulcano_big2.png", "normals_vulcano_big3.png",  
 				"normals_vulcano_medium1.png", "normals_vulcano_medium2.png", "normals_vulcano_medium3.png", "normals_vulcano_medium4.png",    
