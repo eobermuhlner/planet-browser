@@ -91,19 +91,20 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		return 3.0f;
 	}
 	
-	public Color[] randomPlanetColors(Random random, Color[] colors, float delta) {
-		return new Color[] {
-			randomDeviation(random, colors[random.nextInt(colors.length)], delta),
-			randomDeviation(random, colors[random.nextInt(colors.length)], delta),
-			randomDeviation(random, colors[random.nextInt(colors.length)], delta)
-		};
+	public Color[] randomPlanetColors(Random random, int colorCount, Color[] colors, float deltaColor, float deltaLuminance) {
+		Color[] result = new Color[colorCount];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = randomDeviation(random, colors[random.nextInt(colors.length)], deltaColor, deltaLuminance);
+		}
+		return result;
 	}
 
-	private Color randomDeviation(Random random, Color color, float delta) {
+	private Color randomDeviation(Random random, Color color, float deltaColor, float deltaLuminance) {
+		float randomLuminance = random.nextFloat(1 - deltaLuminance, 1 + deltaLuminance);
 		return new Color(
-			MathUtil.clamp(color.r * random.nextFloat(1 - delta, 1 + delta), 0.0f, 1.0f),
-			MathUtil.clamp(color.g * random.nextFloat(1 - delta, 1 + delta), 0.0f, 1.0f),
-			MathUtil.clamp(color.b * random.nextFloat(1 - delta, 1 + delta), 0.0f, 1.0f),
+			MathUtil.clamp(color.r * random.nextFloat(1 - deltaColor, 1 + deltaColor) * randomLuminance, 0.0f, 1.0f),
+			MathUtil.clamp(color.g * random.nextFloat(1 - deltaColor, 1 + deltaColor) * randomLuminance, 0.0f, 1.0f),
+			MathUtil.clamp(color.b * random.nextFloat(1 - deltaColor, 1 + deltaColor) * randomLuminance, 0.0f, 1.0f),
 			1.0f);
 	}
 

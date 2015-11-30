@@ -55,6 +55,8 @@ public class TerrestrialPlanetShader implements Shader {
 	private int u_planetColor0;
 	private int u_planetColor1;
 	private int u_planetColor2;
+	private int u_planetColor3;
+	private int u_planetColor4;
 
 	private RenderContext context;
 	
@@ -95,6 +97,8 @@ public class TerrestrialPlanetShader implements Shader {
 		u_planetColor0 = program.getUniformLocation("u_planetColor0");
 		u_planetColor1 = program.getUniformLocation("u_planetColor1");
 		u_planetColor2 = program.getUniformLocation("u_planetColor2");
+		u_planetColor3 = program.getUniformLocation("u_planetColor3");
+		u_planetColor4 = program.getUniformLocation("u_planetColor4");
 
 		u_random0 = program.getUniformLocation("u_random0");
 		u_random1 = program.getUniformLocation("u_random1");
@@ -185,9 +189,16 @@ public class TerrestrialPlanetShader implements Shader {
 		// color array
 		ColorArrayAttribute colorArrayAttribute = (ColorArrayAttribute) renderable.material.get(ColorArrayAttribute.PlanetColors);
 		if (colorArrayAttribute != null) {
-			program.setUniformf(u_planetColor0, colorArrayAttribute.colors[0].r, colorArrayAttribute.colors[0].g, colorArrayAttribute.colors[0].b);			
-			program.setUniformf(u_planetColor1, colorArrayAttribute.colors[1].r, colorArrayAttribute.colors[1].g, colorArrayAttribute.colors[1].b);			
-			program.setUniformf(u_planetColor2, colorArrayAttribute.colors[2].r, colorArrayAttribute.colors[2].g, colorArrayAttribute.colors[2].b);			
+			int index = 0;
+			program.setUniformf(u_planetColor0, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);
+			index = (index+1) % colorArrayAttribute.colors.length;
+			program.setUniformf(u_planetColor1, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			index = (index+1) % colorArrayAttribute.colors.length;
+			program.setUniformf(u_planetColor2, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			index = (index+1) % colorArrayAttribute.colors.length;
+			program.setUniformf(u_planetColor3, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			index = (index+1) % colorArrayAttribute.colors.length;
+			program.setUniformf(u_planetColor4, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
 		}
 		
 		// random

@@ -34,23 +34,35 @@ public class Moon extends AbstractPlanet {
 			new Color(0.8f, 0.8f, 0.8f, 1.0f),
 		},
 		{
+			// Moon
+			new Color(0.6f, 0.6f, 0.6f, 1.0f),
+			new Color(0.7f, 0.7f, 0.7f, 1.0f),
+		},
+		{
+			// Moon
+			new Color(0.7f, 0.7f, 0.7f, 1.0f),
+			new Color(0.8f, 0.8f, 0.8f, 1.0f),
+		},
+		{
+			// Moon
+			new Color(0.6f, 0.6f, 0.6f, 1.0f),
+			new Color(0.8f, 0.8f, 0.8f, 1.0f),
+		},
+		{
 			// Mars
 			new Color(0xca8c64ff),
 			new Color(0x975036ff),
 			new Color(0x533032ff),
 			//new Color(0x26283aff),
-		}
-		
-		/*,
+		},
 		{
 			// Io
-			new Color(0.8f, 0.5f, 0.4f, 1.0f),
-			new Color(0.8f, 0.7f, 0.4f, 1.0f),
-			new Color(0.9f, 0.8f, 0.4f, 1.0f),
-			new Color(0.8f, 0.9f, 0.6f, 1.0f),
-			new Color(0.5f, 0.5f, 0.5f, 1.0f),
+			new Color(0x5d4627ff), // brown
+			new Color(0xe9dda3ff), // almost white yellow
+			new Color(0xfeed9bff), // bright yellow
+			//new Color(0x989a51ff), // green yellow
+			new Color(0x96582fff), // reddish brown
 		},
-		*/
 	};
 
 	@Override
@@ -70,7 +82,7 @@ public class Moon extends AbstractPlanet {
 		float heightMin = 0.3f;
 		float heightMax = 0.8f;
 		int heightFrequency = random.nextInt(2, 4);
-		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomPlanetColors(random, colors, 0.02f)));
+		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomPlanetColors(random, 5, colors, 0.01f, 0.1f)));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(heightFrequency));
@@ -100,7 +112,6 @@ public class Moon extends AbstractPlanet {
 		
 		int areaCount = 100;
 		int craterCount = random.nextInt(10000, 40000);
-		boolean fillWithCraters = false;
 		float hugeCraterProbability = random.nextBoolean(0.6f) ? 2 : random.nextFloat(0, 100); 
 		float bigCraterProbability = random.nextBoolean(0.6f) ? 20 : random.nextFloat(0, 100); 
 		float mediumCraterProbability = random.nextBoolean(0.6f) ? 100 : random.nextFloat(0, 200); 
@@ -112,7 +123,7 @@ public class Moon extends AbstractPlanet {
 			softCount += water;
 		}
 
-		//System.out.println("Generating Normals craters=" + craterCount + " craterFill=" + fillWithCraters + " probHuge=" + hugeCraterProbability + " probBig=" + bigCraterProbability + " probMed=" + mediumCraterProbability +" vulcanoProb=" + vulcanoProbability + " softCount=" + softCount);
+		//System.out.println("Generating Normals craters=" + craterCount + " probHuge=" + hugeCraterProbability + " probBig=" + bigCraterProbability + " probMed=" + mediumCraterProbability +" vulcanoProb=" + vulcanoProbability + " softCount=" + softCount);
 
 		Texture textureNormal = renderTextureNormal(material, new TerrestrialPlanetShader.Provider());
 
@@ -127,9 +138,6 @@ public class Moon extends AbstractPlanet {
 
 		spriteBatch.draw(textureNormal, 0, 0);
 
-		Texture craterArea1 = PlanetBrowser.getTexture("normals_crater_area1.png");
-		Texture craterArea2 = PlanetBrowser.getTexture("normals_crater_area2.png");
-		Texture craterArea3 = PlanetBrowser.getTexture("normals_crater_area3.png");
 		Texture craterHuge1 = PlanetBrowser.getTexture("normals_crater_huge1.png");
 		Texture craterHuge2 = PlanetBrowser.getTexture("normals_crater_huge2.png");
 		Texture craterBig1 = PlanetBrowser.getTexture("normals_crater_big1.png");
@@ -155,33 +163,6 @@ public class Moon extends AbstractPlanet {
 		Texture vulcanoMedium3 = PlanetBrowser.getTexture("normals_vulcano_medium3.png");
 		Texture vulcanoMedium4 = PlanetBrowser.getTexture("normals_vulcano_medium4.png");
 		Texture soft1 = PlanetBrowser.getTexture("normals_soft1.png");
-
-		if (fillWithCraters) {
-			{
-				Texture texture = craterArea1;
-				
-				int nx = targetTextureWidth / texture.getWidth() * 2;
-				int ny = targetTextureHeight / texture.getHeight() * 2;
-				float stepx = (float)targetTextureWidth / nx;
-				float stepy = (float)targetTextureHeight / ny;
-				for (int iy = 0; iy < ny; iy++) {
-					for (int ix = 0; ix < nx; ix++) {
-						float x = ix * stepx + texture.getWidth() * random.nextFloat(-0.25f, 0.25f);
-						float y = iy * stepy + texture.getHeight() * random.nextFloat(-0.25f, 0.25f);;
-						spriteBatch.draw(texture, x, y);
-					}
-				}
-			}
-			for (int i = 0; i < areaCount; i++) {
-				@SuppressWarnings("unchecked")
-				Texture texture = random.nextProbability(
-						p(10, craterArea2),
-						p(10, craterArea3));
-				float x = random.nextFloat(0, targetTextureWidth - texture.getWidth());
-				float y = random.nextFloat(0, targetTextureHeight - texture.getHeight());
-				spriteBatch.draw(texture, x, y);
-			}
-		}
 
 		for (int i = 0; i < craterCount; i++) {
 			@SuppressWarnings("unchecked")

@@ -1,3 +1,5 @@
+#version 100
+
 #ifdef GL_ES 
 #define LOWP lowp
 #define MED mediump
@@ -48,6 +50,8 @@ uniform sampler2D u_diffuseTexture;
 uniform vec3 u_planetColor0;
 uniform vec3 u_planetColor1;
 uniform vec3 u_planetColor2;
+uniform vec3 u_planetColor3;
+uniform vec3 u_planetColor4;
 #endif
 
 //
@@ -258,16 +262,16 @@ float dummyHeight(vec2 P) {
 
 #ifdef planetColorsFlag
 vec3 planetColor(vec2 P, float height, float distEquator) {
-	vec3 color1 = u_planetColor0; 
-	vec3 color2 = u_planetColor1; 
-	vec3 color3 = u_planetColor2; 
+	float h = clamp(height, u_heightMin, u_heightMax);
+	float v1 = pnoise2(P+vec2(u_random0 + u_random7), 8.0) * 0.5 + 0.5;
+	float v2 = pnoise2(P+vec2(u_random0 + u_random6), 8.0) * 0.5 + 0.5;
+	float v3 = pnoise2(P+vec2(u_random0 + u_random5), 8.0) * 0.5 + 0.5;
 
-	float v1 = clamp(height, u_heightMin, u_heightMax);
-	float v2 = pnoise2(P+vec2(u_random0 + u_random7), 8.0) * 0.5 + 0.5;
-
-	vec3 mix1 = mix(color1, color2, v1);
-	vec3 mix2 = mix(mix1, color3, v2);
-	return mix2;
+	vec3 color1 = mix(u_planetColor0, u_planetColor1, v1);
+	vec3 color2 = mix(u_planetColor2, u_planetColor3, v2);
+	vec3 color = mix(color1, color2, h);
+	color = mix(color, u_planetColor4, v3);
+	return color;
 }
 #endif
 
