@@ -23,6 +23,10 @@ public class TerrestrialHeightShaderFunctionAttribute extends ShaderFunctionAttr
 		return "h = abs(pow(h - 0.5, " + power + ")) * 2.0;";
 	}
 	
+	public static String functionPower(float power) {
+		return "h = pow(h, " + power + ");";
+	}
+	
 	public TerrestrialHeightShaderFunctionAttribute(String code) {
 		super(TerrestrialHeightFunction, code);
 	}
