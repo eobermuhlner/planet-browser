@@ -80,6 +80,16 @@ public class Moon extends AbstractPlanet {
 			new Color(0xf2f2f2ff), // white
 			new Color(0x453234ff), // almost black
 		},
+		{
+			// Callisto
+			new Color(0x806e56ff), // medium brown
+			new Color(0x5a4d3aff), // dark brown
+			new Color(0xb4a683ff), // light brown
+			new Color(0x8b7a5cff), // medium brown 2
+			new Color(0x796a53ff), // medium brown 3
+			new Color(0x4c4332ff), // dark brown 2
+			new Color(0xefe4c4ff), // light yellow
+		}
 	};
 
 	@Override
@@ -99,12 +109,18 @@ public class Moon extends AbstractPlanet {
 		float heightMin = 0.3f;
 		float heightMax = 0.8f;
 		int heightFrequency = random.nextInt(2, 4);
-		float power = random.nextFloat(0.8f, 8.0f);
+		@SuppressWarnings("unchecked")
+		String heightFunction = random.nextProbability(
+				p(2, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
+				p(3, TerrestrialHeightShaderFunctionAttribute.SMOOTH),
+				p(3, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
+				p(20, TerrestrialHeightShaderFunctionAttribute.functionPower(random.nextFloat(1.0f, 8.0f)))
+				);
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomPlanetColors(random, 6, colors, 0.01f, 0.1f)));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(heightFrequency));
-		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(TerrestrialHeightShaderFunctionAttribute.functionPower(power)));
+		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(heightFunction));
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
 		Material material = new Material(materialAttributes);
