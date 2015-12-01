@@ -5,6 +5,7 @@ public class TerrestrialHeightShaderFunctionAttribute extends ShaderFunctionAttr
 	public static final long TerrestrialHeightFunction = register(TerrestrialHeightFunctionAlias);
 
 	public static final String LINEAR = "h = h;";
+	public static final String SMOOTH = "h = smoothstep(0.0, 1.0, h);";
 	public static final String POWER_2 = "h = h * h;";
 	public static final String POWER_3 = "h = h * h * h;";
 	public static final String SQRT = "h = sqrt(h);";
