@@ -11,6 +11,10 @@ public class PlanetUberShaderProvider extends UberShaderProvider  {
 
 	@Override
 	protected Shader createShader(Renderable renderable) {
+		if (renderable.material.get(SunFloatAttribute.SunNoise) != null) {
+			return new SunShader.Provider().createShader(renderable);
+		}
+		
 		return super.createShader(renderable);
 	}
 }
