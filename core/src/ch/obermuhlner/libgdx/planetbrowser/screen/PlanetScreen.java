@@ -80,6 +80,7 @@ public class PlanetScreen extends AbstractScreen {
 	private PlanetBrowser planetBrowser;
 	
 	private Label fpsLabel;
+	private Label createTimeLabel;
 	
 	public PlanetScreen(PlanetBrowser planetBrowser) {
 		this(planetBrowser, 1);
@@ -117,7 +118,11 @@ public class PlanetScreen extends AbstractScreen {
 
 		Random random = new Random(randomSeed);
 		ModelInstanceFactory modelInstanceFactory = random.next(mapPlanetFactories.get(currentPlanetFactoryName));
+		long startMillis = System.currentTimeMillis();
 		modelInstances.addAll(modelInstanceFactory.createModelInstance(random));
+		long endMillis = System.currentTimeMillis();
+		long deltaMillis = endMillis - startMillis;
+		createTimeLabel.setText(String.valueOf(deltaMillis) + " ms");
 	}
 	
 	private void prepareStage() {
@@ -157,11 +162,12 @@ public class PlanetScreen extends AbstractScreen {
 		});
 		selectBox.setSelected(currentPlanetFactoryName);
 		
-		fpsLabel = gui.label("");
+		fpsLabel = gui.label("888 FPS");
 		table.add(fpsLabel).align(Align.right);
-		
-		//table.add(gui.label("FPS"));
-		
+
+		createTimeLabel = gui.label("8888 ms");
+		table.add(createTimeLabel).align(Align.right);
+
 		stage.addActor(rootTable);
 	}
 
@@ -196,7 +202,7 @@ public class PlanetScreen extends AbstractScreen {
 		
 		modelBatch.end();
 		
-		fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
+		fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond() + " FPS"));
 		
 		stage.draw();
 	}

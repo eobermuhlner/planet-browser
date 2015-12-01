@@ -2,6 +2,8 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import com.badlogic.gdx.graphics.Color;
 
+import ch.obermuhlner.libgdx.planetbrowser.util.Random;
+
 public class Jupiter extends AbstractGasPlanet {
 
 	private static final Color[] GAS_PLANET_COLORS = new Color[] {
@@ -13,6 +15,15 @@ public class Jupiter extends AbstractGasPlanet {
 
 	public Jupiter() {
 		super(GAS_PLANET_COLORS);
+	}
+
+	@Override
+	protected PlanetData createPlanetData(Random random) {
+		PlanetData planetData = new PlanetData();
+		
+		planetData.hasAtmosphere = true;
+		
+		return planetData;
 	}
 
 	protected float getPlanetRadius() {

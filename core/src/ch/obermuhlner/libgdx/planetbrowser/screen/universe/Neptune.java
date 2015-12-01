@@ -2,6 +2,8 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import com.badlogic.gdx.graphics.Color;
 
+import ch.obermuhlner.libgdx.planetbrowser.util.Random;
+
 public class Neptune extends AbstractGasPlanet {
 
 	private static final Color[] ICE_GAS_PLANET_COLORS = new Color[] {
@@ -14,6 +16,15 @@ public class Neptune extends AbstractGasPlanet {
 
 	public Neptune() {
 		super(ICE_GAS_PLANET_COLORS);
+	}
+
+	@Override
+	protected PlanetData createPlanetData(Random random) {
+		PlanetData planetData = new PlanetData();
+		
+		planetData.hasAtmosphere = true;
+		
+		return planetData;
 	}
 
 	protected float getPlanetRadius() {

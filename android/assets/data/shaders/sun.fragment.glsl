@@ -204,13 +204,15 @@ void main() {
 	vec3 r1 = vec3(0.70, 0.82, 0.11);
 	vec3 r2 = vec3(0.58, 0.21, 0.95);
 
-
 	float time = u_time * 0.003;
+	
 	float v1 = 0.0;
 	v1 += pnoise3(vec3(v_texCoords0.x, v_texCoords0.y, time), 100.0);
 	v1 += pnoise3(vec3(v_texCoords0.x + r1.x, v_texCoords0.y + r1.y, time * 2.0 + r1.z), 300.0) * 0.5;
 	v1 += pnoise3(vec3(v_texCoords0.x + r2.x, v_texCoords0.y + r2.y, time * 5.0 + r2.z), 1000.0) * 0.2;
-	vec4 color = mix(u_diffuseColor, u_emissiveColor, v1);
+	
+	vec4 color = mix(vec4(1.0, 1.0, 0.5, 1.0), vec4(1.0, 0.9, 0.0, 1.0), v1);
+	//vec4 color = mix(u_diffuseColor, u_emissiveColor, v1);
 	color = color * v_lambertFactor * 0.50 + color * 0.50;
 
     gl_FragColor = color;

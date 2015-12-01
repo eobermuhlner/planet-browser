@@ -18,7 +18,16 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 public class Lava extends AbstractPlanet {
 
 	@Override
-	protected Material createPlanetMaterial(Random random) {
+	protected PlanetData createPlanetData(Random random) {
+		PlanetData planetData = new PlanetData();
+		
+		planetData.hasAtmosphere = false;
+		
+		return planetData;
+	}
+
+	@Override
+	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 //		Texture texture = PlanetBrowser.getTexture("lava_colors.png");

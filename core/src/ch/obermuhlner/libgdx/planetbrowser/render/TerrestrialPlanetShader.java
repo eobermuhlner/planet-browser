@@ -55,6 +55,14 @@ public class TerrestrialPlanetShader implements Shader {
 	private int u_planetColor0;
 	private int u_planetColor1;
 	private int u_planetColor2;
+	private int u_planetColor3;
+	private int u_planetColor4;
+	private int u_planetColor5;
+
+	private int u_planetColorFrequency0;
+	private int u_planetColorFrequency1;
+	private int u_planetColorFrequency2;
+	private int u_planetColorFrequency3;
 
 	private RenderContext context;
 	
@@ -95,6 +103,14 @@ public class TerrestrialPlanetShader implements Shader {
 		u_planetColor0 = program.getUniformLocation("u_planetColor0");
 		u_planetColor1 = program.getUniformLocation("u_planetColor1");
 		u_planetColor2 = program.getUniformLocation("u_planetColor2");
+		u_planetColor3 = program.getUniformLocation("u_planetColor3");
+		u_planetColor4 = program.getUniformLocation("u_planetColor4");
+		u_planetColor5 = program.getUniformLocation("u_planetColor5");
+
+		u_planetColorFrequency0 = program.getUniformLocation("u_planetColorFrequency0");
+		u_planetColorFrequency1 = program.getUniformLocation("u_planetColorFrequency1");
+		u_planetColorFrequency2 = program.getUniformLocation("u_planetColorFrequency2");
+		u_planetColorFrequency3 = program.getUniformLocation("u_planetColorFrequency3");
 
 		u_random0 = program.getUniformLocation("u_random0");
 		u_random1 = program.getUniformLocation("u_random1");
@@ -182,16 +198,36 @@ public class TerrestrialPlanetShader implements Shader {
 		program.setUniformf(u_colorNoise, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.ColorNoise, DEFAULT_COLOR_NOISE));
 		program.setUniformf(u_colorFrequency, colorFrequency);
 		
-		// color array
+		// planet color array
 		ColorArrayAttribute colorArrayAttribute = (ColorArrayAttribute) renderable.material.get(ColorArrayAttribute.PlanetColors);
 		if (colorArrayAttribute != null) {
-			program.setUniformf(u_planetColor0, colorArrayAttribute.colors[0].r, colorArrayAttribute.colors[0].g, colorArrayAttribute.colors[0].b);			
-			program.setUniformf(u_planetColor1, colorArrayAttribute.colors[1].r, colorArrayAttribute.colors[1].g, colorArrayAttribute.colors[1].b);			
-			program.setUniformf(u_planetColor2, colorArrayAttribute.colors[2].r, colorArrayAttribute.colors[2].g, colorArrayAttribute.colors[2].b);			
+			int index = 0;
+			program.setUniformf(u_planetColor0, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);
+			index = (index+1) % colorArrayAttribute.colors.length;
+			program.setUniformf(u_planetColor1, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			index = (index+1) % colorArrayAttribute.colors.length;
+			program.setUniformf(u_planetColor2, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			index = (index+1) % colorArrayAttribute.colors.length;
+			program.setUniformf(u_planetColor3, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			index = (index+1) % colorArrayAttribute.colors.length;
+			program.setUniformf(u_planetColor4, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			index = (index+1) % colorArrayAttribute.colors.length;
+			program.setUniformf(u_planetColor5, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
 		}
 		
+		// planet color frequency
+		FloatArrayAttribute planetColorFrequenciesAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.PlanetColorFrequencies);
+		float planetColorFrequency0 = planetColorFrequenciesAttribute == null ? 8 : planetColorFrequenciesAttribute.values[0];
+		float planetColorFrequency1 = planetColorFrequenciesAttribute == null ? 4 : planetColorFrequenciesAttribute.values[1];
+		float planetColorFrequency2 = planetColorFrequenciesAttribute == null ? 8 : planetColorFrequenciesAttribute.values[2];
+		float planetColorFrequency3 = planetColorFrequenciesAttribute == null ? 4 : planetColorFrequenciesAttribute.values[3];
+		program.setUniformf(u_planetColorFrequency0, planetColorFrequency0);
+		program.setUniformf(u_planetColorFrequency1, planetColorFrequency1);
+		program.setUniformf(u_planetColorFrequency2, planetColorFrequency2);
+		program.setUniformf(u_planetColorFrequency3, planetColorFrequency3);
+
 		// random
-		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.FloatArray);
+		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.RandomFloatArray);
 		program.setUniformf(u_random0, floatArrayAttribute.values[0]);
 		program.setUniformf(u_random1, floatArrayAttribute.values[1]);
 		program.setUniformf(u_random2, floatArrayAttribute.values[2]);

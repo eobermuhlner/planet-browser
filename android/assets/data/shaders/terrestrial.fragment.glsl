@@ -48,6 +48,14 @@ uniform sampler2D u_diffuseTexture;
 uniform vec3 u_planetColor0;
 uniform vec3 u_planetColor1;
 uniform vec3 u_planetColor2;
+uniform vec3 u_planetColor3;
+uniform vec3 u_planetColor4;
+uniform vec3 u_planetColor5;
+
+uniform float u_planetColorFrequency0;
+uniform float u_planetColorFrequency1;
+uniform float u_planetColorFrequency2;
+uniform float u_planetColorFrequency3;
 #endif
 
 //
@@ -220,6 +228,15 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	return noise;
 }
 
+float fractalNoiseCheap(vec2 P, float baseFrequency, float baseFactor) {
+	float noise = 0.0;
+	noise += pnoise2(P+vec2(u_random0+u_random4, u_random1+u_random6), baseFrequency * 1.0) * baseFactor / 1.0;
+	noise += pnoise2(P+vec2(u_random2+u_random4, u_random3+u_random6), baseFrequency * 2.0) * baseFactor / 2.0;
+	noise += pnoise2(P+vec2(u_random4+u_random4, u_random5+u_random6), baseFrequency * 4.0) * baseFactor / 4.0;
+	noise += pnoise2(P+vec2(u_random6+u_random4, u_random7+u_random6), baseFrequency * 8.0) * baseFactor / 8.0;
+	return noise;
+}
+
 float ridge(float x) {
 	return exp(-8.0 * (x * x));
 }
@@ -258,16 +275,18 @@ float dummyHeight(vec2 P) {
 
 #ifdef planetColorsFlag
 vec3 planetColor(vec2 P, float height, float distEquator) {
-	vec3 color1 = u_planetColor0; 
-	vec3 color2 = u_planetColor1; 
-	vec3 color3 = u_planetColor2; 
+	float h = (clamp(height, u_heightMin, u_heightMax) - u_heightMin) * (u_heightMax - u_heightMin);
+	float v1 = fractalNoiseCheap(P+vec2(u_random0 + u_random7), u_planetColorFrequency0, 1.0) * 0.5 + 0.5;
+	float v2 = fractalNoiseCheap(P+vec2(u_random0 + u_random6), u_planetColorFrequency1, 1.0) * 0.5 + 0.5;
+	float v3 = fractalNoiseCheap(P+vec2(u_random0 + u_random5), u_planetColorFrequency2, 1.0) * 0.5 + 0.5;
+	float v4 = fractalNoiseCheap(P+vec2(u_random0 + u_random3), u_planetColorFrequency3, 1.0) * 0.5 + 0.5;
 
-	float v1 = clamp(height, u_heightMin, u_heightMax);
-	float v2 = pnoise2(P+vec2(u_random0 + u_random7), 8.0) * 0.5 + 0.5;
-
-	vec3 mix1 = mix(color1, color2, v1);
-	vec3 mix2 = mix(mix1, color3, v2);
-	return mix2;
+	vec3 color1 = mix(u_planetColor0, u_planetColor1, v1);
+	color1 = mix(color1, u_planetColor2, v2);
+	vec3 color2 = mix(u_planetColor3, u_planetColor4, v3);
+	color2 = mix(color2, u_planetColor5, v4);
+	vec3 color = mix(color1, color2, h);
+	return color;
 }
 #endif
 
@@ -339,11 +358,11 @@ void main() {
 		#ifdef colorNoiseFlag
 			if (height > u_heightWater) {
 				// make noise on land, not on water
-				float colorNoise = fractalNoise(v_texCoords0+r1, u_colorFrequency, u_colorNoise);
+				float colorNoise = fractalNoiseCheap(v_texCoords0+r1, u_colorFrequency, u_colorNoise);
 				color = color * (1.0 + colorNoise);
-//				float colorNoiseR = 1.0 + fractalNoise(v_texCoords0+r1, u_colorFrequency, u_colorNoise);
-//				float colorNoiseG = 1.0 + fractalNoise(v_texCoords0+r2, u_colorFrequency, u_colorNoise);
-//				float colorNoiseB = 1.0 + fractalNoise(v_texCoords0+r3, u_colorFrequency, u_colorNoise);
+//				float colorNoiseR = 1.0 + fractalNoiseCheap(v_texCoords0+r1, u_colorFrequency, u_colorNoise);
+//				float colorNoiseG = 1.0 + fractalNoiseCheap(v_texCoords0+r2, u_colorFrequency, u_colorNoise);
+//				float colorNoiseB = 1.0 + fractalNoiseCheap(v_texCoords0+r3, u_colorFrequency, u_colorNoise);
 //				color = vec3(color.r * colorNoiseR, color.g * colorNoiseG, color.b * colorNoiseB);
 			}
 		#endif
