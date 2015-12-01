@@ -114,7 +114,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 			floatArray[i] = random.nextFloat();
 		}
 		
-		return new FloatArrayAttribute(FloatArrayAttribute.FloatArray, floatArray);
+		return new FloatArrayAttribute(FloatArrayAttribute.RandomFloatArray, floatArray);
 	}
 
 	

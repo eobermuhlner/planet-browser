@@ -5,8 +5,8 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class FloatArrayAttribute extends Attribute {
 
-	public final static String FloatArrayAlias = "floatArray";
-	public final static long FloatArray = register(FloatArrayAlias);
+	public final static String RandomFloatArrayAlias = "randomFloatArray";
+	public final static long RandomFloatArray = register(RandomFloatArrayAlias);
 
 	public final float[] values;
 

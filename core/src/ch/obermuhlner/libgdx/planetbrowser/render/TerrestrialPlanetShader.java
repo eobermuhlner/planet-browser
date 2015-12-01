@@ -226,7 +226,7 @@ public class TerrestrialPlanetShader implements Shader {
 		program.setUniformf(u_planetColorFrequency3, planetColorFrequency3);
 
 		// random
-		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.FloatArray);
+		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.RandomFloatArray);
 		program.setUniformf(u_random0, floatArrayAttribute.values[0]);
 		program.setUniformf(u_random1, floatArrayAttribute.values[1]);
 		program.setUniformf(u_random2, floatArrayAttribute.values[2]);

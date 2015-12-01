@@ -87,7 +87,7 @@ public class GasPlanetShader implements Shader {
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 		
 		// random
-		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.FloatArray);
+		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.RandomFloatArray);
 		program.setUniformf(u_random0, floatArrayAttribute.values[0]);
 		program.setUniformf(u_random1, floatArrayAttribute.values[1]);
 		program.setUniformf(u_random2, floatArrayAttribute.values[2]);
