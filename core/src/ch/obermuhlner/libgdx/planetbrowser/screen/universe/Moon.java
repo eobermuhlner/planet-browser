@@ -21,6 +21,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribut
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
+import ch.obermuhlner.libgdx.planetbrowser.util.Tuple2;
 
 public class Moon extends AbstractPlanet {
 
@@ -144,18 +145,38 @@ public class Moon extends AbstractPlanet {
 		final int targetTextureWidth = Config.textureSize;
 		final int targetTextureHeight = Config.textureSize;
 		
-		final int sameCraterCount = 100;
-		int craterCount = random.nextInt(10000, 60000) / sameCraterCount;
-		float hugeCraterProbability = random.nextBoolean(0.6f) ? 2 : random.nextFloat(0, 100); 
-		float bigCraterProbability = random.nextBoolean(0.6f) ? 20 : random.nextFloat(0, 100); 
-		float mediumCraterProbability = random.nextBoolean(0.6f) ? 100 : random.nextFloat(0, 200); 
+		int craterFactor = 20; //random.nextInt(10, 50);
+		
+		int hugeCraterCount = 5; 
+		int bigCraterCount = 10; 
+		int mediumCraterCount = 50;
+		int smallCraterCount = 100;
+		int tinyCraterCount = 2000;
+		
+//		int hugeCraterCount = 20; 
+//		int bigCraterCount = 5; 
+//		int mediumCraterCount = 10;
+//		int smallCraterCount = 20;
+//		int tinyCraterCount = 40;
+
+//		int hugeCraterCount = 0; 
+//		int bigCraterCount = 100; 
+//		int mediumCraterCount = 20;
+//		int smallCraterCount = 30;
+//		int tinyCraterCount = 40;
+
+//		int hugeCraterCount = 0; 
+//		int bigCraterCount = 10; 
+//		int mediumCraterCount = 10;
+//		int smallCraterCount = 20;
+//		int tinyCraterCount = 2000;
+
 		int softCount = 0;
-		boolean hasAtmosphere = planetData.hasAtmosphere;
-		if (hasAtmosphere ) {
-			softCount = random.nextInt(100, 500);
+		if (planetData.hasAtmosphere ) {
+			softCount = random.nextInt(1000, 2000);
 		}
 
-		System.out.println("Generating craters=" + craterCount + "sameCraters=" + sameCraterCount + " probHuge=" + hugeCraterProbability + " probBig=" + bigCraterProbability + " probMed=" + mediumCraterProbability + " softCount=" + softCount);
+		System.out.println("Generating craters=" + craterFactor + " countHuge=" + hugeCraterCount + " countBig=" + bigCraterCount + " countMedium=" + mediumCraterCount + " countSmall=" + smallCraterCount + " countTiny=" + tinyCraterCount + " softCount=" + softCount);
 
 		FrameBuffer frameBuffer = renderFrameBufferNormal(material, new TerrestrialPlanetShader.Provider());
 
@@ -181,31 +202,35 @@ public class Moon extends AbstractPlanet {
 		Texture craterTiny3 = PlanetBrowser.getTexture("normals_crater_tiny3.png");
 		Texture soft1 = PlanetBrowser.getTexture("normals_soft1.png");
 
-		for (int i = 0; i < craterCount; i++) {
-			@SuppressWarnings("unchecked")
-			Texture texture = random.nextProbability(
-					p(hugeCraterProbability, craterHuge1),
-					p(hugeCraterProbability, craterHuge2),
-					p(bigCraterProbability, craterBig1),
-					p(bigCraterProbability, craterBig2),
-					p(mediumCraterProbability, craterMedium1),
-					p(mediumCraterProbability, craterMedium2),
-					p(mediumCraterProbability, craterMedium3),
-					p(300, craterSmall1),
-					p(300, craterSmall2),
-					p(300, craterSmall3),
-					p(300, craterSmall4),
-					p(300, craterSmall5),
-					p(2000, craterTiny1),
-					p(3000, craterTiny2),
-					p(3000, craterTiny3));
-			for (int j = 0; j < sameCraterCount; j++) {
+		@SuppressWarnings("unchecked")
+		Tuple2<Integer, Texture>[] texturesToDraw = new Tuple2[] {
+			new Tuple2<Integer, Texture>(random.nextInt(hugeCraterCount * craterFactor), craterHuge1),
+			new Tuple2<Integer, Texture>(random.nextInt(hugeCraterCount * craterFactor), craterHuge2),
+			new Tuple2<Integer, Texture>(random.nextInt(bigCraterCount * craterFactor), craterBig1),
+			new Tuple2<Integer, Texture>(random.nextInt(bigCraterCount * craterFactor), craterBig2),
+			new Tuple2<Integer, Texture>(random.nextInt(mediumCraterCount * craterFactor), craterMedium1),
+			new Tuple2<Integer, Texture>(random.nextInt(mediumCraterCount * craterFactor), craterMedium2),
+			new Tuple2<Integer, Texture>(random.nextInt(mediumCraterCount * craterFactor), craterMedium3),
+			new Tuple2<Integer, Texture>(random.nextInt(smallCraterCount * craterFactor), craterSmall1),
+			new Tuple2<Integer, Texture>(random.nextInt(smallCraterCount * craterFactor), craterSmall2),
+			new Tuple2<Integer, Texture>(random.nextInt(smallCraterCount * craterFactor), craterSmall3),
+			new Tuple2<Integer, Texture>(random.nextInt(smallCraterCount * craterFactor), craterSmall4),
+			new Tuple2<Integer, Texture>(random.nextInt(smallCraterCount * craterFactor), craterSmall5),
+			new Tuple2<Integer, Texture>(random.nextInt(tinyCraterCount * craterFactor), craterTiny1),
+			new Tuple2<Integer, Texture>(random.nextInt(tinyCraterCount * craterFactor), craterTiny2),
+			new Tuple2<Integer, Texture>(random.nextInt(tinyCraterCount * craterFactor), craterTiny3)
+		};
+		
+		for (int i = 0; i < texturesToDraw.length; i++) {
+			int count = texturesToDraw[i].getValue1();
+			Texture texture = texturesToDraw[i].getValue2();
+			for (int j = 0; j < count; j++) {
 				float x = random.nextFloat(0, targetTextureWidth - texture.getWidth());
 				float y = random.nextFloat(0, targetTextureHeight - texture.getHeight());
 				spriteBatch.draw(texture, x, y);
 			}
 		}
-
+		
 		for (int i = 0; i < softCount; i++) {
 			Texture texture = soft1;
 			float x = random.nextFloat(0, targetTextureWidth - texture.getWidth());
