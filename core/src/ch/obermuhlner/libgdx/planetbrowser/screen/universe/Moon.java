@@ -145,7 +145,7 @@ public class Moon extends AbstractPlanet {
 		final int targetTextureWidth = Config.textureSize;
 		final int targetTextureHeight = Config.textureSize;
 		
-		int craterFactor = random.nextInt(5, 50);
+		int craterFactor = random.nextInt(1, 30);
 
 		int hugeCraterCount = random.nextBoolean(0.8) ? random.nextInt(0, 20) : random.nextInt(10, 40);
 		int bigCraterCount = random.nextInt(5, hugeCraterCount > 10 ? 10 : 20);
@@ -158,7 +158,7 @@ public class Moon extends AbstractPlanet {
 			softCount = random.nextInt(1000, 2000);
 		}
 
-		System.out.println("Generating craters=" + craterFactor + " countHuge=" + hugeCraterCount + " countBig=" + bigCraterCount + " countMedium=" + mediumCraterCount + " countSmall=" + smallCraterCount + " countTiny=" + tinyCraterCount + " softCount=" + softCount);
+		//System.out.println("Generating craters=" + craterFactor + " countHuge=" + hugeCraterCount + " countBig=" + bigCraterCount + " countMedium=" + mediumCraterCount + " countSmall=" + smallCraterCount + " countTiny=" + tinyCraterCount + " softCount=" + softCount);
 
 		FrameBuffer frameBuffer = renderFrameBufferNormal(material, new TerrestrialPlanetShader.Provider());
 
