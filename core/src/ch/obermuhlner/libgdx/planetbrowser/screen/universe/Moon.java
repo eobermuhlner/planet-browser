@@ -145,31 +145,13 @@ public class Moon extends AbstractPlanet {
 		final int targetTextureWidth = Config.textureSize;
 		final int targetTextureHeight = Config.textureSize;
 		
-		int craterFactor = 20; //random.nextInt(10, 50);
-		
-		int hugeCraterCount = 5; 
-		int bigCraterCount = 10; 
-		int mediumCraterCount = 50;
-		int smallCraterCount = 100;
-		int tinyCraterCount = 2000;
-		
-//		int hugeCraterCount = 20; 
-//		int bigCraterCount = 5; 
-//		int mediumCraterCount = 10;
-//		int smallCraterCount = 20;
-//		int tinyCraterCount = 40;
+		int craterFactor = random.nextInt(5, 50);
 
-//		int hugeCraterCount = 0; 
-//		int bigCraterCount = 100; 
-//		int mediumCraterCount = 20;
-//		int smallCraterCount = 30;
-//		int tinyCraterCount = 40;
-
-//		int hugeCraterCount = 0; 
-//		int bigCraterCount = 10; 
-//		int mediumCraterCount = 10;
-//		int smallCraterCount = 20;
-//		int tinyCraterCount = 2000;
+		int hugeCraterCount = random.nextBoolean(0.8) ? random.nextInt(0, 20) : random.nextInt(10, 40);
+		int bigCraterCount = random.nextInt(5, hugeCraterCount > 10 ? 10 : 20);
+		int mediumCraterCount = random.nextInt(20, hugeCraterCount > 10 ? 40 : 80);
+		int smallCraterCount = random.nextInt(50, hugeCraterCount > 10 ? 70 : 150);
+		int tinyCraterCount = random.nextInt(300, hugeCraterCount > 10 ? 500 : 2500);
 
 		int softCount = 0;
 		if (planetData.hasAtmosphere ) {
