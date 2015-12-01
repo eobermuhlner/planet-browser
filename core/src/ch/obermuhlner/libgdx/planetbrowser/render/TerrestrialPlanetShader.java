@@ -216,10 +216,11 @@ public class TerrestrialPlanetShader implements Shader {
 		}
 		
 		// planet color frequency
-		float planetColorFrequency0 = 4;
-		float planetColorFrequency1 = 4;
-		float planetColorFrequency2 = 8;
-		float planetColorFrequency3 = 8;
+		FloatArrayAttribute planetColorFrequenciesAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.PlanetColorFrequencies);
+		float planetColorFrequency0 = planetColorFrequenciesAttribute == null ? 8 : planetColorFrequenciesAttribute.values[0];
+		float planetColorFrequency1 = planetColorFrequenciesAttribute == null ? 4 : planetColorFrequenciesAttribute.values[1];
+		float planetColorFrequency2 = planetColorFrequenciesAttribute == null ? 8 : planetColorFrequenciesAttribute.values[2];
+		float planetColorFrequency3 = planetColorFrequenciesAttribute == null ? 4 : planetColorFrequenciesAttribute.values[3];
 		program.setUniformf(u_planetColorFrequency0, planetColorFrequency0);
 		program.setUniformf(u_planetColorFrequency1, planetColorFrequency1);
 		program.setUniformf(u_planetColorFrequency2, planetColorFrequency2);

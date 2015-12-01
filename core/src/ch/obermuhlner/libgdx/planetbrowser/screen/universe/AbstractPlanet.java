@@ -1,5 +1,7 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
+import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -117,6 +119,21 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		return new FloatArrayAttribute(FloatArrayAttribute.RandomFloatArray, floatArray);
 	}
 
+	public FloatArrayAttribute createPlanetColorFrequenciesAttribute(Random random) {
+		float floatArray[] = new float[4];
+		for (int i = 0; i < floatArray.length; i++) {
+			@SuppressWarnings("unchecked")
+			float powerOfTwo = random.nextProbability(
+					p(5, 2f),
+					p(10, 4f),
+					p(10, 8f),
+					p(4, 16f),
+					p(2, 32f));
+			floatArray[i] = powerOfTwo;
+		}
+		
+		return new FloatArrayAttribute(FloatArrayAttribute.PlanetColorFrequencies, floatArray);
+	}
 	
 	public Texture renderTextureSpecular (Material material, ShaderProvider shaderProvider) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular()); // FIXME just adding attribute is wrong, modifies the material
