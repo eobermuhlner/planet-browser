@@ -38,6 +38,9 @@ public class Random {
 	}
 	
 	public int nextInt(int range) {
+		if (range == 0) {
+			return 0;
+		}
 		return nextRandom().nextInt(range);
 	}
 	
