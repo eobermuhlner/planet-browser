@@ -92,15 +92,19 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	protected float getPlanetRadius() {
 		return 3.0f;
 	}
-	
-	public Color[] randomPlanetColors(Random random, int colorCount, Color[] colors, float deltaColor, float deltaLuminance) {
+
+	public Color[] randomColors(Random random, int colorCount, Color[] colors, float deltaColor, float deltaLuminance) {
 		Color[] result = new Color[colorCount];
 		for (int i = 0; i < result.length; i++) {
-			result[i] = randomDeviation(random, colors[random.nextInt(colors.length)], deltaColor, deltaLuminance);
+			result[i] = randomColor(random, colors, deltaColor, deltaLuminance);
 		}
 		return result;
 	}
 
+	public Color randomColor(Random random, Color[] colors, float deltaColor, float deltaLuminance) {
+		return randomDeviation(random, colors[random.nextInt(colors.length)], deltaColor, deltaLuminance);
+	}
+	
 	private Color randomDeviation(Random random, Color color, float deltaColor, float deltaLuminance) {
 		float randomLuminance = random.nextFloat(1 - deltaLuminance, 1 + deltaLuminance);
 		return new Color(
