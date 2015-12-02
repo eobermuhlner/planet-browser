@@ -37,7 +37,10 @@ public class Lava extends AbstractPlanet {
 		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower);
 		
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, new Color[] {
-				Color.RED,
+				new Color(0xff0000ff), // red
+				new Color(0xee2200ff), // red-orange
+				new Color(0xff5500ff), // orange
+				new Color(0.30f, 0.30f, 0.30f, 1.0f),
 				new Color(0.20f, 0.20f, 0.20f, 1.0f),
 				new Color(0.15f, 0.15f, 0.15f, 1.0f),
 		}));
