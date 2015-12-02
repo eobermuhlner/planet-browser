@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
@@ -56,6 +57,8 @@ public class IceMoon extends AbstractPlanet {
 			Texture textureNormal = renderTextureNormal(material, new TerrestrialPlanetShader.Provider());
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
 
+			materialAttributes.add(ColorAttribute.createSpecular(Color.WHITE));
+			
 			material = new Material(materialAttributes);
 		}
 
