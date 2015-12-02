@@ -217,9 +217,9 @@ void main() {
 	v1 += pnoise3(vec3(v_texCoords0.x + r3.x, v_texCoords0.y + r3.y, time*1.8), baseFrequency * 8.0) / 8.0;
 	v1 += pnoise3(vec3(v_texCoords0.x + r4.x, v_texCoords0.y + r4.y, time*1.5), baseFrequency * 16.0) / 16.0;
 	
-	vec4 color = mix(vec4(1.0, 1.0, 0.5, 1.0), vec4(1.0, 0.8, 0.0, 1.0), v1);
+	vec4 color = mix(vec4(1.0, 1.0, 0.8, 1.0), vec4(1.0, 0.8, 0.0, 1.0), v1);
 
-	color = color * v_lambertFactor * 0.50 + color * 0.50;
+	color = color * v_lambertFactor * 0.55 + color * 0.50;
 
     gl_FragColor = color;
     //gl_FragColor = vec4(vec3(v1), 1.0);
