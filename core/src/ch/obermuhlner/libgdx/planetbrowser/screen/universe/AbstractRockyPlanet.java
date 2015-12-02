@@ -93,18 +93,18 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		}
 	};
 	private static final Color[] ATMOSPHERE_COLORS = {
-			new Color(0xccaaaaff), // light red
-			new Color(0xaaaaccff), // light blue
-			new Color(0xccbb00ff), // light yellow
-			new Color(0xaaccaaff), // light green
-
-			new Color(0xd2b782ff), // venus - medium yellow
-			new Color(0xe7d7b6ff), // venus - light yellow
-			new Color(0xf1e8d7ff), // venus - very light yellow
-			
-			new Color(0xdec863ff), // titan - medium yellow
-			
-			
+			new Color(0xdd8888ff), // light red
+			new Color(0x88dd88ff), // light green
+			new Color(0x8888ddff), // light blue
+			new Color(0x88ddddff), // light cyan
+			new Color(0xdd88ddff), // light magenta
+			new Color(0xdddd88ff), // light yellow
+//
+//			new Color(0xd2b782ff), // venus - medium yellow
+//			new Color(0xe7d7b6ff), // venus - light yellow
+//			new Color(0xf1e8d7ff), // venus - very light yellow
+//			
+//			new Color(0xdec863ff), // titan - medium yellow
 	};
 
 	@Override
@@ -240,13 +240,13 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			return null;
 		}
 		
-		Color atmosphereColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f);
-		Color refractionColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f); // TODO contrary color than atmosphereColor
+		Color atmosphereColor = randomColor(random, ATMOSPHERE_COLORS, 0.5f, 0.2f);
+		Color refractionColor = randomColor(random, ATMOSPHERE_COLORS, 0.5f, 0.2f); // TODO contrary color than atmosphereColor
 		
 		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);
 		float centerAlpha = random.nextFloat(0.0f, 0.3f);
-		float horizonAlpha = Math.max(centerAlpha + 0.1f, random.nextFloat(0.1f, 0.8f));
-		float refractionFactor = random.nextFloat(0.3f, 0.7f);
+		float horizonAlpha = random.nextFloat(centerAlpha, 0.5f);
+		float refractionFactor = random.nextFloat(0.0f, 0.7f);
 		return new AtmosphereAttribute(
 				atmosphereColor,
 				centerAlpha,
