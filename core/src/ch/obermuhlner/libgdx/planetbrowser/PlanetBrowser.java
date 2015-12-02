@@ -20,7 +20,7 @@ public class PlanetBrowser extends Game {
 			textureParameter.minFilter = TextureFilter.MipMapLinearLinear;
 			textureParameter.magFilter = TextureFilter.MipMapLinearLinear;
 			for (String textureName : new String[] {
-					"earth.jpg", "earth_normals.jpg",
+					"earth.jpg", "earth_normals.jpg", "sun.jpg"
 			}) {
 				assetManager.load(getTexturePath(textureName), Texture.class, textureParameter);
 			}
@@ -33,11 +33,11 @@ public class PlanetBrowser extends Game {
 			for (String textureName : new String[] {
 				//"skybox_neg_x.png", "skybox_pos_x.png", "skybox_neg_y.png", "skybox_pos_y.png", "skybox_neg_z.png", "skybox_pos_z.png",  
 				"terrestrial_colors.png", "mars_colors.png", "moon_colors.png", "lava_colors.png",
-				"normals_crater_huge1.png", "normals_crater_huge2.png",
+				"normals_crater_huge1.png",
 				"normals_crater_big1.png", "normals_crater_big2.png",
 				"normals_crater_medium1.png", "normals_crater_medium2.png", "normals_crater_medium3.png",
 				"normals_crater_small1.png", "normals_crater_small2.png", "normals_crater_small3.png", "normals_crater_small4.png", "normals_crater_small5.png",
-				"normals_crater_tiny1.png", "normals_crater_tiny2.png", "normals_crater_tiny3.png",
+				"normals_crater_tiny1.png", "normals_crater_tiny2.png",
 				"normals_soft1.png",
 				}) {
 				assetManager.load(getTexturePath(textureName), Texture.class);

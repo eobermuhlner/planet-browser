@@ -150,15 +150,15 @@ public class Moon extends AbstractPlanet {
 		int hugeCraterCount = random.nextBoolean(0.8) ? random.nextInt(0, 20) : random.nextInt(10, 40);
 		int bigCraterCount = random.nextInt(5, hugeCraterCount > 10 ? 10 : 20);
 		int mediumCraterCount = random.nextInt(20, hugeCraterCount > 10 ? 40 : 80);
-		int smallCraterCount = random.nextInt(50, hugeCraterCount > 10 ? 70 : 150);
-		int tinyCraterCount = random.nextInt(300, hugeCraterCount > 10 ? 500 : 2500);
+		int smallCraterCount = random.nextInt(50, hugeCraterCount > 10 ? 70 : 200);
+		int tinyCraterCount = random.nextInt(300, hugeCraterCount > 10 ? 2000 : 4000);
 
 		int softCount = 0;
 		if (planetData.hasAtmosphere ) {
 			softCount = random.nextInt(1000, 2000);
 		}
 
-		//System.out.println("Generating craters=" + craterFactor + " countHuge=" + hugeCraterCount + " countBig=" + bigCraterCount + " countMedium=" + mediumCraterCount + " countSmall=" + smallCraterCount + " countTiny=" + tinyCraterCount + " softCount=" + softCount);
+		System.out.println("Generating craters=" + craterFactor + " huge=" + hugeCraterCount + " big=" + bigCraterCount + " medium=" + mediumCraterCount + " small=" + smallCraterCount + " tiny=" + tinyCraterCount + " softCount=" + softCount);
 
 		FrameBuffer frameBuffer = renderFrameBufferNormal(material, new TerrestrialPlanetShader.Provider());
 
@@ -168,7 +168,6 @@ public class Moon extends AbstractPlanet {
 		spriteBatch.begin();
 
 		Texture craterHuge1 = PlanetBrowser.getTexture("normals_crater_huge1.png");
-		Texture craterHuge2 = PlanetBrowser.getTexture("normals_crater_huge2.png");
 		Texture craterBig1 = PlanetBrowser.getTexture("normals_crater_big1.png");
 		Texture craterBig2 = PlanetBrowser.getTexture("normals_crater_big2.png");
 		Texture craterMedium1 = PlanetBrowser.getTexture("normals_crater_medium1.png");
@@ -181,13 +180,11 @@ public class Moon extends AbstractPlanet {
 		Texture craterSmall5 = PlanetBrowser.getTexture("normals_crater_small5.png");
 		Texture craterTiny1 = PlanetBrowser.getTexture("normals_crater_tiny1.png");
 		Texture craterTiny2 = PlanetBrowser.getTexture("normals_crater_tiny2.png");
-		Texture craterTiny3 = PlanetBrowser.getTexture("normals_crater_tiny3.png");
 		Texture soft1 = PlanetBrowser.getTexture("normals_soft1.png");
 
 		@SuppressWarnings("unchecked")
 		Tuple2<Integer, Texture>[] texturesToDraw = new Tuple2[] {
 			new Tuple2<Integer, Texture>(random.nextInt(hugeCraterCount * craterFactor), craterHuge1),
-			new Tuple2<Integer, Texture>(random.nextInt(hugeCraterCount * craterFactor), craterHuge2),
 			new Tuple2<Integer, Texture>(random.nextInt(bigCraterCount * craterFactor), craterBig1),
 			new Tuple2<Integer, Texture>(random.nextInt(bigCraterCount * craterFactor), craterBig2),
 			new Tuple2<Integer, Texture>(random.nextInt(mediumCraterCount * craterFactor), craterMedium1),
@@ -200,7 +197,6 @@ public class Moon extends AbstractPlanet {
 			new Tuple2<Integer, Texture>(random.nextInt(smallCraterCount * craterFactor), craterSmall5),
 			new Tuple2<Integer, Texture>(random.nextInt(tinyCraterCount * craterFactor), craterTiny1),
 			new Tuple2<Integer, Texture>(random.nextInt(tinyCraterCount * craterFactor), craterTiny2),
-			new Tuple2<Integer, Texture>(random.nextInt(tinyCraterCount * craterFactor), craterTiny3)
 		};
 		
 		for (int i = 0; i < texturesToDraw.length; i++) {
