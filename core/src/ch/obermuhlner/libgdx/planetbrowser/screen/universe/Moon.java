@@ -147,18 +147,20 @@ public class Moon extends AbstractPlanet {
 		
 		int craterFactor = random.nextInt(1, 30);
 
-		int hugeCraterCount = random.nextBoolean(0.8) ? random.nextInt(0, 20) : random.nextInt(10, 40);
-		int bigCraterCount = random.nextInt(5, hugeCraterCount > 10 ? 10 : 20);
-		int mediumCraterCount = random.nextInt(20, hugeCraterCount > 10 ? 40 : 80);
-		int smallCraterCount = random.nextInt(50, hugeCraterCount > 10 ? 70 : 150);
-		int tinyCraterCount = random.nextInt(300, hugeCraterCount > 10 ? 500 : 2500);
-
+		boolean favorHugeCraters = random.nextBoolean(0.1);
+		int hugeCraterCount = favorHugeCraters ? random.nextInt(5, 20) : random.nextInt(0, 10);
+		int bigCraterCount = random.nextInt(5, favorHugeCraters ? 10 : 20);
+		int mediumCraterCount = random.nextInt(20, favorHugeCraters ? 40 : 80);
+		int smallCraterCount = random.nextInt(50, favorHugeCraters ? 70 : 150);
+		int tinyCraterCount = random.nextInt(200, favorHugeCraters ? 300 : 2500);
+		
 		int softCount = 0;
 		if (planetData.hasAtmosphere ) {
 			softCount = random.nextInt(1000, 2000);
 		}
 
-		//System.out.println("Generating craters=" + craterFactor + " countHuge=" + hugeCraterCount + " countBig=" + bigCraterCount + " countMedium=" + mediumCraterCount + " countSmall=" + smallCraterCount + " countTiny=" + tinyCraterCount + " softCount=" + softCount);
+		//int totalCraterCount = craterFactor * (hugeCraterCount + bigCraterCount + mediumCraterCount + smallCraterCount + tinyCraterCount);
+		//System.out.println("Generating craterFactor=" + craterFactor + " huge=" + hugeCraterCount + " big=" + bigCraterCount + " medium=" + mediumCraterCount + " small=" + smallCraterCount + " tiny=" + tinyCraterCount + " softCount=" + softCount + " total=" + totalCraterCount);
 
 		FrameBuffer frameBuffer = renderFrameBufferNormal(material, new TerrestrialPlanetShader.Provider());
 
