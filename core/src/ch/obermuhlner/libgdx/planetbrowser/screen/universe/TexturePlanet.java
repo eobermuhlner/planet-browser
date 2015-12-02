@@ -13,10 +13,12 @@ public class TexturePlanet extends AbstractPlanet {
 
 	private String diffuseTextureName;
 	private String normalTextureName;
+	private String emissiveTextureName;
 
-	public TexturePlanet(String diffuseTextureName, String normalTextureName) {
+	public TexturePlanet(String diffuseTextureName, String normalTextureName, String emissiveTextureName) {
 		this.diffuseTextureName = diffuseTextureName;
 		this.normalTextureName = normalTextureName;
+		this.emissiveTextureName = emissiveTextureName;
 	}
 	
 	@Override
@@ -39,6 +41,10 @@ public class TexturePlanet extends AbstractPlanet {
 		if (normalTextureName != null) {
 			Texture texture = PlanetBrowser.getTexture(normalTextureName);
 			attributes.add(TextureAttribute.createNormal(texture));
+		}
+		if (emissiveTextureName != null) {
+			Texture texture = PlanetBrowser.getTexture(emissiveTextureName);
+			attributes.add(TextureAttribute.createEmissive(texture));
 		}
 		
 		Material material = new Material(attributes);
