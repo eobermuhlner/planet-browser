@@ -93,13 +93,14 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		}
 	};
 	private static final Color[] ATMOSPHERE_COLORS = {
-			new Color(0xdd8888ff), // light red
-			new Color(0x88dd88ff), // light green
-			new Color(0x8888ddff), // light blue
-			new Color(0x88ddddff), // light cyan
-			new Color(0xdd88ddff), // light magenta
-			new Color(0xdddd88ff), // light yellow
-//
+			new Color(0xffffffff), // white
+			new Color(0xffccccff), // light red
+			new Color(0xccffccff), // light green
+			new Color(0xccccffff), // light blue
+			new Color(0xccffffff), // light cyan
+			new Color(0xffccffff), // light magenta
+			new Color(0xffffccff), // light yellow
+
 //			new Color(0xd2b782ff), // venus - medium yellow
 //			new Color(0xe7d7b6ff), // venus - light yellow
 //			new Color(0xf1e8d7ff), // venus - very light yellow
@@ -150,7 +151,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		final int targetTextureWidth = Config.textureSize;
 		final int targetTextureHeight = Config.textureSize;
 		
-		int craterFactor = random.nextInt(1, 30);
+		int craterFactor = random.nextInt(5, 30);
 
 		boolean favorHugeCraters = random.nextBoolean(0.1);
 		int hugeCraterCount = favorHugeCraters ? random.nextInt(5, 20) : random.nextInt(0, 10);
@@ -169,9 +170,11 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 
 		FrameBuffer frameBuffer = renderFrameBufferNormal(material, new TerrestrialPlanetShader.Provider());
 
-		frameBuffer.begin();
+		frameBuffer.begin();		
 
 		SpriteBatch spriteBatch = new SpriteBatch();
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, targetTextureWidth, targetTextureHeight * 2 / 3);
+
 		spriteBatch.begin();
 
 		Texture craterHuge1 = PlanetBrowser.getTexture("normals_crater_huge1.png");
@@ -240,8 +243,8 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			return null;
 		}
 		
-		Color atmosphereColor = randomColor(random, ATMOSPHERE_COLORS, 0.5f, 0.2f);
-		Color refractionColor = randomColor(random, ATMOSPHERE_COLORS, 0.5f, 0.2f); // TODO contrary color than atmosphereColor
+		Color atmosphereColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f);
+		Color refractionColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f); // TODO contrary color than atmosphereColor
 		
 		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);
 		float centerAlpha = random.nextFloat(0.0f, 0.3f);
