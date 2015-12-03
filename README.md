@@ -14,6 +14,9 @@ The same rendering algorithms will be used in the game InfiniteSpace.
 ![Cooled down lava planet](core/docu/images/Lava2.png "Cooled down lava planet") 
 ![Cooling lava planet](core/docu/images/Lava3.png "Cooling lava planet") 
 ![Moon](core/docu/images/Moon1.png "Moon") 
+![Moon](core/docu/images/Moon3.png "Moon") 
+![Mars-like planet with atmosphere](core/docu/images/Mars1.png "Mars") 
+![Mars-like planet with atmosphere](core/docu/images/Mars2.png "Mars") 
 ![Jupiter-like planet](core/docu/images/Jupiter1.png "Jupiter-like planet") 
 ![Jupiter-like planet](core/docu/images/Jupiter2.png "Jupiter-like planet") 
 
