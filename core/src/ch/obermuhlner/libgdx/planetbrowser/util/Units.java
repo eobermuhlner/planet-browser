@@ -2,7 +2,7 @@ package ch.obermuhlner.libgdx.planetbrowser.util;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.text.NumberFormat;
+//import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,10 +42,10 @@ public class Units {
 
 	private static final MathContext MC_SIGNIFICANT_DIGITS = new MathContext(3);
 	
-	private static NumberFormat numberFormat;
-	static {
-		numberFormat = NumberFormat.getNumberInstance(Locale.US);
-	}
+//	private static NumberFormat numberFormat;
+//	static {
+//		numberFormat = NumberFormat.getNumberInstance(Locale.US);
+//	}
 	
 	private static Unit meterUnits[] = {
 		new Unit(LIGHT_YEAR, "lightyears"),
@@ -96,7 +96,8 @@ public class Units {
 	};
 
 	public static String toString(double value) {
-		return numberFormat.format(BigDecimal.valueOf(value).round(MC_SIGNIFICANT_DIGITS));
+		return String.valueOf(value);
+//		return numberFormat.format(BigDecimal.valueOf(value).round(MC_SIGNIFICANT_DIGITS));
 	}
 	
 	public static String meterSizeToString(double value) {

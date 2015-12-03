@@ -30,9 +30,11 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Earth;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.IceMoon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Jupiter;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Lava;
+import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Mars;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Moon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Neptune;
+import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Sun;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
@@ -41,11 +43,14 @@ public class PlanetScreen extends AbstractScreen {
 	private static final ModelInstanceFactory[] ALL_PLANET_FACTORIES = new ModelInstanceFactory[] {
 		new Earth(),
 		new Moon(),
+		new Mars(),
 		new Lava(),
 		new IceMoon(),
 		new Jupiter(),
 		new Neptune(),
-		//new TexturePlanet("earth.jpg", "earth_normals.jpg"),
+		new Sun(),
+		//new TexturePlanet("earth.jpg", "earth_normals.jpg", null),
+		//new TexturePlanet(null, null, "sun.jpg"),
 	};
 	private static final Array<String> planetFactoryNames = new Array<String>();
 	private static final String RANDOM_FACTORY_NAME = "Random";

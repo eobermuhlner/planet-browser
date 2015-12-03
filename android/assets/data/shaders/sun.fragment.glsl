@@ -199,23 +199,30 @@ uniform vec4 u_cameraPosition;
  
 varying vec2 v_texCoords0;
 varying float v_lambertFactor;
- 
-void main() {
-	vec3 r1 = vec3(0.70, 0.82, 0.11);
-	vec3 r2 = vec3(0.58, 0.21, 0.95);
 
-	float time = u_time * 0.003;
+void main() {
+	vec2 r0 = vec2(0.19, 0.52);
+	vec2 r1 = vec2(0.70, 0.82);
+	vec2 r2 = vec2(0.58, 0.21);
+	vec2 r3 = vec2(0.36, 0.31);
+	vec2 r4 = vec2(0.23, 0.75);
+
+	float time = u_time * 0.0015;
 	
+	float baseFrequency = 64.0;
 	float v1 = 0.0;
-	v1 += pnoise3(vec3(v_texCoords0.x, v_texCoords0.y, time), 100.0);
-	v1 += pnoise3(vec3(v_texCoords0.x + r1.x, v_texCoords0.y + r1.y, time * 2.0 + r1.z), 300.0) * 0.5;
-	v1 += pnoise3(vec3(v_texCoords0.x + r2.x, v_texCoords0.y + r2.y, time * 5.0 + r2.z), 1000.0) * 0.2;
+	v1 += pnoise3(vec3(v_texCoords0.x + r0.x, v_texCoords0.y + r0.y, time), baseFrequency * 1.0) / 1.0;
+	v1 += pnoise3(vec3(v_texCoords0.x + r1.x, v_texCoords0.y + r1.y, time*1.1), baseFrequency * 2.0) / 2.0;
+	v1 += pnoise3(vec3(v_texCoords0.x + r2.x, v_texCoords0.y + r2.y, time*1.3), baseFrequency * 4.0) / 4.0;
+	v1 += pnoise3(vec3(v_texCoords0.x + r3.x, v_texCoords0.y + r3.y, time*1.8), baseFrequency * 8.0) / 8.0;
+	v1 += pnoise3(vec3(v_texCoords0.x + r4.x, v_texCoords0.y + r4.y, time*1.5), baseFrequency * 16.0) / 16.0;
 	
-	vec4 color = mix(vec4(1.0, 1.0, 0.5, 1.0), vec4(1.0, 0.9, 0.0, 1.0), v1);
-	//vec4 color = mix(u_diffuseColor, u_emissiveColor, v1);
-	color = color * v_lambertFactor * 0.50 + color * 0.50;
+	vec4 color = mix(vec4(1.0, 1.0, 0.8, 1.0), vec4(1.0, 0.8, 0.0, 1.0), v1);
+
+	color = color * v_lambertFactor * 0.55 + color * 0.50;
 
     gl_FragColor = color;
+    //gl_FragColor = vec4(vec3(v1), 1.0);
 }
 
 
