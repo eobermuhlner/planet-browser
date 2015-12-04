@@ -13,6 +13,8 @@ public class MultiTextureFrameBuffer extends MultiFrameBuffer<Texture> {
 	public MultiTextureFrameBuffer(Format format, int width, int height, int textureCount) {
 		super(format, width, height);
 		this.textureCount = textureCount;
+		
+		build();
 	}
 
 	@Override

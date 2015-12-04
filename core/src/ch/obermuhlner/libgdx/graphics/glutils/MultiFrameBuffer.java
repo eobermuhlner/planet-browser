@@ -83,9 +83,6 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 		this.width = width;
 		this.height = height;
 		this.format = format;
-		build();
-
-		addManagedFrameBuffer(Gdx.app, this);
 	}
 
 	/** Override this method in a derived class to set up the backing texture as you like. */
@@ -94,7 +91,7 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 	/** Override this method in a derived class to dispose the backing texture as you like. */
 	protected abstract void disposeColorTextures (Array<T> colorTextures);
 
-	private void build () {
+	protected void build () {
 		GL20 gl = Gdx.gl20;
 
 		// iOS uses a different framebuffer handle! (not necessarily 0)
@@ -124,13 +121,10 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 			T texture = colorTextures.get(i);
 			gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0 + i, GL20.GL_TEXTURE_2D,
 					texture.getTextureObjectHandle(), 0);
-
-			//?gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, i);
-			//?gl.glBindTexture(GL20.GL_TEXTURE_2D, i);
 		}
 
-		//gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
-		//gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
+		gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
 
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
@@ -151,6 +145,8 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 				throw new IllegalStateException("frame buffer couldn't be constructed: unsupported combination of formats");
 			throw new IllegalStateException("frame buffer couldn't be constructed: unknown error " + result);
 		}
+		
+		addManagedFrameBuffer(Gdx.app, this);
 	}
 
 	/** Releases all resources associated with the FrameBuffer. */
