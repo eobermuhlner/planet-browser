@@ -14,12 +14,22 @@ import ch.obermuhlner.libgdx.planetbrowser.Config.SkinFactory;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 
 public class DesktopLauncher {
+	private static final boolean SCREENSHOTS = true;
+	
 	public static void main (String[] arg) {
 		Config.skinFactory = new DesktopSkinFactory();
+		Config.screenDensityFactor = SCREENSHOTS ? 1.0f : 2.0f;
+		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 1200;
-		config.height = 1000;
-		config.samples = 4;
+		if (SCREENSHOTS) {
+			config.width = 800;
+			config.height = 600;
+		} else {
+			config.width = 1200;
+			config.height = 1000;
+		}
+
+		config.samples = 8;
 		new LwjglApplication(new PlanetBrowser(), config);
 	}
 	
