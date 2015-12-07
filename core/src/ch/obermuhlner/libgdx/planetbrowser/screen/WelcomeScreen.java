@@ -33,6 +33,12 @@ public class WelcomeScreen extends AbstractStageScreen {
 				planetBrowser.setScreen(new PlanetScreen(planetBrowser));
 			}
 		}));
+		table.add(gui.button("Options", new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				planetBrowser.setScreen(new OptionsScreen(planetBrowser));
+			}
+		}));
 	}
 	
 	@Override
