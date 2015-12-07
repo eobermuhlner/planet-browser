@@ -1,6 +1,8 @@
 package ch.obermuhlner.libgdx.planetbrowser;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,8 +14,15 @@ public class PlanetBrowser extends Game {
 	
 	public static final AssetManager assetManager = new AssetManager();
 
+	public static PlanetBrowser INSTANCE;
+	
+	public Options options;
+	
 	@Override
 	public void create() {
+		INSTANCE = this;
+		options = new Options(); 
+		
 		{
 			TextureParameter textureParameter = new TextureParameter();
 			textureParameter.genMipMaps = true;
@@ -46,7 +55,7 @@ public class PlanetBrowser extends Game {
 
 		assetManager.finishLoading();
 		
-		setScreen(new WelcomeScreen(this));
+		setScreen(new WelcomeScreen());
 	}
 
 		@Override

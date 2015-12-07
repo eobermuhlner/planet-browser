@@ -10,14 +10,8 @@ import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 
 public class WelcomeScreen extends AbstractStageScreen {
 
-	private PlanetBrowser planetBrowser;
-	
 	private ProgressBar progressBarLoading;
 
-	public WelcomeScreen(PlanetBrowser planetBrowser) {
-		this.planetBrowser = planetBrowser;
-	}
-	
 	protected void prepareStage(Gui gui, Table rootTable) {
 		Table table = gui.table();
 		rootTable.add(table);
@@ -30,13 +24,13 @@ public class WelcomeScreen extends AbstractStageScreen {
 		table.add(gui.button("Start", new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				planetBrowser.setScreen(new PlanetScreen(planetBrowser));
+				PlanetBrowser.INSTANCE.setScreen(new PlanetScreen());
 			}
 		}));
 		table.add(gui.button("Options", new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				planetBrowser.setScreen(new OptionsScreen(planetBrowser));
+				PlanetBrowser.INSTANCE.setScreen(new OptionsScreen());
 			}
 		}));
 	}

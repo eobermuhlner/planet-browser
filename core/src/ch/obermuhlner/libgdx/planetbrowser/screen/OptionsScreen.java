@@ -10,28 +10,51 @@ import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 
 public class OptionsScreen extends AbstractStageScreen {
 
-	private PlanetBrowser planetBrowser;
+	private static final int COLUMNS = 2;
 	
-	public OptionsScreen(PlanetBrowser planetBrowser) {
-		this.planetBrowser = planetBrowser;
-	}
-	
+	private SelectBox<Integer> selectGeneratedTexturesSize;
+
 	protected void prepareStage(Gui gui, Table rootTable) {
 		Table table = gui.table();
 		rootTable.add(table);
 		
 		table.row();
-		table.add(gui.label("Graphics Quality"));
-		SelectBox<String> selectGraphicsQuality = new SelectBox<String>(gui.skin);
-		table.add(selectGraphicsQuality);
-		selectGraphicsQuality.setItems("High", "Medium", "Low");
+		table.add(gui.title("Graphics Quality")).colspan(COLUMNS);
+		
+		table.row();
+		table.add(gui.label("Generated Texture Size"));		
+		selectGeneratedTexturesSize = new SelectBox<Integer>(gui.skin);
+		table.add(selectGeneratedTexturesSize);
+		selectGeneratedTexturesSize.setItems(4096, 2048, 1024, 512);
+		
+		// button row
 		
 		table.row();
 		table.add(gui.button("OK", new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				planetBrowser.setScreen(new WelcomeScreen(planetBrowser));
+				PlanetBrowser.INSTANCE.options.setGeneratedTexturesSize(selectGeneratedTexturesSize.getSelected());
+				PlanetBrowser.INSTANCE.setScreen(new WelcomeScreen());
 			}
 		}));
+		table.add(gui.button("Reset", new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				PlanetBrowser.INSTANCE.options.reset();
+				pushOptionsToGui();
+			}
+		}));
+		table.add(gui.button("Cancel", new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				PlanetBrowser.INSTANCE.setScreen(new WelcomeScreen());
+			}
+		}));
+		
+		pushOptionsToGui();
+	}
+	
+	private void pushOptionsToGui() {
+		selectGeneratedTexturesSize.setSelected(PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize());
 	}
 }

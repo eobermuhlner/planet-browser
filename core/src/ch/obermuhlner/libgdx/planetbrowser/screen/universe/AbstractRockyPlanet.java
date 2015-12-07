@@ -148,8 +148,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 	}
 	
 	public Texture renderTextureNormalsCraters(Random random, PlanetData planetData, Material material, ShaderProvider shaderProvider) {
-		final int targetTextureWidth = Config.textureSize;
-		final int targetTextureHeight = Config.textureSize;
+		final int targetTextureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
 		
 		int craterFactor = random.nextInt(5, 30);
 
@@ -173,7 +172,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		frameBuffer.begin();		
 
 		SpriteBatch spriteBatch = new SpriteBatch();
-		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, targetTextureWidth, targetTextureHeight * 2 / 3);
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, targetTextureSize, targetTextureSize * 2 / 3);
 
 		spriteBatch.begin();
 
@@ -213,16 +212,16 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			int count = texturesToDraw[i].getValue1();
 			Texture texture = texturesToDraw[i].getValue2();
 			for (int j = 0; j < count; j++) {
-				float x = random.nextFloat(0, targetTextureWidth - texture.getWidth());
-				float y = random.nextFloat(0, targetTextureHeight - texture.getHeight());
+				float x = random.nextFloat(0, targetTextureSize - texture.getWidth());
+				float y = random.nextFloat(0, targetTextureSize - texture.getHeight());
 				spriteBatch.draw(texture, x, y);
 			}
 		}
 		
 		for (int i = 0; i < softCount; i++) {
 			Texture texture = soft1;
-			float x = random.nextFloat(0, targetTextureWidth - texture.getWidth());
-			float y = random.nextFloat(0, targetTextureHeight - texture.getHeight());
+			float x = random.nextFloat(0, targetTextureSize - texture.getWidth());
+			float y = random.nextFloat(0, targetTextureSize - texture.getHeight());
 			spriteBatch.draw(texture, x, y);
 		}
 

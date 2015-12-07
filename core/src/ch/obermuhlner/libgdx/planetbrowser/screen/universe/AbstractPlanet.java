@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.Config;
+import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
@@ -155,7 +156,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	}
 	
 	public Texture renderTextureDiffuse (Material material, ShaderProvider shaderProvider) {
-		final int textureSize = Config.textureSize;
+		final int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
 		
 		final int rectSize = 1;
 		Model model;
@@ -201,7 +202,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	}
 
 	public FrameBuffer renderFrameBuffer (Material material, ShaderProvider shaderProvider) {
-		final int textureSize = Config.textureSize;
+		final int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
 		
 		final int rectSize = 1;
 		Model model;

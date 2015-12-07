@@ -52,6 +52,10 @@ public class Gui {
 		return new Label(text, skin);
 	}
 
+	public Label title(String text) {
+		return new Label(text, skin, "title");
+	}
+
 	public SelectBox<String> select(String... items) {
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems(items);

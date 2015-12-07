@@ -9,8 +9,6 @@ public class Config {
 
 	public static float screenDensityFactor = 1.0f;
 
-	public static int textureSize = 2048;
-
 	public static SkinFactory skinFactory = new DefaultSkinFactory();
 	
 	private static Skin skin;

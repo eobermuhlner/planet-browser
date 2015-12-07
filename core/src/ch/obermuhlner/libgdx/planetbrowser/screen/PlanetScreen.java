@@ -81,17 +81,14 @@ public class PlanetScreen extends AbstractScreen {
 
 	private final Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
-	private PlanetBrowser planetBrowser;
-	
 	private Label fpsLabel;
 	private Label createTimeLabel;
 	
-	public PlanetScreen(PlanetBrowser planetBrowser) {
-		this(planetBrowser, 1);
+	public PlanetScreen() {
+		this(1);
 	}
 
-	public PlanetScreen(PlanetBrowser planetBrowser, long randomSeed) {
-		this.planetBrowser = planetBrowser;
+	public PlanetScreen(long randomSeed) {
 		this.randomSeed = randomSeed;
 	}
 
@@ -141,14 +138,14 @@ public class PlanetScreen extends AbstractScreen {
 		table.add(gui.button("Previous", new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				planetBrowser.setScreen(new PlanetScreen(planetBrowser, randomSeed - 1));
+				PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed - 1));
 			}
 		}));
 		table.add(gui.label(String.valueOf(randomSeed)));
 		table.add(gui.button("Next", new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				planetBrowser.setScreen(new PlanetScreen(planetBrowser, randomSeed + 1));
+				PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed + 1));
 			}
 		}));
 		
@@ -160,7 +157,7 @@ public class PlanetScreen extends AbstractScreen {
 				String selected = selectBox.getSelected();
 				if (! currentPlanetFactoryName.equals(selected)) {
 					currentPlanetFactoryName = selected;
-					planetBrowser.setScreen(new PlanetScreen(planetBrowser, randomSeed));
+					PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed));
 				}
 			}
 		});

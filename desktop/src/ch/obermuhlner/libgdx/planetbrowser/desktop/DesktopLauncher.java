@@ -14,7 +14,7 @@ import ch.obermuhlner.libgdx.planetbrowser.Config.SkinFactory;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 
 public class DesktopLauncher {
-	private static final boolean SCREENSHOTS = true;
+	private static final boolean SCREENSHOTS = false;
 	
 	public static void main (String[] arg) {
 		Config.skinFactory = new DesktopSkinFactory();
