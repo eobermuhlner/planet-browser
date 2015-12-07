@@ -33,7 +33,7 @@ public class OptionsScreen extends AbstractStageScreen {
 		table.add(gui.label("Sphere Divisions"));		
 		selectSphereDivisions = new SelectBox<Integer>(gui.skin);
 		table.add(selectSphereDivisions);
-		selectSphereDivisions.setItems(80, 60, 40, 20, 10);
+		selectSphereDivisions.setItems(80, 70, 60, 50, 40, 30, 20);
 		
 		// button row
 		
