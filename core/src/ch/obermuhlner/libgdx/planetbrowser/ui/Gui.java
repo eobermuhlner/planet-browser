@@ -13,7 +13,7 @@ import ch.obermuhlner.libgdx.planetbrowser.Config;
 
 public class Gui {
 
-	private Skin skin = Config.getSkin();
+	public final Skin skin = Config.getSkin();
 	
 	private static final boolean DEBUG = false;
 	
