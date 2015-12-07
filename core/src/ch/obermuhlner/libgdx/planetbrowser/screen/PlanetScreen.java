@@ -34,7 +34,6 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Mars;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Moon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Neptune;
-import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Sun;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
@@ -48,7 +47,7 @@ public class PlanetScreen extends AbstractScreen {
 		new IceMoon(),
 		new Jupiter(),
 		new Neptune(),
-		new Sun(),
+		//new Sun(),
 		//new TexturePlanet("earth.jpg", "earth_normals.jpg", null),
 		//new TexturePlanet(null, null, "sun.jpg"),
 	};

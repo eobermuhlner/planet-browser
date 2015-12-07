@@ -6,7 +6,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 
-import ch.obermuhlner.libgdx.planetbrowser.screen.PlanetScreen;
+import ch.obermuhlner.libgdx.planetbrowser.screen.WelcomeScreen;
 
 public class PlanetBrowser extends Game {
 	
@@ -46,7 +46,7 @@ public class PlanetBrowser extends Game {
 
 		assetManager.finishLoading();
 		
-		setScreen(new PlanetScreen(this));
+		setScreen(new WelcomeScreen(this));
 	}
 
 		@Override
