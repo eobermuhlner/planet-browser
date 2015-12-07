@@ -7,6 +7,8 @@ public class Options {
 
 	private static final String GENERATED_TEXTURES_SIZE = "generatedTexturesSize";
 
+	private static final String SPHERE_DIVISIONS = "sphereDivisions";
+	
 	private final Preferences optionPreferences = Gdx.app.getPreferences(Options.class.getName());
 	
 	public int getGeneratedTexturesSize() {
@@ -15,6 +17,14 @@ public class Options {
 	
 	public void setGeneratedTexturesSize(int generatedTexturesSize) {
 		optionPreferences.putInteger(GENERATED_TEXTURES_SIZE, generatedTexturesSize);
+	}
+	
+	public int getSphereDivisions() {
+		return optionPreferences.getInteger(SPHERE_DIVISIONS, 40);
+	}
+	
+	public void setSphereDivisions(int sphereDivisions) {
+		optionPreferences.putInteger(SPHERE_DIVISIONS, sphereDivisions);
 	}
 	
 	public void save() {

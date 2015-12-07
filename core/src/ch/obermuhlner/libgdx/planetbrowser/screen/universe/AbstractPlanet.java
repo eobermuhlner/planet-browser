@@ -28,8 +28,6 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public abstract class AbstractPlanet implements ModelInstanceFactory {
 
-	private static final int DIVISIONS = 40;
-	
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
 	@Override
@@ -60,7 +58,8 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 
 	private Model createSphere(float size, Material material) {
 		long attributes = Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates;
-		Model model = modelBuilder.createSphere(size, size, size, DIVISIONS, DIVISIONS, material, attributes);
+		int divisions = PlanetBrowser.INSTANCE.options.getSphereDivisions();
+		Model model = modelBuilder.createSphere(size, size, size, divisions, divisions, material, attributes);
 		return model;
 	}
 

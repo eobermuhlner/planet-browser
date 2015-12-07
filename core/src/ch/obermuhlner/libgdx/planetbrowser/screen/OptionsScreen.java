@@ -14,6 +14,8 @@ public class OptionsScreen extends AbstractStageScreen {
 	
 	private SelectBox<Integer> selectGeneratedTexturesSize;
 
+	private SelectBox<Integer> selectSphereDivisions;
+
 	protected void prepareStage(Gui gui, Table rootTable) {
 		Table table = gui.table();
 		rootTable.add(table);
@@ -27,6 +29,12 @@ public class OptionsScreen extends AbstractStageScreen {
 		table.add(selectGeneratedTexturesSize);
 		selectGeneratedTexturesSize.setItems(4096, 2048, 1024, 512);
 		
+		table.row();
+		table.add(gui.label("Sphere Divisions"));		
+		selectSphereDivisions = new SelectBox<Integer>(gui.skin);
+		table.add(selectSphereDivisions);
+		selectSphereDivisions.setItems(80, 60, 40, 20, 10);
+		
 		// button row
 		
 		table.row();
@@ -34,6 +42,7 @@ public class OptionsScreen extends AbstractStageScreen {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				PlanetBrowser.INSTANCE.options.setGeneratedTexturesSize(selectGeneratedTexturesSize.getSelected());
+				PlanetBrowser.INSTANCE.options.setSphereDivisions(selectSphereDivisions.getSelected());
 				PlanetBrowser.INSTANCE.setScreen(new WelcomeScreen());
 			}
 		}));
@@ -56,5 +65,6 @@ public class OptionsScreen extends AbstractStageScreen {
 	
 	private void pushOptionsToGui() {
 		selectGeneratedTexturesSize.setSelected(PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize());
+		selectSphereDivisions.setSelected(PlanetBrowser.INSTANCE.options.getSphereDivisions());
 	}
 }
