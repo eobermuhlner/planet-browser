@@ -21,6 +21,7 @@ public class DesktopLauncher {
 		Config.screenDensityFactor = SCREENSHOTS ? 1.0f : 2.0f;
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.useGL30 = true;
 		if (SCREENSHOTS) {
 			config.width = 800;
 			config.height = 600;
