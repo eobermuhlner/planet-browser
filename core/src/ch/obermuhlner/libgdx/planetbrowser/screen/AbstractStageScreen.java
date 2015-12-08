@@ -16,20 +16,10 @@ public abstract class AbstractStageScreen extends AbstractScreen {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
-		prepareStage();
+		prepareStage(stage, new Gui());
 	}
 
-	protected void prepareStage() {
-		Gui gui = new Gui();
-		Table rootTable = gui.rootTable();
-		
-		rootTable.row();
-		prepareStage(gui, rootTable);
-		
-		stage.addActor(rootTable);		
-	}
-	
-	protected abstract void prepareStage(Gui gui, Table rootTable);
+	protected abstract void prepareStage(Stage stage, Gui gui);
 
 	@Override
 	public void hide() {

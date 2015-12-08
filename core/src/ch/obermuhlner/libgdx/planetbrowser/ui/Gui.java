@@ -20,11 +20,22 @@ public class Gui {
 	public Table rootTable() {
 		Table table = new Table(skin);
 		
-		table.top().left();
-		table.defaults().left().space(10);
+		table.top();
+//		table.top().left();
+//		table.defaults().left().space(10);
 
 		table.setFillParent(true);
+		table.setDebug(DEBUG);
 
+		return table;
+	}
+	
+	public Table rootTableCenter() {
+		Table table = new Table(skin);
+		
+		table.center();
+
+		table.setFillParent(true);
 		table.setDebug(DEBUG);
 
 		return table;
