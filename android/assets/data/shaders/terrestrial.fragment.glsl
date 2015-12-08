@@ -367,7 +367,8 @@ void main() {
 			}
 		#endif
 				
-		gl_FragColor.rgb = color;
+		gl_FragData[0].rgb = color;
+		//gl_FragData[1].rgb = vec3(color.r, color.g, 1.0);
 	#endif
 }
 

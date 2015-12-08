@@ -25,7 +25,7 @@ import java.util.Map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
@@ -92,14 +92,14 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 	protected abstract void disposeColorTextures (Array<T> colorTextures);
 
 	protected void build () {
-		GL20 gl = Gdx.gl20;
+		GL30 gl = Gdx.gl30;
 
 		// iOS uses a different framebuffer handle! (not necessarily 0)
 		if (!defaultFramebufferHandleInitialized) {
 			defaultFramebufferHandleInitialized = true;
 			if (Gdx.app.getType() == ApplicationType.iOS) {
 				IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
-				gl.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, intbuf);
+				gl.glGetIntegerv(GL30.GL_FRAMEBUFFER_BINDING, intbuf);
 				defaultFramebufferHandle = intbuf.get(0);
 			} else {
 				defaultFramebufferHandle = 0;
@@ -112,36 +112,36 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 		
 		for (int i = 0; i < colorTextures.size; i++) {
 			T texture = colorTextures.get(i);
-			gl.glBindTexture(GL20.GL_TEXTURE_2D, texture.getTextureObjectHandle());
+			gl.glBindTexture(GL30.GL_TEXTURE_2D, texture.getTextureObjectHandle());
 		}
 
-		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+		gl.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferHandle);
 
 		for (int i = 0; i < colorTextures.size; i++) {
 			T texture = colorTextures.get(i);
-			gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0 + i, GL20.GL_TEXTURE_2D,
+			gl.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0 + i, GL30.GL_TEXTURE_2D,
 					texture.getTextureObjectHandle(), 0);
 		}
 
-		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
-		gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+		gl.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
+		gl.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 
-		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
+		int result = gl.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
 
-		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+		gl.glBindFramebuffer(GL30.GL_FRAMEBUFFER, defaultFramebufferHandle);
 
-		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
+		if (result != GL30.GL_FRAMEBUFFER_COMPLETE) {
 			disposeColorTextures(colorTextures);
 
 			gl.glDeleteFramebuffer(framebufferHandle);
 
-			if (result == GL20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT)
+			if (result == GL30.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT)
 				throw new IllegalStateException("frame buffer couldn't be constructed: incomplete attachment");
-			if (result == GL20.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS)
+			if (result == GL30.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS)
 				throw new IllegalStateException("frame buffer couldn't be constructed: incomplete dimensions");
-			if (result == GL20.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT)
+			if (result == GL30.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT)
 				throw new IllegalStateException("frame buffer couldn't be constructed: missing attachment");
-			if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED)
+			if (result == GL30.GL_FRAMEBUFFER_UNSUPPORTED)
 				throw new IllegalStateException("frame buffer couldn't be constructed: unsupported combination of formats");
 			throw new IllegalStateException("frame buffer couldn't be constructed: unknown error " + result);
 		}
@@ -152,7 +152,7 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 	/** Releases all resources associated with the FrameBuffer. */
 	@Override
 	public void dispose () {
-		GL20 gl = Gdx.gl20;
+		GL30 gl = Gdx.gl30;
 
 		disposeColorTextures(colorTextures);
 
@@ -163,12 +163,12 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 
 	/** Makes the frame buffer current so everything gets drawn to it. */
 	public void bind () {
-		Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+		Gdx.gl30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferHandle);
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
 	public static void unbind () {
-		Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+		Gdx.gl30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, defaultFramebufferHandle);
 	}
 
 	/** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
@@ -179,7 +179,7 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 
 	/** Sets viewport to the dimensions of framebuffer. Called by {@link #begin()}. */
 	protected void setFrameBufferViewport () {
-		Gdx.gl20.glViewport(0, 0, getWidth(), getHeight());
+		Gdx.gl30.glViewport(0, 0, getWidth(), getHeight());
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
@@ -195,7 +195,7 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 	 * @param height the height of the viewport in pixels */
 	public void end (int x, int y, int width, int height) {
 		unbind();
-		Gdx.gl20.glViewport(x, y, width, height);
+		Gdx.gl30.glViewport(x, y, width, height);
 	}
 
 	/** @return the gl texture */
@@ -203,7 +203,7 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 		return colorTextures;
 	}
 
-	/** @return The OpenGL handle of the framebuffer (see {@link GL20#glGenFramebuffer()}) */
+	/** @return The OpenGL handle of the framebuffer (see {@link GL30#glGenFramebuffer()}) */
 	public int getFramebufferHandle () {
 		return framebufferHandle;
 	}
@@ -237,7 +237,7 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 	/** Invalidates all frame buffers. This can be used when the OpenGL context is lost to rebuild all managed frame buffers. This
 	 * assumes that the texture attached to this buffer has already been rebuild! Use with care. */
 	public static void invalidateAllFrameBuffers (Application app) {
-		if (Gdx.gl20 == null) return;
+		if (Gdx.gl30 == null) return;
 
 		Array<MultiFrameBuffer> bufferArray = buffers.get(app);
 		if (bufferArray == null) return;

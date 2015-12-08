@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
 
-import ch.obermuhlner.libgdx.planetbrowser.Config;
+import ch.obermuhlner.libgdx.graphics.glutils.MultiTextureFrameBuffer;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
@@ -28,6 +28,8 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public abstract class AbstractPlanet implements ModelInstanceFactory {
 
+	private static final boolean USE_MULTI_TEXTURE_RENDERING = false;
+	
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
 	@Override
@@ -172,9 +174,15 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 
 		ModelBatch modelBatch = new ModelBatch(shaderProvider == null ? UberShaderProvider.DEFAULT : shaderProvider);
 
-		FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, textureSize, textureSize, false);
-		frameBuffer.begin();
-
+		MultiTextureFrameBuffer multiTextureFrameBuffer = null;
+		FrameBuffer frameBuffer = null;
+		if (USE_MULTI_TEXTURE_RENDERING) {
+			multiTextureFrameBuffer = new MultiTextureFrameBuffer(Pixmap.Format.RGB888, textureSize, textureSize, 2);
+			multiTextureFrameBuffer.begin();			
+		} else {
+			frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, textureSize, textureSize, false);
+			frameBuffer.begin();
+		}
 		OrthographicCamera camera = new OrthographicCamera(rectSize*2, rectSize*2);
 		camera.position.set(0, 1, 0);
 		camera.lookAt(0, 0, 0);
@@ -184,9 +192,14 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		modelBatch.render(instance);
 		modelBatch.end();
 
-		frameBuffer.end();
-		
-		Texture texture = frameBuffer.getColorBufferTexture();
+		Texture texture;
+		if (USE_MULTI_TEXTURE_RENDERING) {
+			multiTextureFrameBuffer.end();
+			texture = multiTextureFrameBuffer.getColorBufferTextures().get(0);
+		} else {
+			frameBuffer.end();
+			texture = frameBuffer.getColorBufferTexture();
+		}		
 
 		model.dispose();
 		modelBatch.dispose();
