@@ -6,6 +6,9 @@ This application is intended as a showcase and testing environment for the rende
 
 The same rendering algorithms will be used in the game InfiniteSpace.
 
+
+## Screenshot Gallery
+
 ![Earth-like planet](core/docu/images/Earth1.png "Earth-like planet") 
 ![Mountain range on Earth-like planet](core/docu/images/Earth2.png "Mountain range on Earth-like planet") 
 ![Sunset on Earth-like planet](core/docu/images/Earth3.png "Sunset on Earth-like planet") 
