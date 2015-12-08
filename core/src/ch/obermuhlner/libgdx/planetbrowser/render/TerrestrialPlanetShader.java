@@ -1,6 +1,9 @@
 
 package ch.obermuhlner.libgdx.planetbrowser.render;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -83,7 +86,7 @@ public class TerrestrialPlanetShader implements Shader {
 		String prefix = createPrefix();
 		program = new ShaderProgram(prefix + vertexProgram, prefix + fragmentProgram);
 		if (!program.isCompiled()) {
-			throw new GdxRuntimeException(program.getLog());
+			throw new GdxRuntimeException(ShaderUtils.createErrorMessage(program, vertexProgram, fragmentProgram));
 		}
 
 		u_projViewTrans = program.getUniformLocation("u_projViewTrans");
