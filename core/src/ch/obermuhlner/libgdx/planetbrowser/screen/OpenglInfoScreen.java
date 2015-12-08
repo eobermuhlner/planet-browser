@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.IntArray;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
@@ -29,10 +28,14 @@ public class OpenglInfoScreen extends AbstractStageScreen {
 		table.row();
 		table.add(gui.title("Open GL")).colspan(COLUMNS);
 		
-		addInfoRow(gui, table, "Max Texture Size", GL20.GL_MAX_TEXTURE_SIZE);
-		addInfoRow(gui, table, "Max Texture Units", GL20.GL_MAX_TEXTURE_UNITS);
-		addInfoRow(gui, table, "Max Fragment Uniform Vectors", GL20.GL_MAX_FRAGMENT_UNIFORM_VECTORS);		
-		addInfoRow(gui, table, "Max Varying Vectors", GL20.GL_MAX_VARYING_VECTORS);		
+		addStringRow(gui, table, "Version", GL20.GL_VERSION);
+		addStringRow(gui, table, "Renderer", GL20.GL_RENDERER);
+		addStringRow(gui, table, "Vendor", GL20.GL_VENDOR);
+		addRow(gui, table, "GL 3.0", String.valueOf(Gdx.graphics.isGL30Available()));
+		addIntegerRow(gui, table, "Max Texture Size", GL20.GL_MAX_TEXTURE_SIZE);
+		addIntegerRow(gui, table, "Max Texture Units", GL20.GL_MAX_TEXTURE_UNITS);
+		addIntegerRow(gui, table, "Max Fragment Uniform Vectors", GL20.GL_MAX_FRAGMENT_UNIFORM_VECTORS);		
+		addIntegerRow(gui, table, "Max Varying Vectors", GL20.GL_MAX_VARYING_VECTORS);		
 		
 		// button row
 		
@@ -45,12 +48,21 @@ public class OpenglInfoScreen extends AbstractStageScreen {
 		}));
 	}
 
-	private void addInfoRow(Gui gui, Table table, String label, int glConst) {
+	private void addStringRow(Gui gui, Table table, String label, int glConst) {
+		String string = Gdx.gl.glGetString(glConst);
+		addRow(gui, table, label, string);
+	}
+
+	private void addIntegerRow(Gui gui, Table table, String label, int glConst) {
 		IntBuffer intBuffer = BufferUtils.newIntBuffer(16);
 		
 		Gdx.gl.glGetIntegerv(glConst, intBuffer);
+		addRow(gui, table, label, String.valueOf(intBuffer.get()));
+	}
+
+	private void addRow(Gui gui, Table table, String label, String string) {
 		table.row();
 		table.add(gui.label(label));		
-		table.add(gui.label(String.valueOf(intBuffer.get())));
+		table.add(gui.label(string));
 	}
 }
