@@ -28,15 +28,14 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 	public static final String HeightMountainsAlias = "heightMountains";
 	public static final long HeightMountains = register(HeightMountainsAlias);
 
-	public static final String CreateSpecularAlias = "createSpecular";
-	public static final long CreateSpecular = register(CreateSpecularAlias);
+	public static final String CreateTextureAlias = "createTexture";
+	public static final long CreateTexture = register(CreateTextureAlias);
 
-	public static final String CreateNormalAlias = "createNormal";
-	public static final long CreateNormal = register(CreateNormalAlias);
-
-	public static final String CreateEmissiveAlias = "createEmissive";
-	public static final long CreateEmissive = register(CreateEmissiveAlias);
-
+	public static final int CREATE_DIFFUSE_TEXTURE = 1;
+	public static final int CREATE_NORMAL_TEXTURE = 2;
+	public static final int CREATE_SPECULAR_TEXTURE = 4;
+	public static final int CREATE_EMISSIVE_TEXTURE = 8;
+	
 	public static TerrestrialPlanetFloatAttribute createHeightMin (float value) {
 		return new TerrestrialPlanetFloatAttribute(HeightMin, value);
 	}
@@ -69,16 +68,20 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 		return new TerrestrialPlanetFloatAttribute(HeightMountains, value);
 	}
 
-	public static TerrestrialPlanetFloatAttribute createCreateSpecular () {
-		return new TerrestrialPlanetFloatAttribute(CreateSpecular, 1f);
+	public static TerrestrialPlanetFloatAttribute createCreateDiffuse () {
+		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_DIFFUSE_TEXTURE);
 	}
 
 	public static TerrestrialPlanetFloatAttribute createCreateNormal () {
-		return new TerrestrialPlanetFloatAttribute(CreateNormal, 1f);
+		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_NORMAL_TEXTURE);
+	}
+	
+	public static TerrestrialPlanetFloatAttribute createCreateSpecular () {
+		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_SPECULAR_TEXTURE);
 	}
 
 	public static TerrestrialPlanetFloatAttribute createCreateEmissive () {
-		return new TerrestrialPlanetFloatAttribute(CreateEmissive, 1f);
+		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_EMISSIVE_TEXTURE);
 	}
 
 	private TerrestrialPlanetFloatAttribute(long type, float value) {

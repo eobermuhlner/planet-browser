@@ -63,18 +63,14 @@ public class Earth extends AbstractPlanet {
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
 		Material material = new Material(materialAttributes);
-		
+
 		if (true) {
 			materialAttributes.clear();
 
-			Texture textureDiffuse = renderTextureDiffuse(material, new TerrestrialPlanetShader.Provider());
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
-			
-			Texture textureSpecular = renderTextureSpecular(material, new TerrestrialPlanetShader.Provider());
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textureSpecular));
-			
-			Texture textureNormal = renderTextureNormal(material, new TerrestrialPlanetShader.Provider());
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
+			Array<Texture> textures = renderTextureDiffuseNormalSpecular(material, new TerrestrialPlanetShader.Provider());
+			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
+			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(1)));
+			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(2)));
 			
 			material = new Material(materialAttributes);
 		}

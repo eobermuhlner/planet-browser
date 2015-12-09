@@ -136,14 +136,27 @@ public class TerrestrialPlanetShader implements Shader {
 		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightMountains, DEFAULT_HEIGHT_MOUNTAINS) != 0.0f) {
 			prefix.append("#define mountainsFlag\n");
 		}
-		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CreateSpecular, 0.0f) != 0.0f) {
-			prefix.append("#define createSpecularFlag\n");
+		
+		int createTexture = (int) getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CreateTexture, TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE);
+		int createTextureCount = 0;
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE) != 0) {
+			prefix.append("#define createDiffuseFlag\n");
+			createTextureCount++;
 		}
-		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CreateNormal, 0.0f) != 0.0f) {
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_NORMAL_TEXTURE) != 0) {
 			prefix.append("#define createNormalFlag\n");
+			createTextureCount++;
 		}
-		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CreateEmissive, 0.0f) != 0.0f) {
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_SPECULAR_TEXTURE) != 0) {
+			prefix.append("#define createSpecularFlag\n");
+			createTextureCount++;
+		}
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_EMISSIVE_TEXTURE) != 0) {
 			prefix.append("#define createEmissiveFlag\n");
+			createTextureCount++;
+		}
+		if (createTextureCount > 1) {
+			prefix.append("#define useMultiTextureRendering\n");
 		}
 		
 		if (renderable.material.get(ColorArrayAttribute.PlanetColors) != null) {

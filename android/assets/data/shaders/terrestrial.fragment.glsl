@@ -9,6 +9,9 @@ precision highp float;
 #define HIGH
 #endif
 
+//layout(location = 0)out vec4 output1; 
+//layout(location = 1)out vec4 output2; 
+
 uniform float u_heightMin;
 uniform float u_heightMax;
 uniform float u_heightFrequency;
@@ -311,7 +314,8 @@ void main() {
 			normal = vec3(0.0, 0.0, 1.0);
 		}
 		gl_FragColor.rgb = clamp((normal + 1.0) / 2.0, 0.0, 1.0);
-	#elif defined(createEmissiveFlag)
+	#endif
+	#if defined(createEmissiveFlag)
 		// TODO untested and probably wrong!
 		float height = calculateHeight(v_texCoords0);
 
@@ -324,11 +328,13 @@ void main() {
 		#endif
 
 		gl_FragColor.rgb = color;
-	#elif defined(createSpecularFlag)
+	#endif
+	#if defined(createSpecularFlag)
 		float height = calculateHeight(v_texCoords0);
 
 		gl_FragColor.rgba = if_then_else(when_gt(height, u_heightWater), vec4(0.2, 0.2, 0.2, 1.0), vec4(0.8, 0.8, 0.8, 1.0));
-	#else
+	#endif
+	#if defined(createDiffuseFlag)
 		float height = calculateHeight(v_texCoords0);
 
 		float distEquator = abs(v_texCoords0.t - 0.5) * 2.0;
@@ -367,8 +373,11 @@ void main() {
 			}
 		#endif
 				
-		gl_FragData[0].rgb = color;
-		//gl_FragData[1].rgb = vec3(color.r, color.g, 1.0);
+		gl_FragColor.rgb = color;
+//		gl_FragData[0].rgb = color;
+//		gl_FragData[1].rgb = vec3(color.r, color.g, 0.0);
+//		output1.rgb = vec3(color.r, 0.0, 0.0);
+//		output2.rgb = vec3(color.r, color.g, 0.0);
 	#endif
 }
 

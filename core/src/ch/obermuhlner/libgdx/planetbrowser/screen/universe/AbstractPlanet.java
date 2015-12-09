@@ -141,22 +141,39 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		return new FloatArrayAttribute(FloatArrayAttribute.PlanetColorFrequencies, floatArray);
 	}
 	
-	public Texture renderTextureSpecular (Material material, ShaderProvider shaderProvider) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular()); // FIXME just adding attribute is wrong, modifies the material
-		return renderTextureDiffuse(material, shaderProvider);
+	public Texture renderTextureDiffuse (Material material, ShaderProvider shaderProvider) {
+		material.set(TerrestrialPlanetFloatAttribute.createCreateDiffuse()); // FIXME just adding attribute is wrong, modifies the material
+		return renderTextures(material, shaderProvider, 1).get(0);
 	}
-	
+
 	public Texture renderTextureNormal (Material material, ShaderProvider shaderProvider) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateNormal()); // FIXME just adding attribute is wrong, modifies the material
-		return renderTextureDiffuse(material, shaderProvider);
+		return renderTextures(material, shaderProvider, 1).get(0);
+	}
+	
+	public Texture renderTextureSpecular (Material material, ShaderProvider shaderProvider) {
+		material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular()); // FIXME just adding attribute is wrong, modifies the material
+		return renderTextures(material, shaderProvider, 1).get(0);
 	}
 	
 	public Texture renderTextureEmissive (Material material, ShaderProvider shaderProvider) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateEmissive()); // FIXME just adding attribute is wrong, modifies the material
-		return renderTextureDiffuse(material, shaderProvider);
+		return renderTextures(material, shaderProvider, 1).get(0);
 	}
 	
-	public Texture renderTextureDiffuse (Material material, ShaderProvider shaderProvider) {
+	public Array<Texture> renderTextureDiffuseNormalSpecular (Material material, ShaderProvider shaderProvider) {
+		if (USE_MULTI_TEXTURE_RENDERING) {
+			return renderTextures(material, shaderProvider, 3);
+		} else {
+			Array<Texture> textures = new Array<Texture>();
+			textures.add(renderTextureDiffuse(material, shaderProvider));
+			textures.add(renderTextureNormal(material, shaderProvider));
+			textures.add(renderTextureSpecular(material, shaderProvider));
+			return textures;
+		}
+	}
+	
+	private Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureCount) {
 		final int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
 		
 		final int rectSize = 1;
@@ -177,7 +194,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		MultiTextureFrameBuffer multiTextureFrameBuffer = null;
 		FrameBuffer frameBuffer = null;
 		if (USE_MULTI_TEXTURE_RENDERING) {
-			multiTextureFrameBuffer = new MultiTextureFrameBuffer(Pixmap.Format.RGB888, textureSize, textureSize, 2);
+			multiTextureFrameBuffer = new MultiTextureFrameBuffer(Pixmap.Format.RGB888, textureSize, textureSize, textureCount);
 			multiTextureFrameBuffer.begin();			
 		} else {
 			frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, textureSize, textureSize, false);
@@ -192,20 +209,21 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		modelBatch.render(instance);
 		modelBatch.end();
 
-		Texture texture;
+		Array<Texture> textures;
 		if (USE_MULTI_TEXTURE_RENDERING) {
 			multiTextureFrameBuffer.end();
-			texture = multiTextureFrameBuffer.getColorBufferTextures().get(0);
+			textures = multiTextureFrameBuffer.getColorBufferTextures();
 		} else {
 			frameBuffer.end();
-			texture = frameBuffer.getColorBufferTexture();
+			textures = new Array<Texture>();
+			textures.add(frameBuffer.getColorBufferTexture());
 		}		
 
 		model.dispose();
 		modelBatch.dispose();
 		//frameBuffer.dispose(); // FIXME memory leak
 		
-		return texture;
+		return textures;
 	}
 
 	public FrameBuffer renderFrameBufferNormal (Material material, ShaderProvider shaderProvider) {

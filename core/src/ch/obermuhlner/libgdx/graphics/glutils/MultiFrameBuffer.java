@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 
 /** <p>
@@ -117,12 +118,16 @@ public abstract class MultiFrameBuffer<T extends GLTexture> implements Disposabl
 
 		gl.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferHandle);
 
+		IntBuffer drawBuffers = BufferUtils.newIntBuffer(colorTextures.size);
 		for (int i = 0; i < colorTextures.size; i++) {
 			T texture = colorTextures.get(i);
 			gl.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0 + i, GL30.GL_TEXTURE_2D,
 					texture.getTextureObjectHandle(), 0);
+			drawBuffers.put(GL30.GL_COLOR_ATTACHMENT0 + i);
 		}
-
+		drawBuffers.position(0);
+		
+		gl.glDrawBuffers(drawBuffers.capacity(), drawBuffers);
 		gl.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
 		gl.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 
