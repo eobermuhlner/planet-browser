@@ -62,6 +62,7 @@ public class OptionsScreen extends AbstractStageScreen {
 			public void changed(ChangeEvent event, Actor actor) {
 				PlanetBrowser.INSTANCE.options.setGeneratedTexturesSize(selectGeneratedTexturesSize.getSelected());
 				PlanetBrowser.INSTANCE.options.setSphereDivisions(selectSphereDivisions.getSelected());
+				PlanetBrowser.INSTANCE.options.save();
 				PlanetBrowser.INSTANCE.setScreen(new WelcomeScreen());
 			}
 		}));
