@@ -11,6 +11,7 @@ public class ShaderUtils {
 
 	public static String createErrorMessage(ShaderProgram program, String vertexSource, String fragmentSource) {
 		StringBuilder message = new StringBuilder();
+		message.append("Shader compilation errors:\n");
 		
 		String log = program.getLog();
 		
