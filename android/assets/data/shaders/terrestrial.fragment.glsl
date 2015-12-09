@@ -297,46 +297,15 @@ void main() {
 	vec2 r1 = vec2(u_random0+u_random5, u_random1+u_random4);
 	vec2 r2 = vec2(u_random0+u_random6, u_random1+u_random3);
 	vec2 r3 = vec2(u_random0+u_random7, u_random1+u_random2);
+
+	vec3 diffuseColor;
+	vec3 normalColor;
+	vec3 specularColor;
+	vec3 emissiveColor;
 	
-	#if defined(createNormalFlag)
-		vec3 normal;
-		float height = calculateHeight(v_texCoords0);
-		if (height > u_heightWater) {
-			float offset = 0.000001;
-			float heightDeltaX = calculateHeight(v_texCoords0 + vec2(offset, 0.0));
-			float heightDeltaY = calculateHeight(v_texCoords0 + vec2(0.0, offset));
-			float deltaX = height - heightDeltaX;
-			float deltaY = height - heightDeltaY;
-			vec3 tangentX = vec3(offset, 0, deltaX / 100.0);
-			vec3 tangentY = vec3(0, offset, deltaY / 100.0);
-			normal = normalize(cross(tangentX, tangentY));
-		} else {
-			normal = vec3(0.0, 0.0, 1.0);
-		}
-		gl_FragColor.rgb = clamp((normal + 1.0) / 2.0, 0.0, 1.0);
-	#endif
-	#if defined(createEmissiveFlag)
-		// TODO untested and probably wrong!
-		float height = calculateHeight(v_texCoords0);
+	float height = calculateHeight(v_texCoords0);
 
-		vec3 color = vec3(0.0, 0.0, 0.0);
-		#ifdef diffuseTextureFlag
-			color = texture2D(u_diffuseTexture, vec2(clamp(height, 0.0, 1.0), distEquator)).rgb;
-		#endif
-		#ifdef planetColorsFlag
-			color = planetColor(v_texCoords0, height, distEquator);
-		#endif
-
-		gl_FragColor.rgb = color;
-	#endif
-	#if defined(createSpecularFlag)
-		float height = calculateHeight(v_texCoords0);
-
-		gl_FragColor.rgba = if_then_else(when_gt(height, u_heightWater), vec4(0.2, 0.2, 0.2, 1.0), vec4(0.8, 0.8, 0.8, 1.0));
-	#endif
 	#if defined(createDiffuseFlag)
-		float height = calculateHeight(v_texCoords0);
-
 		float distEquator = abs(v_texCoords0.t - 0.5) * 2.0;
 		distEquator += pnoise2(v_texCoords0,  8.0) * 0.04;
 		distEquator += pnoise2(v_texCoords0, 16.0) * 0.02;
@@ -373,11 +342,57 @@ void main() {
 			}
 		#endif
 				
-		gl_FragColor.rgb = color;
-//		gl_FragData[0].rgb = color;
-//		gl_FragData[1].rgb = vec3(color.r, color.g, 0.0);
-//		output1.rgb = vec3(color.r, 0.0, 0.0);
-//		output2.rgb = vec3(color.r, color.g, 0.0);
+		diffuseColor = color;
+	#endif
+	#if defined(createNormalFlag)
+		vec3 normal;
+		if (height > u_heightWater) {
+			float offset = 0.000001;
+			float heightDeltaX = calculateHeight(v_texCoords0 + vec2(offset, 0.0));
+			float heightDeltaY = calculateHeight(v_texCoords0 + vec2(0.0, offset));
+			float deltaX = height - heightDeltaX;
+			float deltaY = height - heightDeltaY;
+			vec3 tangentX = vec3(offset, 0, deltaX / 100.0);
+			vec3 tangentY = vec3(0, offset, deltaY / 100.0);
+			normal = normalize(cross(tangentX, tangentY));
+		} else {
+			normal = vec3(0.0, 0.0, 1.0);
+		}
+		normalColor = clamp((normal + 1.0) / 2.0, 0.0, 1.0);
+	#endif
+	#if defined(createSpecularFlag)
+		specularColor = if_then_else(when_gt(height, u_heightWater), vec4(0.2, 0.2, 0.2, 1.0), vec4(0.8, 0.8, 0.8, 1.0)).rgb;
+	#endif
+	#if defined(createEmissiveFlag)
+		vec3 color = vec3(0.0, 0.0, 0.0);
+		#ifdef diffuseTextureFlag
+			color = texture2D(u_diffuseTexture, vec2(clamp(height, 0.0, 1.0), distEquator)).rgb;
+		#endif
+		#ifdef planetColorsFlag
+			color = planetColor(v_texCoords0, height, distEquator);
+		#endif
+
+		emissiveColor = color;
+	#endif
+
+	#if defined(multiTextureRenderingFlag)
+		gl_FragData[0].rgb = diffuseColor;
+		gl_FragData[1].rgb = normalColor;
+		gl_FragData[2].rgb = specularColor;
+		gl_FragData[3].rgb = emissiveColor;
+	#else
+		#if defined(createDiffuseFlag)
+			gl_FragColor.rgb = diffuseColor;
+		#endif
+		#if defined(createNormalFlag)
+			gl_FragColor.rgb = normalColor;
+		#endif
+		#if defined(createSpecularFlag)
+			gl_FragColor.rgb = specularColor;
+		#endif
+		#if defined(createEmmissiveFlag)
+			gl_FragColor.rgb = emissiveColor;
+		#endif
 	#endif
 }
 

@@ -28,7 +28,7 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public abstract class AbstractPlanet implements ModelInstanceFactory {
 
-	private static final boolean USE_MULTI_TEXTURE_RENDERING = false;
+	private static final boolean USE_MULTI_TEXTURE_RENDERING = true;
 	
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -163,6 +163,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	
 	public Array<Texture> renderTextureDiffuseNormalSpecular (Material material, ShaderProvider shaderProvider) {
 		if (USE_MULTI_TEXTURE_RENDERING) {
+			material.set(TerrestrialPlanetFloatAttribute.createTextures(true, true, true, false)); // FIXME just adding attribute is wrong, modifies the material
 			return renderTextures(material, shaderProvider, 3);
 		} else {
 			Array<Texture> textures = new Array<Texture>();

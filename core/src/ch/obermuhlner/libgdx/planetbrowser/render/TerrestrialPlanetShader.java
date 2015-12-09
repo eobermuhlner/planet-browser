@@ -156,7 +156,7 @@ public class TerrestrialPlanetShader implements Shader {
 			createTextureCount++;
 		}
 		if (createTextureCount > 1) {
-			prefix.append("#define useMultiTextureRendering\n");
+			prefix.append("#define multiTextureRenderingFlag\n");
 		}
 		
 		if (renderable.material.get(ColorArrayAttribute.PlanetColors) != null) {

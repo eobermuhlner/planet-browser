@@ -84,6 +84,24 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_EMISSIVE_TEXTURE);
 	}
 
+	public static TerrestrialPlanetFloatAttribute createTextures (boolean diffuse, boolean normal, boolean specular, boolean emissive) {
+		int value = 0;
+		if (diffuse) {
+			value |= CREATE_DIFFUSE_TEXTURE;
+		}
+		if (normal) {
+			value |= CREATE_NORMAL_TEXTURE;
+		}
+		if (specular) {
+			value |= CREATE_SPECULAR_TEXTURE;
+		}
+		if (emissive) {
+			value |= CREATE_EMISSIVE_TEXTURE;
+		}
+		
+		return new TerrestrialPlanetFloatAttribute(CreateTexture, value);
+	}
+
 	private TerrestrialPlanetFloatAttribute(long type, float value) {
 		super(type, value);
 	}
