@@ -1,3 +1,4 @@
+#line 0 1
 
 //varying vec3 v_debug_vec3;
 

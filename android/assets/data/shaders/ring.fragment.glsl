@@ -1,3 +1,5 @@
+#line 0 2
+
 //
 // Fragment shader for emissive texture depending on vertex normal and direction to camera.
 // 

@@ -1,3 +1,4 @@
+#line 0 1
 attribute vec3 a_position;
 attribute vec2 a_texCoord0;
  
