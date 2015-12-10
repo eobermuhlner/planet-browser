@@ -214,6 +214,18 @@ float when_le(float x, float y) {
   return 1.0 - when_gt(x, y);
 }
 
+float if_then_else(float condition, float trueValue, float falseValue) {
+	float result = trueValue * condition;
+	result += falseValue * when_not(condition);
+	return result;
+}
+
+vec3 if_then_else(float condition, vec3 trueValue, vec3 falseValue) {
+	vec3 result = trueValue * condition;
+	result += falseValue * when_not(condition);
+	return result;
+}
+
 vec4 if_then_else(float condition, vec4 trueValue, vec4 falseValue) {
 	vec4 result = trueValue * condition;
 	result += falseValue * when_not(condition);
@@ -300,15 +312,15 @@ void main() {
 	vec2 r2 = vec2(u_random0+u_random6, u_random1+u_random3);
 	vec2 r3 = vec2(u_random0+u_random7, u_random1+u_random2);
 
-	vec3 diffuseColor;
-	vec3 normalColor;
-	vec3 specularColor;
-	vec3 emissiveColor;
+	vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
+	vec3 normalColor = vec3(0.5, 0.5, 1.0);
+	vec3 specularColor = vec3(0.0, 0.0, 0.0);
+	vec3 emissiveColor = vec3(0.0, 0.0, 0.0);
 	
 	float height = calculateHeight(v_texCoords0);
+	float distEquator = abs(v_texCoords0.t - 0.5) * 2.0;
 
 	#if defined(createDiffuseFlag)
-		float distEquator = abs(v_texCoords0.t - 0.5) * 2.0;
 		distEquator += pnoise2(v_texCoords0,  8.0) * 0.04;
 		distEquator += pnoise2(v_texCoords0, 16.0) * 0.02;
 		distEquator += pnoise2(v_texCoords0, 32.0) * 0.01;
@@ -321,33 +333,32 @@ void main() {
 			distEquator = distEquator + absIceLevel * 0.15;
 		}
 	
-		vec3 color = vec3(0.0, 0.0, 1.0);
+		diffuseColor = vec3(0.0, 0.0, 1.0);
 		#ifdef diffuseTextureFlag
-			color = texture2D(u_diffuseTexture, vec2(clamp(height, 0.0, 1.0), distEquator)).rgb;
+			diffuseColor = texture2D(u_diffuseTexture, vec2(clamp(height, 0.0, 1.0), distEquator)).rgb;
 		#endif
 		#ifdef planetColorsFlag
-			color = planetColor(v_texCoords0, height, distEquator);
+			diffuseColor = planetColor(v_texCoords0, height, distEquator);
 		#endif
 		#ifdef debugColorFlag
-			color = vec3(height, distEquator, 1.0);
+			diffuseColor = vec3(height, distEquator, 1.0);
 		#endif
 		
 		#ifdef colorNoiseFlag
 			if (height > u_heightWater) {
 				// make noise on land, not on water
 				float colorNoise = fractalNoiseCheap(v_texCoords0+r1, u_colorFrequency, u_colorNoise);
-				color = color * (1.0 + colorNoise);
+				diffuseColor = diffuseColor * (1.0 + colorNoise);
 //				float colorNoiseR = 1.0 + fractalNoiseCheap(v_texCoords0+r1, u_colorFrequency, u_colorNoise);
 //				float colorNoiseG = 1.0 + fractalNoiseCheap(v_texCoords0+r2, u_colorFrequency, u_colorNoise);
 //				float colorNoiseB = 1.0 + fractalNoiseCheap(v_texCoords0+r3, u_colorFrequency, u_colorNoise);
-//				color = vec3(color.r * colorNoiseR, color.g * colorNoiseG, color.b * colorNoiseB);
+//				diffuseColor = vec3(diffuseColor.r * colorNoiseR, diffuseColor.g * colorNoiseG, diffuseColor.b * colorNoiseB);
 			}
 		#endif
-				
-		diffuseColor = color;
 	#endif
+	
 	#if defined(createNormalFlag)
-		vec3 normal;
+		vec3 normal = vec3(0.0, 0.0, 1.0);
 		if (height > u_heightWater) {
 			float offset = 0.000001;
 			float heightDeltaX = calculateHeight(v_texCoords0 + vec2(offset, 0.0));
@@ -357,31 +368,39 @@ void main() {
 			vec3 tangentX = vec3(offset, 0, deltaX / 100.0);
 			vec3 tangentY = vec3(0, offset, deltaY / 100.0);
 			normal = normalize(cross(tangentX, tangentY));
-		} else {
-			normal = vec3(0.0, 0.0, 1.0);
 		}
 		normalColor = clamp((normal + 1.0) / 2.0, 0.0, 1.0);
 	#endif
+	
 	#if defined(createSpecularFlag)
-		specularColor = if_then_else(when_gt(height, u_heightWater), vec4(0.2, 0.2, 0.2, 1.0), vec4(0.8, 0.8, 0.8, 1.0)).rgb;
+		specularColor = if_then_else(
+			when_gt(height, u_heightWater), 
+				vec4(0.2, 0.2, 0.2, 1.0), 
+				vec4(0.8, 0.8, 0.8, 1.0)).rgb;
 	#endif
+	
 	#if defined(createEmissiveFlag)
-		vec3 color = vec3(0.0, 0.0, 0.0);
 		#ifdef diffuseTextureFlag
-			color = texture2D(u_diffuseTexture, vec2(clamp(height, 0.0, 1.0), distEquator)).rgb;
+			emissiveColor = texture2D(u_diffuseTexture, vec2(clamp(height, 0.0, 1.0), distEquator)).rgb;
 		#endif
 		#ifdef planetColorsFlag
-			color = planetColor(v_texCoords0, height, distEquator);
+			emissiveColor = planetColor(v_texCoords0, height, distEquator);
 		#endif
-
-		emissiveColor = color;
 	#endif
 
 	#if defined(multiTextureRenderingFlag)
-		gl_FragData[0].rgb = diffuseColor;
-		gl_FragData[1].rgb = normalColor;
-		gl_FragData[2].rgb = specularColor;
-		gl_FragData[3].rgb = emissiveColor;
+		#if defined(createDiffuseFlag)
+			gl_FragData[createDiffuseOutput].rgb = diffuseColor;
+		#endif
+		#if defined(createNormalFlag)
+			gl_FragData[createNormalOutput].rgb = normalColor;
+		#endif
+		#if defined(createSpecularFlag)
+			gl_FragData[createSpecularOutput].rgb = specularColor;
+		#endif
+		#if defined(createEmissiveFlag)
+			gl_FragData[createEmissiveOutput].rgb = emissiveColor;
+		#endif
 	#else
 		#if defined(createDiffuseFlag)
 			gl_FragColor.rgb = diffuseColor;
@@ -392,7 +411,7 @@ void main() {
 		#if defined(createSpecularFlag)
 			gl_FragColor.rgb = specularColor;
 		#endif
-		#if defined(createEmmissiveFlag)
+		#if defined(createEmissiveFlag)
 			gl_FragColor.rgb = emissiveColor;
 		#endif
 	#endif

@@ -1,9 +1,6 @@
 
 package ch.obermuhlner.libgdx.planetbrowser.render;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -141,18 +138,22 @@ public class TerrestrialPlanetShader implements Shader {
 		int createTextureCount = 0;
 		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE) != 0) {
 			prefix.append("#define createDiffuseFlag\n");
+			prefix.append("#define createDiffuseOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
 		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_NORMAL_TEXTURE) != 0) {
 			prefix.append("#define createNormalFlag\n");
+			prefix.append("#define createNormalOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
 		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_SPECULAR_TEXTURE) != 0) {
 			prefix.append("#define createSpecularFlag\n");
+			prefix.append("#define createSpecularOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
 		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_EMISSIVE_TEXTURE) != 0) {
 			prefix.append("#define createEmissiveFlag\n");
+			prefix.append("#define createEmissiveOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
 		if (createTextureCount > 1) {

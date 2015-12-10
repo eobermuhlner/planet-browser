@@ -28,7 +28,7 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public abstract class AbstractPlanet implements ModelInstanceFactory {
 
-	private static final boolean USE_MULTI_TEXTURE_RENDERING = true;
+	private static final boolean USE_MULTI_TEXTURE_RENDERING = false;
 	
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -161,15 +161,29 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		return renderTextures(material, shaderProvider, 1).get(0);
 	}
 	
-	public Array<Texture> renderTextureDiffuseNormalSpecular (Material material, ShaderProvider shaderProvider) {
+	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
 		if (USE_MULTI_TEXTURE_RENDERING) {
-			material.set(TerrestrialPlanetFloatAttribute.createTextures(true, true, true, false)); // FIXME just adding attribute is wrong, modifies the material
-			return renderTextures(material, shaderProvider, 3);
+			material.set(TerrestrialPlanetFloatAttribute.createTextures(diffuse, normal, specular, emissive));
+			int textureCount = 0;
+			textureCount += diffuse ? 1 : 0;
+			textureCount += normal ? 1 : 0;
+			textureCount += specular ? 1 : 0;
+			textureCount += emissive ? 1 : 0;
+			return renderTextures(material, shaderProvider, textureCount);
 		} else {
 			Array<Texture> textures = new Array<Texture>();
-			textures.add(renderTextureDiffuse(material, shaderProvider));
-			textures.add(renderTextureNormal(material, shaderProvider));
-			textures.add(renderTextureSpecular(material, shaderProvider));
+			if (diffuse) {
+				textures.add(renderTextureDiffuse(material, shaderProvider));
+			}
+			if (normal) {
+				textures.add(renderTextureNormal(material, shaderProvider));
+			}
+			if (specular) {
+				textures.add(renderTextureSpecular(material, shaderProvider));
+			}
+			if (emissive) {
+				textures.add(renderTextureEmissive(material, shaderProvider));
+			}
 			return textures;
 		}
 	}

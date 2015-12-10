@@ -67,7 +67,7 @@ public class Earth extends AbstractPlanet {
 		if (true) {
 			materialAttributes.clear();
 
-			Array<Texture> textures = renderTextureDiffuseNormalSpecular(material, new TerrestrialPlanetShader.Provider());
+			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), true, true, true, false);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(1)));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(2)));

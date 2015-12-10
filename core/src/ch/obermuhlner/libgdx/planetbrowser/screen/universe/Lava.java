@@ -55,19 +55,18 @@ public class Lava extends AbstractPlanet {
 		if (true) {
 			materialAttributes.clear();
 
-			Texture textureDiffuse = renderTextureDiffuse(material, new TerrestrialPlanetShader.Provider());
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
-			
-			Texture textureNormal = renderTextureNormal(material, new TerrestrialPlanetShader.Provider());
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
+			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), true, true, false, true);
+			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
+			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(1)));
+			//materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(2)));
+			materialAttributes.add(new TextureAttribute(TextureAttribute.Emissive, textures.get(2)));
 
 			float emissive = 0.5f;
 			materialAttributes.add(new ColorAttribute(ColorAttribute.Emissive, emissive, emissive, emissive, 1.0f));
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Emissive, textureDiffuse));
 		
 			material = new Material(materialAttributes);
 		}
 
-		return new Material(materialAttributes);
+		return material;
 	}
 }
