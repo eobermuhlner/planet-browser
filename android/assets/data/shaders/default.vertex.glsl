@@ -1,5 +1,3 @@
-#line 0 1
-
 //varying vec3 v_debug_vec3;
 
 #if defined(diffuseTextureFlag) || defined(emissiveTextureFlag) || defined(specularTextureFlag)

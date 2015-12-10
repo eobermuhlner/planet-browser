@@ -1,4 +1,3 @@
-#line 0 1
 //
 // Vertex shader for emissive color depending on vertex normal and direction to camera, mixing with constant emissive color.
 // 

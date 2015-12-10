@@ -1,5 +1,3 @@
-#line 0 2
-
 //
 // Pass-through fragment shader.
 //

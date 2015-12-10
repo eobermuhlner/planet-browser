@@ -83,7 +83,7 @@ public class TerrestrialPlanetShader implements Shader {
 		String prefix = createPrefix();
 		program = new ShaderProgram(prefix + vertexProgram, prefix + fragmentProgram);
 		if (!program.isCompiled()) {
-			throw new GdxRuntimeException(ShaderUtils.createErrorMessage(program, vertexProgram, fragmentProgram));
+			throw new GdxRuntimeException(ShaderUtils.createErrorMessage(program));
 		}
 
 		u_projViewTrans = program.getUniformLocation("u_projViewTrans");

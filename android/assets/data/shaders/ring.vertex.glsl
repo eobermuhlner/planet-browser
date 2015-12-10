@@ -1,4 +1,3 @@
-#line 0 1
 //
 // Vertex shader for emissive texture depending on vertex normal and direction to camera.
 // 
