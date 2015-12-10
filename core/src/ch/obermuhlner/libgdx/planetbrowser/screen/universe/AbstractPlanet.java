@@ -2,6 +2,7 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -28,8 +29,6 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public abstract class AbstractPlanet implements ModelInstanceFactory {
 
-	private static final boolean USE_MULTI_TEXTURE_RENDERING = false;
-	
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
 	@Override
@@ -162,7 +161,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	}
 	
 	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
-		if (USE_MULTI_TEXTURE_RENDERING) {
+		if (useMultiTextureRendering()) {
 			material.set(TerrestrialPlanetFloatAttribute.createTextures(diffuse, normal, specular, emissive));
 			int textureCount = 0;
 			textureCount += diffuse ? 1 : 0;
@@ -208,7 +207,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 
 		MultiTextureFrameBuffer multiTextureFrameBuffer = null;
 		FrameBuffer frameBuffer = null;
-		if (USE_MULTI_TEXTURE_RENDERING) {
+		if (useMultiTextureRendering()) {
 			multiTextureFrameBuffer = new MultiTextureFrameBuffer(Pixmap.Format.RGB888, textureSize, textureSize, textureCount);
 			multiTextureFrameBuffer.begin();			
 		} else {
@@ -225,7 +224,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		modelBatch.end();
 
 		Array<Texture> textures;
-		if (USE_MULTI_TEXTURE_RENDERING) {
+		if (multiTextureFrameBuffer != null) {
 			multiTextureFrameBuffer.end();
 			textures = multiTextureFrameBuffer.getColorBufferTextures();
 		} else {
@@ -282,5 +281,9 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		//modelBatch.dispose(); //FIXME memory leak
 				
 		return frameBuffer;
+	}
+
+	private boolean useMultiTextureRendering() {
+		return Gdx.graphics.isGL30Available() && PlanetBrowser.INSTANCE.options.getUseMultiTextureRendering();
 	}
 }

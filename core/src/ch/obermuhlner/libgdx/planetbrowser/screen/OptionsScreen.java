@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -21,6 +22,8 @@ public class OptionsScreen extends AbstractStageScreen {
 	
 	private SelectBox<Integer> selectGeneratedTexturesSize;
 	private SelectBox<Integer> selectSphereDivisions;
+
+	private CheckBox checkUseMultiTextureRendering;
 
 	protected void prepareStage(Stage stage, Gui gui) {
 		Table rootTable = gui.rootTable();
@@ -53,6 +56,13 @@ public class OptionsScreen extends AbstractStageScreen {
 		selectSphereDivisions = new SelectBox<Integer>(gui.skin);
 		table.add(selectSphereDivisions);
 		selectSphereDivisions.setItems(80, 70, 60, 50, 40, 30, 20);
+	
+		if (Gdx.graphics.isGL30Available()) {
+			table.row();
+			table.add(gui.label("Multi Texture Rendering"));
+			checkUseMultiTextureRendering = new CheckBox("", gui.skin);
+			table.add(checkUseMultiTextureRendering);
+		}
 		
 		// button row
 		
@@ -60,8 +70,7 @@ public class OptionsScreen extends AbstractStageScreen {
 		table.add(gui.button("OK", new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				PlanetBrowser.INSTANCE.options.setGeneratedTexturesSize(selectGeneratedTexturesSize.getSelected());
-				PlanetBrowser.INSTANCE.options.setSphereDivisions(selectSphereDivisions.getSelected());
+				pullOptionsFromGui();
 				PlanetBrowser.INSTANCE.options.save();
 				PlanetBrowser.INSTANCE.setScreen(new WelcomeScreen());
 			}
@@ -86,5 +95,16 @@ public class OptionsScreen extends AbstractStageScreen {
 	private void pushOptionsToGui() {
 		selectGeneratedTexturesSize.setSelected(PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize());
 		selectSphereDivisions.setSelected(PlanetBrowser.INSTANCE.options.getSphereDivisions());
+		if (Gdx.graphics.isGL30Available()) {
+			checkUseMultiTextureRendering.setChecked(PlanetBrowser.INSTANCE.options.getUseMultiTextureRendering());
+		}
+	}
+
+	private void pullOptionsFromGui() {
+		PlanetBrowser.INSTANCE.options.setGeneratedTexturesSize(selectGeneratedTexturesSize.getSelected());
+		PlanetBrowser.INSTANCE.options.setSphereDivisions(selectSphereDivisions.getSelected());
+		if (Gdx.graphics.isGL30Available()) {
+			PlanetBrowser.INSTANCE.options.setMultiTextureRendering(checkUseMultiTextureRendering.isChecked());
+		}
 	}
 }
