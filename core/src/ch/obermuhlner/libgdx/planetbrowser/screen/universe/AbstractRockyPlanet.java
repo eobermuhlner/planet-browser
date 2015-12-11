@@ -150,7 +150,12 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 	public Texture renderTextureNormalsCraters(Random random, PlanetData planetData, Material material, ShaderProvider shaderProvider) {
 		final int targetTextureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
 		
-		int craterFactor = random.nextInt(5, 30);
+		int craterFactor;
+		if (planetData.hasAtmosphere && random.nextBoolean(0.8)) {
+			craterFactor = random.nextInt(1, 2);
+		} else {
+			craterFactor = random.nextInt(5, 30);
+		}
 
 		boolean favorHugeCraters = random.nextBoolean(0.1);
 		int hugeCraterCount = favorHugeCraters ? random.nextInt(5, 20) : random.nextInt(0, 10);
@@ -160,7 +165,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		int tinyCraterCount = random.nextInt(200, favorHugeCraters ? 300 : 3000);
 		
 		int softCount = 0;
-		if (planetData.hasAtmosphere ) {
+		if (planetData.hasAtmosphere && random.nextBoolean(0.1)) {
 			softCount = random.nextInt(1000, 2000);
 		}
 
