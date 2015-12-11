@@ -303,7 +303,34 @@ vec3 planetColor(vec2 P, float height, float distEquator) {
 	vec3 color = mix(color1, color2, h);
 	return color;
 }
+
+vec3 planetSpecularColor(vec2 P, float height, float distEquator) {
+	float h = (clamp(height, u_heightMin, u_heightMax) - u_heightMin) * (u_heightMax - u_heightMin);
+	float v1 = fractalNoiseCheap(P+vec2(u_random0 + u_random7), u_planetColorFrequency0, 1.0) * 0.5 + 0.5;
+	float v2 = fractalNoiseCheap(P+vec2(u_random0 + u_random6), u_planetColorFrequency1, 1.0) * 0.5 + 0.5;
+	float v3 = fractalNoiseCheap(P+vec2(u_random0 + u_random5), u_planetColorFrequency2, 1.0) * 0.5 + 0.5;
+	float v4 = fractalNoiseCheap(P+vec2(u_random0 + u_random3), u_planetColorFrequency3, 1.0) * 0.5 + 0.5;
+
+	vec3 p0 = vec3(0.2, 0.2, 0.2);
+	vec3 p1 = vec3(0.5, 0.5, 0.5);
+	vec3 p2 = vec3(0.0, 0.0, 0.0);
+	vec3 p3 = vec3(0.7, 0.7, 0.7);
+	vec3 p4 = vec3(0.3, 0.3, 0.3);
+	vec3 p5 = vec3(0.9, 0.9, 0.9);
+
+	vec3 color1 = mix(p0, p1, v1);
+	color1 = mix(color1, p2, v2);
+	vec3 color2 = mix(p3, p4, v3);
+	color2 = mix(color2, p5, v4);
+	vec3 color = mix(color1, color2, h);
+	return color;
+}
+#else
+vec3 planetSpecularColor(vec2 P, float height, float distEquator) {
+	return vec3(0.2, 0.2, 0.2);
+}
 #endif
+
 
 void main() {
 	vec2 r1 = vec2(u_random0+u_random5, u_random1+u_random4);
@@ -371,10 +398,17 @@ void main() {
 	#endif
 	
 	#if defined(createSpecularFlag)
-		specularColor = if_then_else(
-			when_gt(height, u_heightWater), 
-				vec4(0.2, 0.2, 0.2, 1.0), 
-				vec4(0.8, 0.8, 0.8, 1.0)).rgb;
+		#ifdef specularTextureFlag
+			specularColor = texture2D(u_specularTexture, vec2(clamp(height, 0.0, 1.0), distEquator)).rgb;
+		#elsif planetColorsFlag
+			specularColor = planetSpecularColor(v_texCoords0, height, distEquator);
+		#else
+			specularColor = if_then_else(
+				when_gt(height, u_heightWater), 
+					vec3(0.2, 0.2, 0.2), 
+					vec3(0.8, 0.8, 0.8));
+		#endif
+	
 	#endif
 	
 	#if defined(createEmissiveFlag)
