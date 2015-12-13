@@ -219,17 +219,17 @@ public class TerrestrialPlanetShader implements Shader {
 		ColorArrayAttribute colorArrayAttribute = (ColorArrayAttribute) renderable.material.get(ColorArrayAttribute.PlanetColors);
 		if (colorArrayAttribute != null) {
 			int index = 0;
-			program.setUniformf(u_planetColor0, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);
+			program.setUniformf(u_planetColor0, colorArrayAttribute.colors[index]);
 			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor1, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			program.setUniformf(u_planetColor1, colorArrayAttribute.colors[index]);			
 			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor2, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			program.setUniformf(u_planetColor2, colorArrayAttribute.colors[index]);			
 			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor3, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			program.setUniformf(u_planetColor3, colorArrayAttribute.colors[index]);			
 			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor4, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			program.setUniformf(u_planetColor4, colorArrayAttribute.colors[index]);			
 			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor5, colorArrayAttribute.colors[index].r, colorArrayAttribute.colors[index].g, colorArrayAttribute.colors[index].b);			
+			program.setUniformf(u_planetColor5, colorArrayAttribute.colors[index]);			
 		}
 		
 		// planet color frequency

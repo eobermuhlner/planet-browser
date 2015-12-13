@@ -123,7 +123,11 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 				p(3, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
 				p(20, TerrestrialHeightShaderFunctionAttribute.functionPower(random.nextFloat(1.0f, 4.0f)))
 				);
-		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors(random, 6, colors, 0.01f, 0.1f)));
+		Color[] randomColors = randomColors(random, 6, colors, 0.01f, 0.1f);
+		for (int i = 0; i < randomColors.length; i++) {
+			randomColors[i].a = random.nextBoolean(0.1) ? random.nextFloat(0.5f, 1.0f) : random.nextFloat(0.0f, 0.3f);
+		}
+		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors));
 		materialAttributes.add(createPlanetColorFrequenciesAttribute(random));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
@@ -138,9 +142,6 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), true, false, true, false);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(1)));
-
-			Texture textureDiffuse = renderTextureDiffuse(material, new TerrestrialPlanetShader.Provider());
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
 
 			Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, new TerrestrialPlanetShader.Provider());
 			materialAttributes.add(TextureAttribute.createNormal(textureNormal));
