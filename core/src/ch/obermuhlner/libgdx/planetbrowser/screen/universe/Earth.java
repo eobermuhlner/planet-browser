@@ -1,5 +1,6 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
+import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2;
 
 import com.badlogic.gdx.graphics.Color;
@@ -33,22 +34,30 @@ public class Earth extends AbstractPlanet {
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
-		Texture texture = PlanetBrowser.getTexture("terrestrial_colors.png");
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, texture));
+		@SuppressWarnings("unchecked")
+		String textureName = random.nextProbability(
+				p(3, "terrestrial0"),
+				p(5, "terrestrial1"),
+				p(20, "terrestrial2"),
+				p(20, "terrestrial3"),
+				p(1, "terrestrial4")
+				);
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_colors.png")));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture("terrestrial_speculars.png")));
 		
 		float temperature = random.nextFloat((float)Units.celsiusToKelvin(-20), (float)Units.celsiusToKelvin(50));
 		float water = random.nextFloat(0.0f, 1.0f) * MathUtil.transform((float)Units.celsiusToKelvin(20), (float)Units.celsiusToKelvin(50), 1.0f, 0.0f, temperature);
-		float heightMin = MathUtil.transform(0f, 1f, 0.6f, 0.0f, water);
+		float heightMin = MathUtil.transform(0f, 1f, 0.5f, 0.0f, water);
 		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.7f, water);
 		int heightFrequency = random.nextInt(0, 5);
 		float iceLevel = MathUtil.transform((float)Units.celsiusToKelvin(-20), (float)Units.celsiusToKelvin(50), 1f, -1f, temperature);
 
-//		System.out.println();
-//		System.out.println("water=" + water);
-//		System.out.println("temperature=" + temperature);
-//		System.out.println("ice=" + iceLevel);
-//		System.out.println("height=" + heightMin + " - " + heightMax);
-//		System.out.println("heightFrequency=" + heightFrequency);
+		System.out.println();
+		System.out.println("water=" + water);
+		System.out.println("temperature=" + temperature);
+		System.out.println("ice=" + iceLevel);
+		System.out.println("height=" + heightMin + " - " + heightMax);
+		System.out.println("heightFrequency=" + heightFrequency);
 		
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightWater(0.45f)); // depends on texture
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));

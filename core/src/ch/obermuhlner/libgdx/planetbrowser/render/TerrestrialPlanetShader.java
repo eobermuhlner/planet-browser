@@ -30,6 +30,7 @@ public class TerrestrialPlanetShader implements Shader {
 	private int u_projViewTrans;
 	private int u_worldTrans;
 	private int u_diffuseTexture;
+	private int u_specularTexture;
 	private int u_time;
 
 	private int u_heightMin;
@@ -89,6 +90,7 @@ public class TerrestrialPlanetShader implements Shader {
 		u_projViewTrans = program.getUniformLocation("u_projViewTrans");
 		u_worldTrans = program.getUniformLocation("u_worldTrans");
 		u_diffuseTexture = program.getUniformLocation("u_diffuseTexture");
+		u_specularTexture = program.getUniformLocation("u_specularTexture");
 		u_time = program.getUniformLocation("u_time");
 
 		u_heightMin = program.getUniformLocation("u_heightMin");
@@ -162,10 +164,12 @@ public class TerrestrialPlanetShader implements Shader {
 		
 		if (renderable.material.get(ColorArrayAttribute.PlanetColors) != null) {
 			prefix.append("#define planetColorsFlag\n");
-		} else if (renderable.material.get(TextureAttribute.Diffuse) != null) {
+		}
+		if (renderable.material.get(TextureAttribute.Diffuse) != null) {
 			prefix.append("#define diffuseTextureFlag\n");			
-		} else {
-			prefix.append("#define debugColorsFlag\n");
+		}
+		if (renderable.material.get(TextureAttribute.Specular) != null) {
+			prefix.append("#define specularTextureFlag\n");			
 		}
 		
 		return prefix.toString();
@@ -195,10 +199,17 @@ public class TerrestrialPlanetShader implements Shader {
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 		
 		// diffuse texture
-		TextureAttribute textureAttribute = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
-		if (textureAttribute != null) {
-			int textureUnit = context.textureBinder.bind(textureAttribute.textureDescription);
+		TextureAttribute diffuseTextureAttribute = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
+		if (diffuseTextureAttribute != null) {
+			int textureUnit = context.textureBinder.bind(diffuseTextureAttribute.textureDescription);
 			program.setUniformi(u_diffuseTexture, textureUnit);
+		}
+
+		// specular texture
+		TextureAttribute specularTextureAttribute = (TextureAttribute) renderable.material.get(TextureAttribute.Specular);
+		if (specularTextureAttribute != null) {
+			int textureUnit = context.textureBinder.bind(specularTextureAttribute.textureDescription);
+			program.setUniformi(u_specularTexture, textureUnit);
 		}
 
 		// planet data

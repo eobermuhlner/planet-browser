@@ -47,6 +47,10 @@ varying vec2 v_texCoords0;
 uniform sampler2D u_diffuseTexture;
 #endif
 
+#ifdef specularTextureFlag
+uniform sampler2D u_specularTexture;
+#endif
+
 #ifdef planetColorsFlag
 uniform vec4 u_planetColor0;
 uniform vec4 u_planetColor1;
@@ -320,12 +324,6 @@ void main() {
 	float distEquator = abs(v_texCoords0.t - 0.5) * 2.0;
 
 	#if defined(createDiffuseFlag) || defined(createSpecularFlag)
-		#ifdef planetColorsFlag
-			vec4 diffuseColorAndSpecularValue = planetColor(v_texCoords0, height, distEquator);
-		#endif
-	#endif
-
-	#if defined(createDiffuseFlag)
 		distEquator += pnoise2(v_texCoords0,  8.0) * 0.04;
 		distEquator += pnoise2(v_texCoords0, 16.0) * 0.02;
 		distEquator += pnoise2(v_texCoords0, 32.0) * 0.01;
@@ -337,7 +335,13 @@ void main() {
 		} else {
 			distEquator = distEquator + absIceLevel * 0.15;
 		}
-	
+
+		#ifdef planetColorsFlag
+			vec4 diffuseColorAndSpecularValue = planetColor(v_texCoords0, height, distEquator);
+		#endif
+	#endif
+
+	#if defined(createDiffuseFlag)
 		diffuseColor = vec3(1.0, 0.0, 0.0);
 		#ifdef diffuseTextureFlag
 			diffuseColor = texture2D(u_diffuseTexture, vec2(clamp(height, 0.0, 1.0), distEquator)).rgb;
@@ -383,13 +387,6 @@ void main() {
 		#endif
 		#ifdef planetColorsFlag
 			specularColor = vec3(1.0, 1.0, 1.0) * diffuseColorAndSpecularValue.a;
-			//specularColor = planetSpecularColor(v_texCoords0, height, distEquator);
-		#else
-			//float fractalNoise = fractalNoiseCheap(v_texCoords0, 4.0, 1.0);
-			specularColor = if_then_else(
-				when_gt(height, u_heightWater), 
-					vec3(0.5, 0.5, 0.5) * height, 
-					vec3(0.9, 0.9, 0.9));
 		#endif
 	#endif
 	
