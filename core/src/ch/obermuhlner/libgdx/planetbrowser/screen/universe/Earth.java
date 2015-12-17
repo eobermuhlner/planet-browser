@@ -43,7 +43,7 @@ public class Earth extends AbstractPlanet {
 				p(1, "terrestrial4")
 				);
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_colors.png")));
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture("terrestrial_speculars.png")));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture(textureName + "_speculars.png")));
 		
 		float temperature = random.nextFloat((float)Units.celsiusToKelvin(-20), (float)Units.celsiusToKelvin(50));
 		float water = random.nextFloat(0.0f, 1.0f) * MathUtil.transform((float)Units.celsiusToKelvin(20), (float)Units.celsiusToKelvin(50), 1.0f, 0.0f, temperature);

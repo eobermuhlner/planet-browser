@@ -43,7 +43,7 @@ public class PlanetBrowser extends Game {
 				//"skybox_neg_x.png", "skybox_pos_x.png", "skybox_neg_y.png", "skybox_pos_y.png", "skybox_neg_z.png", "skybox_pos_z.png",
 				"terrestrial0_colors.png", "terrestrial1_colors.png", "terrestrial2_colors.png", "terrestrial3_colors.png", "terrestrial4_colors.png",  
 				"mars_colors.png", "moon_colors.png", "lava_colors.png",
-				"terrestrial_speculars.png", 
+				"terrestrial0_speculars.png", "terrestrial1_speculars.png", "terrestrial2_speculars.png", "terrestrial3_speculars.png", "terrestrial4_speculars.png",  
 				"normals_crater_huge1.png",
 				"normals_crater_big1.png", "normals_crater_big2.png",
 				"normals_crater_medium1.png", "normals_crater_medium2.png", "normals_crater_medium3.png",
