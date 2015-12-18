@@ -36,12 +36,14 @@ public class Earth extends AbstractPlanet {
 
 		@SuppressWarnings("unchecked")
 		String textureName = random.nextProbability(
-				p(3, "terrestrial0"),
-				p(5, "terrestrial1"),
-				p(20, "terrestrial2"),
-				p(20, "terrestrial3"),
-				p(1, "terrestrial4")
+				p(3, "terrestrial0"), // no life
+				p(5, "terrestrial1"), // life at the coasts
+				p(20, "terrestrial2"), // earth-like life
+				p(20, "terrestrial3"), // earth-life life with more variations
+				p(1, "terrestrial4"), // life only in cold climate (high altitude)
+				p(8, "terrestrial5") // life only in the water
 				);
+		textureName = "terrestrial4";
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_colors.png")));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture(textureName + "_speculars.png")));
 		
