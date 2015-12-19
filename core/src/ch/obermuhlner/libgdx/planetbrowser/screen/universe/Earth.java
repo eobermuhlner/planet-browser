@@ -36,25 +36,26 @@ public class Earth extends AbstractPlanet {
 
 		@SuppressWarnings("unchecked")
 		String textureName = random.nextProbability(
-				p(3, "terrestrial0"), // no life
-				p(5, "terrestrial1"), // life at the coasts
-				p(20, "terrestrial2"), // earth-like life
-				p(20, "terrestrial3"), // earth-life life with more variations
-				p(1, "terrestrial4"), // life only in cold climate (high altitude)
-				p(8, "terrestrial5") // life only in the water
+				p(3, "terrestrial_nolife"), // no life
+				p(5, "terrestrial_coastlife"), // life at the coasts
+				p(20, "terrestrial_earthlife"), // earth-like life
+				p(20, "terrestrial_earthvariantlife"), // earth-life life with more variations
+				p(8, "terrestrial_highlife"), // life only in cold climate (high altitude
+				p(3, "terrestrial_spotlife"), // life only in some spots
+				p(1, "terrestrial_waterlife") // life only in the water
 				);
-		textureName = "terrestrial4";
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_colors.png")));
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture(textureName + "_speculars.png")));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_diffuse_map.png")));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture(textureName + "_specular_map.png")));
 		
 		float temperature = random.nextFloat((float)Units.celsiusToKelvin(-20), (float)Units.celsiusToKelvin(50));
 		float water = random.nextFloat(0.0f, 1.0f) * MathUtil.transform((float)Units.celsiusToKelvin(20), (float)Units.celsiusToKelvin(50), 1.0f, 0.0f, temperature);
 		float heightMin = MathUtil.transform(0f, 1f, 0.5f, 0.0f, water);
 		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.7f, water);
-		int heightFrequency = random.nextInt(0, 5);
+		int heightFrequency = random.nextInt(3, 5);
 		float iceLevel = MathUtil.transform((float)Units.celsiusToKelvin(-20), (float)Units.celsiusToKelvin(50), 1f, -1f, temperature);
 
 		System.out.println();
+		System.out.println("texture=" + textureName);
 		System.out.println("water=" + water);
 		System.out.println("temperature=" + temperature);
 		System.out.println("ice=" + iceLevel);

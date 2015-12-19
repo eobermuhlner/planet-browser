@@ -41,9 +41,13 @@ public class PlanetBrowser extends Game {
 			textureParameter.magFilter = TextureFilter.Linear;
 			for (String textureName : new String[] {
 				//"skybox_neg_x.png", "skybox_pos_x.png", "skybox_neg_y.png", "skybox_pos_y.png", "skybox_neg_z.png", "skybox_pos_z.png",
-				"terrestrial0_colors.png", "terrestrial1_colors.png", "terrestrial2_colors.png", "terrestrial3_colors.png", "terrestrial4_colors.png", "terrestrial5_colors.png",     
-				"terrestrial0_speculars.png", "terrestrial1_speculars.png", "terrestrial2_speculars.png", "terrestrial3_speculars.png", "terrestrial4_speculars.png", "terrestrial5_speculars.png",  
-				"mars_colors.png", "moon_colors.png", "lava_colors.png",
+				"terrestrial_nolife_diffuse_map.png", "terrestrial_nolife_specular_map.png", 
+				"terrestrial_coastlife_diffuse_map.png", "terrestrial_coastlife_specular_map.png", 
+				"terrestrial_earthlife_diffuse_map.png", "terrestrial_earthlife_specular_map.png",
+				"terrestrial_earthvariantlife_diffuse_map.png", "terrestrial_earthvariantlife_specular_map.png", 
+				"terrestrial_highlife_diffuse_map.png", "terrestrial_highlife_specular_map.png", 
+				"terrestrial_spotlife_diffuse_map.png", "terrestrial_spotlife_specular_map.png", 
+				"terrestrial_waterlife_diffuse_map.png", "terrestrial_waterlife_specular_map.png",
 				"normals_crater_huge1.png",
 				"normals_crater_big1.png", "normals_crater_big2.png",
 				"normals_crater_medium1.png", "normals_crater_medium2.png", "normals_crater_medium3.png",
