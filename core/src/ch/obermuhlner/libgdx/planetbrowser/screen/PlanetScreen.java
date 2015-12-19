@@ -41,11 +41,11 @@ public class PlanetScreen extends AbstractScreen {
 
 	private static final ModelInstanceFactory[] ALL_PLANET_FACTORIES = new ModelInstanceFactory[] {
 		new Earth(),
-//		new Moon(),
-//		new Mars(),
-//		new Lava(),
-//		new Jupiter(),
-//		new Neptune(),
+		new Moon(),
+		new Mars(),
+		new Lava(),
+		new Jupiter(),
+		new Neptune(),
 		//new IceMoon(),
 		//new Sun(),
 		//new TexturePlanet("earth.jpg", "earth_normals.jpg", null),
