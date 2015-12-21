@@ -19,6 +19,8 @@ import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 public class OptionsScreen extends AbstractStageScreen {
 
 	private static final int COLUMNS = 2;
+
+	private static final int SMALLEST_TEXTURE_SIZE = 16;
 	
 	private SelectBox<Integer> selectGeneratedTexturesSize;
 	private SelectBox<Integer> selectSphereDivisions;
@@ -40,7 +42,7 @@ public class OptionsScreen extends AbstractStageScreen {
 		Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_SIZE, intBuffer);
 		int maxTextureSize = intBuffer.get();
 		Array<Integer> textureSizeArray = new Array<Integer>();
-		for (int textureSize = 512; textureSize <= maxTextureSize; textureSize*=2) {
+		for (int textureSize = SMALLEST_TEXTURE_SIZE; textureSize <= maxTextureSize; textureSize*=2) {
 			textureSizeArray.add(textureSize);
 		}
 		textureSizeArray.reverse();
@@ -55,7 +57,7 @@ public class OptionsScreen extends AbstractStageScreen {
 		table.add(gui.label("Sphere Divisions"));		
 		selectSphereDivisions = new SelectBox<Integer>(gui.skin);
 		table.add(selectSphereDivisions);
-		selectSphereDivisions.setItems(80, 70, 60, 50, 40, 30, 20);
+		selectSphereDivisions.setItems(100, 90, 80, 70, 60, 50, 40, 30, 20);
 	
 		if (Gdx.graphics.isGL30Available()) {
 			table.row();
