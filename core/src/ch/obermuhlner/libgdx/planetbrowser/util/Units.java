@@ -230,4 +230,15 @@ public class Units {
 		}
 	}
 
+	private static final String PADDING = "000000000000000000000000";
+	public static String toString(int value, int length) {
+		String string = String.valueOf(value);
+		int padding = length - string.length();
+		if (padding > 0) {
+			return PADDING.substring(0, padding) + string;
+		} else {
+			return string;
+		}
+	}
+
 }

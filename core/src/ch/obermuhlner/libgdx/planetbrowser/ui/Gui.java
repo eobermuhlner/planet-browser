@@ -46,7 +46,16 @@ public class Gui {
 		table.setBackground("table");
 		
 		table.left();
-		table.defaults().align(Align.left).spaceRight(50);
+
+		table.setDebug(DEBUG);
+		
+		return table;
+	}
+
+	public TableLayout tableLayout() {
+		TableLayout table = new TableLayout(skin);
+		
+		table.left();
 
 		table.setDebug(DEBUG);
 		
@@ -77,5 +86,18 @@ public class Gui {
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems(items);
 		return selectBox;
+	}
+
+	public class TableLayout extends Table {
+		public TableLayout(Skin skin) {
+			super(skin);
+		}
+		
+		public Label addNumeric(String format) {
+			Label label = label(format);
+			label.setAlignment(Align.right);
+			add(label).align(Align.right).width(label.getWidth());
+			return label;
+		}
 	}
 }

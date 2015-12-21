@@ -1,5 +1,6 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,13 +22,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Earth;
-import ch.obermuhlner.libgdx.planetbrowser.screen.universe.IceMoon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Jupiter;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Lava;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Mars;
@@ -35,7 +34,9 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Moon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Neptune;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
+import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
+import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class PlanetScreen extends AbstractScreen {
 
@@ -82,7 +83,11 @@ public class PlanetScreen extends AbstractScreen {
 	private final Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
 	private Label fpsLabel;
+	private Label deltaMillisLabel;
 	private Label createTimeLabel;
+	private Label timeHourLabel;
+	private Label timeMinLabel;
+	private Label timeSecLabel;
 	
 	public PlanetScreen() {
 		this(1);
@@ -123,7 +128,7 @@ public class PlanetScreen extends AbstractScreen {
 		modelInstances.addAll(modelInstanceFactory.createModelInstance(random));
 		long endMillis = System.currentTimeMillis();
 		long deltaMillis = endMillis - startMillis;
-		createTimeLabel.setText(String.valueOf(deltaMillis) + " ms");
+		createTimeLabel.setText(String.valueOf(deltaMillis));
 	}
 	
 	private void prepareStage() {
@@ -163,11 +168,34 @@ public class PlanetScreen extends AbstractScreen {
 		});
 		selectBox.setSelected(currentPlanetFactoryName);
 		
-		fpsLabel = gui.label("888 FPS");
-		table.add(fpsLabel).align(Align.right);
+		{
+			TableLayout tableLayout = gui.tableLayout();
+			table.add(tableLayout);
+	
+			fpsLabel = tableLayout.addNumeric("888");
+			tableLayout.add(" FPS (");
+			deltaMillisLabel = tableLayout.addNumeric("88888");
+			tableLayout.add(" ms)");
+		}
+		
+		{
+			TableLayout tableLayout = gui.tableLayout();
+			table.add(tableLayout);
+	
+			createTimeLabel = tableLayout.addNumeric("8888");
+			tableLayout.add(" ms");
+		}
+		
+		{
+			TableLayout tableLayout = gui.tableLayout();
+			table.add(tableLayout);
 
-		createTimeLabel = gui.label("8888 ms");
-		table.add(createTimeLabel).align(Align.right);
+			timeHourLabel = tableLayout.addNumeric("88");
+			tableLayout.add(":");
+			timeMinLabel = tableLayout.addNumeric("88");
+			tableLayout.add(":");
+			timeSecLabel = tableLayout.addNumeric("88");
+		}
 
 		stage.addActor(rootTable);
 	}
@@ -203,7 +231,12 @@ public class PlanetScreen extends AbstractScreen {
 		
 		modelBatch.end();
 		
-		fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond() + " FPS"));
+		fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
+		deltaMillisLabel.setText(String.valueOf((int) (Gdx.graphics.getDeltaTime() * 1000)));
+		Date date = new Date();
+		timeHourLabel.setText(Units.toString(date.getHours(), 2));
+		timeMinLabel.setText(Units.toString(date.getMinutes(), 2));
+		timeSecLabel.setText(Units.toString(date.getSeconds(), 2));
 		
 		stage.draw();
 	}
