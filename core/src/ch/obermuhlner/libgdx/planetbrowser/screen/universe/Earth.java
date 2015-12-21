@@ -44,6 +44,7 @@ public class Earth extends AbstractPlanet {
 				p(3, "terrestrial_spotlife"), // life only in some spots
 				p(1, "terrestrial_waterlife") // life only in the water
 				);
+		//textureName = "terrestrial_spotlife";
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_diffuse_map.png")));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture(textureName + "_specular_map.png")));
 		
