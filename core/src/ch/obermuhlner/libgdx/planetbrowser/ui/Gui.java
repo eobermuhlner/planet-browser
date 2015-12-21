@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -68,6 +69,10 @@ public class Gui {
 		return button;
 	}
 
+	public float textWidth(String text) {
+		return label(text).getWidth();
+	}
+	
 	public Label label(String text) {
 		return new Label(text, skin);
 	}
@@ -75,7 +80,17 @@ public class Gui {
 	public Label title(String text) {
 		return new Label(text, skin, "title");
 	}
+	
+	public TextField textField(String text, ChangeListener changeListener) {
+		TextField textField = textField(text);
+		textField.addListener(changeListener);
+		return textField;
+	}
 
+	public TextField textField(String text) {
+		return new TextField(text, skin);
+	}
+	
 	public SelectBox<String> select(String... items) {
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems(items);

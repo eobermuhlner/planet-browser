@@ -21,6 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -94,7 +96,14 @@ public class PlanetScreen extends AbstractScreen {
 	}
 
 	public PlanetScreen(long randomSeed) {
-		this.randomSeed = randomSeed;
+		this.randomSeed = validRange(randomSeed);
+	}
+
+	private long validRange(long seed) {
+		while (seed < 0) {
+			seed += 1000000;
+		}
+		return seed % 1000000;
 	}
 
 	@Override
@@ -112,11 +121,11 @@ public class PlanetScreen extends AbstractScreen {
 		camera.lookAt(0, 0, 0);
 		camera.update(true);
 		
-//		float ambientLight = 0.1f;
+//		float ambientLight = 0.3f;
 //		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight, ambientLight, ambientLight, 1f));
 
 		PointLight light = new PointLight();
-		light.set(Color.WHITE, 0f, 0f, 50f, 1.0f);
+		light.set(Color.WHITE, 30f, 0f, -30f, 1.0f);
 		environment.add(light);
 		
 		cameraInputController = new CameraInputController(camera);
@@ -146,7 +155,22 @@ public class PlanetScreen extends AbstractScreen {
 				PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed - 1));
 			}
 		}));
-		table.add(gui.label(String.valueOf(randomSeed)));
+		
+		final TextField seedTextField = gui.textField(String.valueOf(randomSeed));
+		seedTextField.setTextFieldFilter(new TextFieldFilter.DigitsOnlyFilter());
+		seedTextField.setWidth(gui.textWidth("888888") * 1.1f);
+		table.add(seedTextField);
+		table.add(gui.button("Go", new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				try {
+					int seed = Integer.parseInt(seedTextField.getText());
+					PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(seed));
+				} catch (NumberFormatException ex) {
+					seedTextField.setText(String.valueOf(randomSeed));
+				}
+			}
+		}));
 		table.add(gui.button("Next", new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
