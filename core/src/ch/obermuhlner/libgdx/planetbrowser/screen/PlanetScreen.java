@@ -1,6 +1,6 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
@@ -41,6 +43,8 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class PlanetScreen extends AbstractScreen {
+	
+	private static final boolean SHOW_INFO = true;
 
 	private static final ModelInstanceFactory[] ALL_PLANET_FACTORIES = new ModelInstanceFactory[] {
 		new Earth(),
@@ -90,6 +94,7 @@ public class PlanetScreen extends AbstractScreen {
 	private Label timeHourLabel;
 	private Label timeMinLabel;
 	private Label timeSecLabel;
+	private Label timeMillisLabel;
 	
 	public PlanetScreen() {
 		this(1);
@@ -143,85 +148,118 @@ public class PlanetScreen extends AbstractScreen {
 	private void prepareStage() {
 		Gui gui = new Gui();
 		Table rootTable = gui.rootTable();
-		
-		rootTable.row();
-		Table table = gui.table();
-		rootTable.add(table);
-		table.row();
-		
-		table.add(gui.button("Previous", new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed - 1));
-			}
-		}));
-		
-		final TextField seedTextField = gui.textField(String.valueOf(randomSeed));
-		seedTextField.setTextFieldFilter(new TextFieldFilter.DigitsOnlyFilter());
-		seedTextField.setWidth(gui.textWidth("888888") * 1.1f);
-		table.add(seedTextField);
-		table.add(gui.button("Go", new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				try {
-					int seed = Integer.parseInt(seedTextField.getText());
-					PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(seed));
-				} catch (NumberFormatException ex) {
-					seedTextField.setText(String.valueOf(randomSeed));
-				}
-			}
-		}));
-		table.add(gui.button("Next", new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed + 1));
-			}
-		}));
-		
-		final SelectBox<String> selectBox = gui.select(planetFactoryNames);
-		table.add(selectBox);
-		selectBox.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				String selected = selectBox.getSelected();
-				if (! currentPlanetFactoryName.equals(selected)) {
-					currentPlanetFactoryName = selected;
-					PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed));
-				}
-			}
-		});
-		selectBox.setSelected(currentPlanetFactoryName);
-		
-		{
-			TableLayout tableLayout = gui.tableLayout();
-			table.add(tableLayout);
-	
-			fpsLabel = tableLayout.addNumeric("888");
-			tableLayout.add(" FPS (");
-			deltaMillisLabel = tableLayout.addNumeric("88888");
-			tableLayout.add(" ms)");
-		}
-		
-		{
-			TableLayout tableLayout = gui.tableLayout();
-			table.add(tableLayout);
-	
-			createTimeLabel = tableLayout.addNumeric("8888");
-			tableLayout.add(" ms");
-		}
-		
-		{
-			TableLayout tableLayout = gui.tableLayout();
-			table.add(tableLayout);
 
-			timeHourLabel = tableLayout.addNumeric("88");
-			tableLayout.add(":");
-			timeMinLabel = tableLayout.addNumeric("88");
-			tableLayout.add(":");
-			timeSecLabel = tableLayout.addNumeric("88");
+		{
+			rootTable.row().expandX();
+			Table buttonPanel = gui.table();
+			buttonPanel.center();
+			rootTable.add(buttonPanel);
+			buttonPanel.row();
+			
+			buttonPanel.add(gui.button("Previous", new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed - 1));
+				}
+			}));
+			
+			final TextField seedTextField = gui.textField(String.valueOf(randomSeed));
+			seedTextField.setTextFieldFilter(new TextFieldFilter.DigitsOnlyFilter());
+			seedTextField.setWidth(gui.textWidth("888888") * 1.1f);
+			buttonPanel.add(seedTextField);
+			buttonPanel.add(gui.button("Go", new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					try {
+						int seed = Integer.parseInt(seedTextField.getText());
+						PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(seed));
+					} catch (NumberFormatException ex) {
+						seedTextField.setText(String.valueOf(randomSeed));
+					}
+				}
+			}));
+			seedTextField.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					
+				}
+			});
+			buttonPanel.add(gui.button("Next", new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed + 1));
+				}
+			}));
+			
+			final SelectBox<String> selectBox = gui.select(planetFactoryNames);
+			buttonPanel.add(selectBox);
+			selectBox.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					String selected = selectBox.getSelected();
+					if (! currentPlanetFactoryName.equals(selected)) {
+						currentPlanetFactoryName = selected;
+						PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed));
+					}
+				}
+			});
+			selectBox.setSelected(currentPlanetFactoryName);
 		}
 
+		{
+			// dummy to have the center empty
+			rootTable.row().expandY();
+			rootTable.add("");
+		}
+
+		{
+			rootTable.row();
+			Table infoPanel = gui.table();
+			rootTable.add(infoPanel).align(Align.bottomLeft);
+			{
+				TableLayout tableLayout = gui.tableLayout();
+				infoPanel.row();
+				infoPanel.add("FPS");
+				infoPanel.add(tableLayout.right());
+		
+				fpsLabel = tableLayout.addNumeric("888");
+				tableLayout.add(" (");
+				deltaMillisLabel = tableLayout.addNumeric("8888");
+				tableLayout.add(" ms)");
+			}
+			
+			{
+				TableLayout tableLayout = gui.tableLayout();
+				infoPanel.row();
+				infoPanel.add("Planet Creation");
+				infoPanel.add(tableLayout).right();
+				
+				createTimeLabel = tableLayout.addNumeric("8888");
+				tableLayout.add(" ms");
+			}
+	
+			if (SHOW_INFO) {
+				{
+					TableLayout tableLayout = gui.tableLayout();
+					infoPanel.row();
+					infoPanel.add("Standard Time");
+					infoPanel.add(tableLayout).right();
+					
+					timeHourLabel = tableLayout.addNumeric("88");
+					tableLayout.add(":").spaceLeft(2).spaceRight(2);
+					timeMinLabel = tableLayout.addNumeric("88");
+					tableLayout.add(":").spaceLeft(2).spaceRight(2);
+					timeSecLabel = tableLayout.addNumeric("88");
+					tableLayout.add(".").spaceLeft(2).spaceRight(2);
+					timeMillisLabel = tableLayout.addNumeric("8");
+				}
+			}
+		}
+		
 		stage.addActor(rootTable);
+		
+//		Date now = new Date();
+//		referenceMillis = new Date(now.getYear(), now.getMonth(), now.getDate()).getTime();
 	}
 
 	@Override
@@ -257,10 +295,14 @@ public class PlanetScreen extends AbstractScreen {
 		
 		fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
 		deltaMillisLabel.setText(String.valueOf((int) (Gdx.graphics.getDeltaTime() * 1000)));
-		Date date = new Date();
-		timeHourLabel.setText(Units.toString(date.getHours(), 2));
-		timeMinLabel.setText(Units.toString(date.getMinutes(), 2));
-		timeSecLabel.setText(Units.toString(date.getSeconds(), 2));
+		
+		if (SHOW_INFO) {
+			Calendar now = Calendar.getInstance();
+			timeHourLabel.setText(Units.toString(now.get(Calendar.HOUR_OF_DAY), 2));
+			timeMinLabel.setText(Units.toString(now.get(Calendar.MINUTE), 2));
+			timeSecLabel.setText(Units.toString(now.get(Calendar.SECOND), 2));
+			timeMillisLabel.setText(Units.toString(now.get(Calendar.MILLISECOND) / 100, 1));
+		}
 		
 		stage.draw();
 	}

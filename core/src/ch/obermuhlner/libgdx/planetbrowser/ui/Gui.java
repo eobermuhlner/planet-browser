@@ -22,9 +22,8 @@ public class Gui {
 		Table table = new Table(skin);
 		
 		table.top();
-//		table.top().left();
-//		table.defaults().left().space(10);
-
+		table.left();
+		
 		table.setFillParent(true);
 		table.setDebug(DEBUG);
 
@@ -47,6 +46,7 @@ public class Gui {
 		table.setBackground("table");
 		
 		table.left();
+		table.defaults().left();
 
 		table.setDebug(DEBUG);
 		
@@ -57,6 +57,7 @@ public class Gui {
 		TableLayout table = new TableLayout(skin);
 		
 		table.left();
+		table.defaults().left();
 
 		table.setDebug(DEBUG);
 		
