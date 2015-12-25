@@ -96,6 +96,7 @@ public class PlanetScreen extends AbstractScreen {
 	private Label deltaMillisLabel;
 	private Label createTimeLabel;
 
+	private Label planetTimePercentLabel;
 	private Label planetTimeHourLabel;
 	private Label planetTimeMinLabel;
 	private Label planetTimeSecLabel;
@@ -267,6 +268,8 @@ public class PlanetScreen extends AbstractScreen {
 					infoPanel.add("Planet Time");
 					infoPanel.add(tableLayout).right();
 					
+					planetTimePercentLabel = tableLayout.addNumeric("88.888");
+					tableLayout.add("%  ");
 					planetTimeHourLabel = tableLayout.addNumeric("88");
 					tableLayout.add(":").spaceLeft(2).spaceRight(2);
 					planetTimeMinLabel = tableLayout.addNumeric("88");
@@ -335,6 +338,7 @@ public class PlanetScreen extends AbstractScreen {
 			long planetTimeMillis = nowMillis - planetYearStartMillis;
 			
 			Units.millisToPlanetTime(planetTime, planetTimeMillis, planetDayMillis);
+			planetTimePercentLabel.setText(Units.toString(planetTime.dayFraction * 100, 5));
 			planetTimeHourLabel.setText(Units.toString(stringBuilder, planetTime.hours, '0', 2));
 			planetTimeMinLabel.setText(Units.toString(stringBuilder, planetTime.minutes, '0', 2));
 			planetTimeSecLabel.setText(Units.toString(stringBuilder, planetTime.seconds, '0', 2));
