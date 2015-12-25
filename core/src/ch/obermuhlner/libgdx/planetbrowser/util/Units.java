@@ -230,15 +230,20 @@ public class Units {
 		}
 	}
 
-	private static final String PADDING = "000000000000000000000000";
-	public static String toString(int value, int length) {
-		String string = String.valueOf(value);
-		int padding = length - string.length();
-		if (padding > 0) {
-			return PADDING.substring(0, padding) + string;
-		} else {
-			return string;
+	public static StringBuilder toString(StringBuilder stringBuilder, int value) {
+		return toString(stringBuilder, value, ' ', 0);
+	}
+	
+	public static StringBuilder toString(StringBuilder stringBuilder, int value, char pad, int length) {
+		stringBuilder.setLength(0);
+		String str = String.valueOf(value);
+		
+		for (int i = 0; i < length - str.length(); i++) {
+			stringBuilder.append(pad);
 		}
+		stringBuilder.append(value);
+		
+		return stringBuilder;
 	}
 
 }
