@@ -43,6 +43,7 @@ varying vec2 v_texCoords0;
 attribute vec2 a_texCoord1;
 varying vec2 v_texCoords1;
 varying vec3 v_lightVecTangent;
+#define separateAmbientFlag
 #endif // normalTextureFlag
 
 #ifdef boneWeight0Flag
