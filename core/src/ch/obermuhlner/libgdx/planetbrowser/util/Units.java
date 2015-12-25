@@ -230,6 +230,33 @@ public class Units {
 		}
 	}
 
+	public static void millisToPlanetTime(PlanetTime planetTime, long millis, long planetRevolutionMillis) {
+		long days = millis / planetRevolutionMillis;
+		long dayMillis = millis % planetRevolutionMillis;
+		planetTime.dayFraction = ((double) dayMillis) / planetRevolutionMillis;
+		
+		long remaining = dayMillis;
+		long h = remaining / 3600 / 1000;
+		remaining -= h * 3600 * 1000;
+		long m = remaining / 60 / 1000;
+		remaining -= m * 60 * 1000;
+		long s = remaining / 1000;
+		remaining -= s * 1000;
+		
+		planetTime.hours = (int) h;
+		planetTime.minutes = (int) m;
+		planetTime.seconds = (int) s;
+		planetTime.milliseconds = (int) remaining;
+	}
+	
+	public static class PlanetTime {
+		public double dayFraction;
+		public int hours;
+		public int minutes;
+		public int seconds;
+		public int milliseconds;
+	}
+
 	public static StringBuilder toString(StringBuilder stringBuilder, int value) {
 		return toString(stringBuilder, value, ' ', 0);
 	}
