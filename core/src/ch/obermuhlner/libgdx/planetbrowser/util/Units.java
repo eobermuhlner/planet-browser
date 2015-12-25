@@ -1,13 +1,9 @@
 package ch.obermuhlner.libgdx.planetbrowser.util;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-//import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -40,13 +36,6 @@ public class Units {
 	public static final double SUN_RADIUS = 700000E3;
 	public static final double SUN_LUMINOSITY = 3.827E26; // W
 
-	private static final MathContext MC_SIGNIFICANT_DIGITS = new MathContext(3);
-	
-//	private static NumberFormat numberFormat;
-//	static {
-//		numberFormat = NumberFormat.getNumberInstance(Locale.US);
-//	}
-	
 	private static Unit meterUnits[] = {
 		new Unit(LIGHT_YEAR, "lightyears"),
 		new Unit(1000, "km"),
@@ -96,8 +85,11 @@ public class Units {
 	};
 
 	public static String toString(double value) {
-		return String.valueOf(value);
-//		return numberFormat.format(BigDecimal.valueOf(value).round(MC_SIGNIFICANT_DIGITS));
+		return String.valueOf(roundToSignificantDigits(value, 3));
+	}
+	
+	public static String toString(double value, int significantDigits) {
+		return String.valueOf(roundToSignificantDigits(value, significantDigits));
 	}
 	
 	public static String meterSizeToString(double value) {
