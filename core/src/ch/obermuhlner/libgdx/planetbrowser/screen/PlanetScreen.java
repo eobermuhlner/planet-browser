@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
@@ -56,6 +55,7 @@ public class PlanetScreen extends AbstractScreen {
 		//new IceMoon(),
 		//new Sun(),
 		//new TexturePlanet("earth.jpg", "earth_normals.jpg", null),
+		//new TexturePlanet("earth.jpg", null, null),
 		//new TexturePlanet(null, null, "sun.jpg"),
 	};
 	private static final Array<String> planetFactoryNames = new Array<String>();
@@ -88,6 +88,8 @@ public class PlanetScreen extends AbstractScreen {
 
 	private final Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
+	private final StringBuilder stringBuilder = new StringBuilder();
+	
 	private Label fpsLabel;
 	private Label deltaMillisLabel;
 	private Label createTimeLabel;
@@ -126,7 +128,7 @@ public class PlanetScreen extends AbstractScreen {
 		camera.lookAt(0, 0, 0);
 		camera.update(true);
 		
-//		float ambientLight = 0.3f;
+//		float ambientLight = 0.1f;
 //		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight, ambientLight, ambientLight, 1f));
 
 		PointLight light = new PointLight();
@@ -298,10 +300,10 @@ public class PlanetScreen extends AbstractScreen {
 		
 		if (SHOW_INFO) {
 			Calendar now = Calendar.getInstance();
-			timeHourLabel.setText(Units.toString(now.get(Calendar.HOUR_OF_DAY), 2));
-			timeMinLabel.setText(Units.toString(now.get(Calendar.MINUTE), 2));
-			timeSecLabel.setText(Units.toString(now.get(Calendar.SECOND), 2));
-			timeMillisLabel.setText(Units.toString(now.get(Calendar.MILLISECOND) / 100, 1));
+			timeHourLabel.setText(Units.toString(stringBuilder, now.get(Calendar.HOUR_OF_DAY), '0', 2));
+			timeMinLabel.setText(Units.toString(stringBuilder, now.get(Calendar.MINUTE), '0', 2));
+			timeSecLabel.setText(Units.toString(stringBuilder, now.get(Calendar.SECOND), '0', 2));
+			timeMillisLabel.setText(Units.toString(stringBuilder, now.get(Calendar.MILLISECOND) / 100));
 		}
 		
 		stage.draw();
