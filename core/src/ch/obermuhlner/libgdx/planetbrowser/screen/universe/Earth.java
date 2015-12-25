@@ -39,7 +39,7 @@ public class Earth extends AbstractPlanet {
 				p(3, "terrestrial_nolife"), // no life
 				p(5, "terrestrial_coastlife"), // life at the coasts
 				p(20, "terrestrial_earthlife"), // earth-like life
-				p(20, "terrestrial_earthvariantlife"), // earth-life life with more variations
+				p(10, "terrestrial_earthvariantlife"), // earth-life life with more variations
 				p(8, "terrestrial_highlife"), // life only in cold climate (high altitude
 				p(3, "terrestrial_spotlife"), // life only in some spots
 				p(1, "terrestrial_waterlife") // life only in the water
