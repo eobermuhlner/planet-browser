@@ -326,10 +326,11 @@ public class PlanetScreen extends AbstractScreen {
 			if (planetData.atmosphere != null) {
 				infoPanel.row();
 				infoPanel.add("Atmosphere");
+				infoPanel.add(toMoleculeOverviewString(planetData.atmosphere));
 				infoPanel.add(gui.button("Details", new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						showWindow("Atmosphere", "Analysis of atmosphere.", planetData.atmosphere);
+						showMoleculeAnalysisWindow("Atmosphere", "Analysis of atmosphere.", planetData.atmosphere);
 					}
 				}));
 			}
@@ -378,7 +379,28 @@ public class PlanetScreen extends AbstractScreen {
 		}
 	}
 	
-	private void showWindow(String name, String description, Map<Molecule, Double> molecules) {
+	private String toMoleculeOverviewString(Map<Molecule, Double> molecules) {
+		StringBuilder string = new StringBuilder();
+		
+		boolean first = true;
+		
+		List<Entry<Molecule, Double>> entries = new ArrayList<Entry<Molecule, Double>>(molecules.entrySet());
+		Collections.sort(entries, new EntryDoubleValueComparator());
+		for(Map.Entry<Molecule, Double> entry : entries) {
+			int percent = (int) (entry.getValue() * 100);
+			if (percent >= 2) {
+				if (!first) {
+					string.append(", ");
+				}
+				string.append(entry.getKey().name());
+				first = false;
+			}
+		}
+		
+		return string.toString();
+	}
+	
+	private void showMoleculeAnalysisWindow(String name, String description, Map<Molecule, Double> molecules) {
 		Gui gui = new Gui();
 		final Window window = new Window(name, gui.skin);
 		window.defaults().spaceRight(gui.textWidth("m"));
@@ -386,9 +408,11 @@ public class PlanetScreen extends AbstractScreen {
 		List<Entry<Molecule, Double>> entries = new ArrayList<Entry<Molecule, Double>>(molecules.entrySet());
 		Collections.sort(entries, new EntryDoubleValueComparator());
 		for(Map.Entry<Molecule, Double> entry : entries) {
-			window.row();
-			window.add(entry.getKey().name()).left();
-			window.add(Units.percentToString(entry.getValue())).right();
+			if (entry.getValue().compareTo(0.0) > 0) {
+				window.row();
+				window.add(entry.getKey().name()).left();
+				window.add(Units.percentToString(entry.getValue())).right();
+			}
 		}
 		
 		window.row().center();
