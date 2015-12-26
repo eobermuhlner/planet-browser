@@ -14,6 +14,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribut
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
+import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class Lava extends AbstractPlanet {
 
@@ -22,7 +23,7 @@ public class Lava extends AbstractPlanet {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = false;
-		planetData.temperature = random.nextDouble(600, 1100);
+		planetData.temperature = random.nextDouble(Units.celsiusToKelvin(500), Units.celsiusToKelvin(1200)); // lava liquid 700 - 1200 C
 
 		planetData.fillStandardValues(random);
 		
@@ -33,10 +34,11 @@ public class Lava extends AbstractPlanet {
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
-//		Texture texture = PlanetBrowser.getTexture("lava_colors.png");
-//		materialAttributes.add(TextureAttribute.createDiffuse(texture));
-		
-		float heightPower = MathUtil.pow(10, random.nextFloat(-1f, 1f));
+		float temperatureAsPower = (float)MathUtil.transform(
+				Units.celsiusToKelvin(500), Units.celsiusToKelvin(1200),
+				-1.0, 1.0,
+				planetData.temperature);
+		float heightPower = MathUtil.pow(10, temperatureAsPower);
 		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower);
 		
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, new Color[] {
