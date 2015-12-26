@@ -30,10 +30,12 @@ public class Earth extends AbstractPlanet {
 		planetData.radius = Units.EARTH_RADIUS * random.nextDouble(0.5, 1.5);
 		planetData.period = Units.EARTH_PERIOD * random.nextDouble(0.5, 2.5);
 		planetData.temperature = random.nextDouble(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50));
-		planetData.liquidSurface = random.nextDouble(0, 1) * MathUtil.transform(Units.celsiusToKelvin(20), Units.celsiusToKelvin(50), 1.0f, 0.0f, planetData.temperature);
+		planetData.liquidSurface = random.nextDouble(0, 1) * MathUtil.transform(Units.celsiusToKelvin(20), Units.celsiusToKelvin(50), 1.0, 0.0, planetData.temperature);
 		
 		boolean hot = planetData.temperature > Units.celsiusToKelvin(30);
 		planetData.hasLife = random.nextBoolean(hot ? 0.5 : 0.95);
+
+		double atmosphereWaterContent = planetData.liquidSurface * 1.5 * MathUtil.transform(Units.celsiusToKelvin(-40), Units.celsiusToKelvin(100), 0.0, 1.0, planetData.temperature);
 		
 		if (planetData.hasLife) {
 			// earth
@@ -47,7 +49,7 @@ public class Earth extends AbstractPlanet {
 					p(random.nextGaussian(0.00018), Molecule.CH4),
 					p(random.nextGaussian(0.00011), Molecule.Kr),
 					// water is highly variable (earth = 0.9% overall)
-					p(random.nextGaussian(planetData.liquidSurface * 1.5), Molecule.H2O)
+					p(random.nextGaussian(atmosphereWaterContent), Molecule.H2O)
 					);
 		} else {
 			// estimated earth atmosphere without life
@@ -65,7 +67,7 @@ public class Earth extends AbstractPlanet {
 					p(random.nextGaussian(0.0018), Molecule.Ne),
 					p(random.nextGaussian(0.00011), Molecule.Kr),
 					// water is highly variable (earth = 0.9% overall)
-					p(random.nextGaussian(planetData.liquidSurface * 1.5), Molecule.H2O)
+					p(random.nextGaussian(atmosphereWaterContent), Molecule.H2O)
 					);
 		}
 
