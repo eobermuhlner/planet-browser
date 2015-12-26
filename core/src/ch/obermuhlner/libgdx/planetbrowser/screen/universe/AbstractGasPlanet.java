@@ -34,8 +34,8 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 			Texture textureDiffuse = renderTextureDiffuse(material, new GasPlanetShader.Provider());
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
 
-			//Texture textureNormal = renderTextureNormal(material, new GasPlanetShader.Provider());
-			//materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
+//			Texture textureNormal = renderTextureNormal(material, new GasPlanetShader.Provider());
+//			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
 			
 			material = new Material(materialAttributes);
 		}

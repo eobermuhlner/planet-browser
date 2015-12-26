@@ -1,5 +1,8 @@
 package ch.obermuhlner.libgdx.planetbrowser.util;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -90,6 +93,13 @@ public class Units {
 	
 	public static String toString(double value, int significantDigits) {
 		return String.valueOf(roundToSignificantDigits(value, significantDigits));
+	}
+	
+	public static String toString(double value, int leftDigits, int rightDigits) {
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter writer = new PrintWriter(stringWriter);
+		writer.format("%" + leftDigits + "." + rightDigits + "f", value);
+		return stringWriter.toString();
 	}
 	
 	public static String meterSizeToString(double value) {
@@ -265,4 +275,7 @@ public class Units {
 		return stringBuilder;
 	}
 
+	public static void main(String[] args) {
+		System.out.println(toString(1));
+	}
 }

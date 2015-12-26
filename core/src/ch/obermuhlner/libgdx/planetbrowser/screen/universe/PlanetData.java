@@ -5,4 +5,5 @@ public class PlanetData {
 	public boolean hasAtmosphere;
 	
 	public double radius; // m
+	public double temperature; // K
 }

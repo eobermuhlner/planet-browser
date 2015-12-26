@@ -22,10 +22,11 @@ public class TexturePlanet extends AbstractPlanet {
 	}
 	
 	@Override
-	protected PlanetData createPlanetData(Random random) {
+	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = true;
+		planetData.temperature = random.nextDouble(270, 300);
 		
 		return planetData;
 	}

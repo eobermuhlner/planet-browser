@@ -32,11 +32,9 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
 	@Override
-	public Array<ModelInstance> createModelInstance(Random random) {
+	public Array<ModelInstance> createModelInstance(PlanetData planetData, Random random) {
 		Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
-		PlanetData planetData = createPlanetData(random);
-		
 		float size = (float) random.nextGaussian(getPlanetRadius());
 
 		{
@@ -64,8 +62,6 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		return model;
 	}
 
-	protected abstract PlanetData createPlanetData(Random random);
-	
 	protected abstract Material createPlanetMaterial(Random random, PlanetData planetData);
 
 	protected AtmosphereAttribute getAtmosphereAttribute(Random random, PlanetData planetData, float atmosphereSize) {

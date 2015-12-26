@@ -36,6 +36,7 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Mars;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Moon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Neptune;
+import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.TexturePlanet;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
@@ -45,7 +46,7 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Units.PlanetTime;
 
 public class PlanetScreen extends AbstractScreen {
 	
-	private static final boolean SHOW_INFO = true;
+	private static final boolean SHOW_DEBUG_INFO = true;
 
 	private static final ModelInstanceFactory[] ALL_PLANET_FACTORIES = new ModelInstanceFactory[] {
 		new Earth(),
@@ -91,7 +92,9 @@ public class PlanetScreen extends AbstractScreen {
 	private final Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
 	private final StringBuilder stringBuilder = new StringBuilder();
-	
+
+	private PlanetData planetData;
+
 	private Label fpsLabel;
 	private Label deltaMillisLabel;
 	private Label createTimeLabel;
@@ -111,6 +114,8 @@ public class PlanetScreen extends AbstractScreen {
 	private long planetYearStartMillis;
 	private long planetDayMillis;
 	private PlanetTime planetTime = new PlanetTime();
+
+	private Label temperatureLabel;
 
 	public PlanetScreen() {
 		this(1);
@@ -155,13 +160,16 @@ public class PlanetScreen extends AbstractScreen {
 		Random random = new Random(randomSeed);
 		ModelInstanceFactory modelInstanceFactory = random.next(mapPlanetFactories.get(currentPlanetFactoryName));
 		long startMillis = System.currentTimeMillis();
-		modelInstances.addAll(modelInstanceFactory.createModelInstance(random));
+		planetData = modelInstanceFactory.createPlanetData(random);
+		modelInstances.addAll(modelInstanceFactory.createModelInstance(planetData, random));
 		long endMillis = System.currentTimeMillis();
 		long deltaMillis = endMillis - startMillis;
 		createTimeLabel.setText(String.valueOf(deltaMillis));
 		
 		planetDayMillis = random.nextInt(7, 40) * 3600 * 1000;
 		planetYearStartMillis = endMillis - random.nextInt((int) planetDayMillis);
+		
+		temperatureLabel.setText(Units.kelvinToString(planetData.temperature));
 	}
 	
 	private void prepareStage() {
@@ -169,6 +177,7 @@ public class PlanetScreen extends AbstractScreen {
 		Table rootTable = gui.rootTable();
 
 		{
+			// catalog control panel
 			rootTable.row().expandX();
 			Table buttonPanel = gui.table();
 			buttonPanel.center();
@@ -226,38 +235,27 @@ public class PlanetScreen extends AbstractScreen {
 		}
 
 		{
-			// dummy to have the center empty
-			rootTable.row().expandY();
-			rootTable.add("");
-		}
-
-		{
+			// planet info
 			rootTable.row();
 			Table infoPanel = gui.table();
-			rootTable.add(infoPanel).align(Align.bottomLeft);
-			{
-				TableLayout tableLayout = gui.tableLayout();
-				infoPanel.row();
-				infoPanel.add("FPS");
-				infoPanel.add(tableLayout.right());
-		
-				fpsLabel = tableLayout.addNumeric("888");
-				tableLayout.add(" (");
-				deltaMillisLabel = tableLayout.addNumeric("8888");
-				tableLayout.add(" ms)");
-			}
+			infoPanel.defaults().spaceRight(gui.textWidth("m"));
+			rootTable.add(infoPanel).left();
 			
 			{
 				TableLayout tableLayout = gui.tableLayout();
 				infoPanel.row();
-				infoPanel.add("Planet Creation");
+				infoPanel.add("Ship Time");
 				infoPanel.add(tableLayout).right();
 				
-				createTimeLabel = tableLayout.addNumeric("8888");
-				tableLayout.add(" ms");
+				shipTimeHourLabel = tableLayout.addNumeric("88");
+				tableLayout.add(":").spaceLeft(2).spaceRight(2);
+				shipTimeMinLabel = tableLayout.addNumeric("88");
+				tableLayout.add(":").spaceLeft(2).spaceRight(2);
+				shipTimeSecLabel = tableLayout.addNumeric("88");
+				tableLayout.add(".").spaceLeft(2).spaceRight(2);
+				shipTimeMillisLabel = tableLayout.addNumeric("8");
 			}
-	
-			if (SHOW_INFO) {
+			{
 				Calendar calendar = Calendar.getInstance();
 				calendar.set(calendar.get(Calendar.YEAR), 0, 1, 0, 0);
 				shipYearStartMillis = calendar.getTimeInMillis();
@@ -278,21 +276,45 @@ public class PlanetScreen extends AbstractScreen {
 					tableLayout.add(".").spaceLeft(2).spaceRight(2);
 					planetTimeMillisLabel = tableLayout.addNumeric("8");
 				}
+			}
+			{
+				infoPanel.row();
+				infoPanel.add("Temperature");
+				temperatureLabel = gui.label("");
+				infoPanel.add(temperatureLabel);
+			}
+		}
 
-				{
-					TableLayout tableLayout = gui.tableLayout();
-					infoPanel.row();
-					infoPanel.add("Ship Time");
-					infoPanel.add(tableLayout).right();
-					
-					shipTimeHourLabel = tableLayout.addNumeric("88");
-					tableLayout.add(":").spaceLeft(2).spaceRight(2);
-					shipTimeMinLabel = tableLayout.addNumeric("88");
-					tableLayout.add(":").spaceLeft(2).spaceRight(2);
-					shipTimeSecLabel = tableLayout.addNumeric("88");
-					tableLayout.add(".").spaceLeft(2).spaceRight(2);
-					shipTimeMillisLabel = tableLayout.addNumeric("8");
-				}
+		{
+			// dummy to have the center empty
+			rootTable.row().expandY();
+			rootTable.add("");
+		}
+
+		{
+			rootTable.row();
+			Table infoPanel = gui.table();
+			rootTable.add(infoPanel).align(Align.bottomLeft);
+			if (SHOW_DEBUG_INFO) {
+				TableLayout tableLayout = gui.tableLayout();
+				infoPanel.row();
+				infoPanel.add("FPS");
+				infoPanel.add(tableLayout.right());
+		
+				fpsLabel = tableLayout.addNumeric("888");
+				tableLayout.add(" (");
+				deltaMillisLabel = tableLayout.addNumeric("8888");
+				tableLayout.add(" ms)");
+			}
+			
+			if (SHOW_DEBUG_INFO) {
+				TableLayout tableLayout = gui.tableLayout();
+				infoPanel.row();
+				infoPanel.add("Planet Creation");
+				infoPanel.add(tableLayout).right();
+				
+				createTimeLabel = tableLayout.addNumeric("8888");
+				tableLayout.add(" ms");
 			}
 		}
 		
@@ -325,27 +347,25 @@ public class PlanetScreen extends AbstractScreen {
 		stage.act(delta);
 		
 		modelBatch.begin(camera);
-		
 		modelBatch.render(modelInstances, environment);
-		
 		modelBatch.end();
-		
+
 		fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
 		deltaMillisLabel.setText(String.valueOf((int) (Gdx.graphics.getDeltaTime() * 1000)));
 		
 		long nowMillis = System.currentTimeMillis();
-		if (SHOW_INFO) {
+		if (SHOW_DEBUG_INFO) {
 			long planetTimeMillis = nowMillis - planetYearStartMillis;
 			
 			Units.millisToPlanetTime(planetTime, planetTimeMillis, planetDayMillis);
-			planetTimePercentLabel.setText(Units.toString(planetTime.dayFraction * 100, 5));
+			planetTimePercentLabel.setText(Units.toString(planetTime.dayFraction * 100, 2, 3));
 			planetTimeHourLabel.setText(Units.toString(stringBuilder, planetTime.hours, '0', 2));
 			planetTimeMinLabel.setText(Units.toString(stringBuilder, planetTime.minutes, '0', 2));
 			planetTimeSecLabel.setText(Units.toString(stringBuilder, planetTime.seconds, '0', 2));
 			planetTimeMillisLabel.setText(Units.toString(stringBuilder, planetTime.milliseconds / 100));		
 		}
 
-		if (SHOW_INFO) {
+		if (SHOW_DEBUG_INFO) {
 			long shipTimeMillis = nowMillis - shipYearStartMillis;
 			
 			Units.millisToPlanetTime(planetTime, shipTimeMillis, 24 * 3600 * 1000);

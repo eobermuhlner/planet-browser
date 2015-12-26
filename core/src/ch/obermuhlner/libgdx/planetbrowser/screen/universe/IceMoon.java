@@ -17,10 +17,11 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 public class IceMoon extends AbstractPlanet {
 
 	@Override
-	protected PlanetData createPlanetData(Random random) {
+	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = false;
+		planetData.temperature = random.nextDouble(20, 100);
 		
 		return planetData;
 	}

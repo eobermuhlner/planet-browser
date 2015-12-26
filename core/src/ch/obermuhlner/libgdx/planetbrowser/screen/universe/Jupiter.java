@@ -18,10 +18,11 @@ public class Jupiter extends AbstractGasPlanet {
 	}
 
 	@Override
-	protected PlanetData createPlanetData(Random random) {
+	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = true;
+		planetData.temperature = random.nextDouble(180, 300);
 		
 		return planetData;
 	}

@@ -7,5 +7,7 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public interface ModelInstanceFactory {
 
-	Array<ModelInstance> createModelInstance(Random random);
+	PlanetData createPlanetData(Random random);
+	
+	Array<ModelInstance> createModelInstance(PlanetData planetData, Random random);
 }

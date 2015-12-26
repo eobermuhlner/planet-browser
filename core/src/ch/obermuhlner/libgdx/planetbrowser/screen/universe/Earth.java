@@ -22,10 +22,11 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 public class Earth extends AbstractPlanet {
 
 	@Override
-	protected PlanetData createPlanetData(Random random) {
+	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = true;
+		planetData.temperature = random.nextDouble(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50));
 		
 		return planetData;
 	}
@@ -48,17 +49,16 @@ public class Earth extends AbstractPlanet {
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_diffuse_map.png")));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture(textureName + "_specular_map.png")));
 		
-		float temperature = random.nextFloat((float)Units.celsiusToKelvin(-20), (float)Units.celsiusToKelvin(50));
-		float water = random.nextFloat(0.0f, 1.0f) * MathUtil.transform((float)Units.celsiusToKelvin(20), (float)Units.celsiusToKelvin(50), 1.0f, 0.0f, temperature);
+		float water = random.nextFloat(0.0f, 1.0f) * (float) MathUtil.transform(Units.celsiusToKelvin(20), Units.celsiusToKelvin(50), 1.0f, 0.0f, planetData.temperature);
 		float heightMin = MathUtil.transform(0f, 1f, 0.5f, 0.0f, water);
 		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.7f, water);
 		int heightFrequency = random.nextInt(3, 5);
-		float iceLevel = MathUtil.transform((float)Units.celsiusToKelvin(-20), (float)Units.celsiusToKelvin(50), 1f, -1f, temperature);
+		float iceLevel = (float) MathUtil.transform(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50), 1f, -1f, planetData.temperature);
 
 		System.out.println();
 		System.out.println("texture=" + textureName);
 		System.out.println("water=" + water);
-		System.out.println("temperature=" + temperature);
+		System.out.println("temperature=" + planetData.temperature);
 		System.out.println("ice=" + iceLevel);
 		System.out.println("height=" + heightMin + " - " + heightMax);
 		System.out.println("heightFrequency=" + heightFrequency);

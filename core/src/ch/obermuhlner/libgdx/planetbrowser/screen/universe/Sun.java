@@ -13,10 +13,11 @@ public class Sun extends AbstractPlanet {
 	}
 
 	@Override
-	protected PlanetData createPlanetData(Random random) {
+	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
-		planetData.hasAtmosphere = true;
+		planetData.hasAtmosphere = false;
+		planetData.temperature = random.nextDouble(4000, 6000);
 		
 		return planetData;
 	}
