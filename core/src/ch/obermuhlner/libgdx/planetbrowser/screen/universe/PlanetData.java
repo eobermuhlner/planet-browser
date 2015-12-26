@@ -15,7 +15,9 @@ public class PlanetData {
 	public double density; // kg/m^3
 	public double mass; // kg
 	public double temperature; // K
-	
+	public double liquidSurface; // 0.0 to 1.0 (earth = 0.75 water)
+
+	public double atmospherePressure; // Pa
 	public Map<Molecule, Double> atmosphere;
 	
 	public void fillStandardValues(Random random) {
@@ -38,5 +40,17 @@ public class PlanetData {
 		if (temperature == 0) {
 			temperature = random.nextDouble(100, 280);
 		}
+		
+		// atmosphere pressures
+		// pluto : 1 Pa (10 microbar)
+		// earth : 101.325E3 Pa
+		// venus : 9.2E6 Pa
+		// mars : 0.636E6 Pa
+		// europa : 0.1E-6 Pa
+		// titan : 146.7E3 Pa
+		// triton : 1.5 Pa
+		// io : 3.3E-5 to 3E-4 Pa (SO2 main, SO, NaCl, S, O)
+		// enceladus : (91% water vapor, 4% nitrogen, 3.2% carbon dioxide, and 1.7% methane)
+
 	}
 }

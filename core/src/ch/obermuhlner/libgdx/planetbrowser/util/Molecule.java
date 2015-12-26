@@ -46,6 +46,18 @@ public enum Molecule {
 	 * Ethane
 	 */
 	C2H6,
+	/**
+	 * Ethylene
+	 */
+	C2H4,
+	/**
+	 * Acetylene
+	 */
+	C2H2,
+	/**
+	 * Hydrogene cyanide
+	 */
+	HCN,
 	SO2,
 	PH3,
 	

@@ -30,29 +30,42 @@ public class Earth extends AbstractPlanet {
 		planetData.radius = Units.EARTH_RADIUS * random.nextDouble(0.5, 1.5);
 		planetData.period = Units.EARTH_PERIOD * random.nextDouble(0.5, 2.5);
 		planetData.temperature = random.nextDouble(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50));
+		planetData.liquidSurface = random.nextDouble(0, 1) * MathUtil.transform(Units.celsiusToKelvin(20), Units.celsiusToKelvin(50), 1.0f, 0.0f, planetData.temperature);
+		
 		boolean hot = planetData.temperature > Units.celsiusToKelvin(30);
 		planetData.hasLife = random.nextBoolean(hot ? 0.5 : 0.95);
 		
 		if (planetData.hasLife) {
+			// earth
 			planetData.atmosphere = random.nextProbabilityMap(
-					p(random.nextGaussian(75), Molecule.N2),
-					p(random.nextGaussian(20), Molecule.O2),
-					p(random.nextGaussian(0.4), Molecule.H2O),
-					p(random.nextGaussian(0.01), Molecule.Ar),
-					p(random.nextGaussian(0.005), Molecule.CO2)
+					p(random.nextGaussian(78), Molecule.N2),
+					p(random.nextGaussian(21), Molecule.O2),
+					p(random.nextGaussian(0.9), Molecule.Ar),
+					p(random.nextGaussian(0.04), Molecule.CO2),
+					p(random.nextGaussian(0.0018), Molecule.Ne),
+					p(random.nextGaussian(0.0005), Molecule.He),
+					p(random.nextGaussian(0.00018), Molecule.CH4),
+					p(random.nextGaussian(0.00011), Molecule.Kr),
+					// water is highly variable (earth = 0.9% overall)
+					p(random.nextGaussian(planetData.liquidSurface * 1.5), Molecule.H2O)
 					);
 		} else {
+			// estimated earth atmosphere without life
 			planetData.atmosphere = random.nextProbabilityMap(
 					p(random.nextGaussian(80), Molecule.N2),
 					p(random.nextGaussian(10), Molecule.CO2),
 					p(random.nextGaussian(3.0), Molecule.SO2),
 					p(random.nextGaussian(2.0), Molecule.NH3),
 					p(random.nextGaussian(2.0), Molecule.CH4),
-					p(random.nextGaussian(2.0), Molecule.H2O),
 					p(random.nextGaussian(1.0), Molecule.CO),
 					p(random.nextGaussian(0.5), Molecule.S2),
 					p(random.nextGaussian(0.1), Molecule.Cl2),
-					p(random.nextGaussian(0.01), Molecule.Ar)
+					p(random.nextGaussian(0.001), Molecule.He),
+					p(random.nextGaussian(0.9), Molecule.Ar),
+					p(random.nextGaussian(0.0018), Molecule.Ne),
+					p(random.nextGaussian(0.00011), Molecule.Kr),
+					// water is highly variable (earth = 0.9% overall)
+					p(random.nextGaussian(planetData.liquidSurface * 1.5), Molecule.H2O)
 					);
 		}
 
@@ -82,7 +95,7 @@ public class Earth extends AbstractPlanet {
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_diffuse_map.png")));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture(textureName + "_specular_map.png")));
 		
-		float water = random.nextFloat(0.0f, 1.0f) * (float) MathUtil.transform(Units.celsiusToKelvin(20), Units.celsiusToKelvin(50), 1.0f, 0.0f, planetData.temperature);
+		float water = (float) planetData.liquidSurface;
 		float heightMin = MathUtil.transform(0f, 1f, 0.5f, 0.0f, water);
 		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.7f, water);
 		int heightFrequency = random.nextInt(3, 5);
