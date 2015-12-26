@@ -1,17 +1,22 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
+import java.util.Map;
+
+import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class PlanetData {
 
-	public boolean hasAtmosphere;
+	public boolean hasLife;
 	
 	public double period; // sec
 	public double radius; // m
 	public double density; // kg/m^3
 	public double mass; // kg
 	public double temperature; // K
+	
+	public Map<Molecule, Double> atmosphere;
 	
 	public void fillStandardValues(Random random) {
 		if (radius == 0) {

@@ -57,5 +57,8 @@ public enum Molecule {
 	Na2O,
 	K2O,
 	TiO2,
-	P2O5
+	P2O5,
+	
+	S2,
+	Cl2,
 }

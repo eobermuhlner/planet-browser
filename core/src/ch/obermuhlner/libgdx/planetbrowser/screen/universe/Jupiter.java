@@ -1,7 +1,10 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
+import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
+
 import com.badlogic.gdx.graphics.Color;
 
+import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
@@ -18,14 +21,22 @@ public class Jupiter extends AbstractGasPlanet {
 		super(GAS_PLANET_COLORS);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
-		planetData.hasAtmosphere = true;
 		planetData.radius = Units.JUPITER_RADIUS * random.nextDouble(0.5, 2.5);
 		planetData.density = Units.JUPITER_DENSITY * random.nextDouble(0.8, 1.2);
 		planetData.temperature = random.nextDouble(180, 300);
+
+		planetData.atmosphere = random.nextProbabilityMap(
+				p(random.nextGaussian(90), Molecule.H2),
+				p(random.nextGaussian(10), Molecule.He),
+				p(random.nextGaussian(0.3), Molecule.CH4),
+				p(random.nextGaussian(0.003), Molecule.NH3),
+				p(random.nextGaussian(0.0006), Molecule.C2H6)
+				);
 
 		planetData.fillStandardValues(random);
 		

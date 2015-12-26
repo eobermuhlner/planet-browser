@@ -1,5 +1,7 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
+import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
@@ -13,17 +15,33 @@ import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctio
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
+import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class Lava extends AbstractPlanet {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
-		planetData.hasAtmosphere = false;
 		planetData.temperature = random.nextDouble(Units.celsiusToKelvin(500), Units.celsiusToKelvin(1200)); // lava liquid 700 - 1200 C
+
+		planetData.atmosphere = random.nextProbabilityMap(
+				p(random.nextGaussian(50), Molecule.N2),
+				p(random.nextGaussian(20), Molecule.CO2),
+				p(random.nextGaussian(10.0), Molecule.SO2),
+				p(random.nextGaussian(8.0), Molecule.NH3),
+				p(random.nextGaussian(8.0), Molecule.CH4),
+				p(random.nextGaussian(5.0), Molecule.CO),
+				p(random.nextGaussian(2.0), Molecule.S2),
+				p(random.nextGaussian(2.0), Molecule.H2O),
+				p(random.nextGaussian(1.0), Molecule.Cl2),
+				p(random.nextGaussian(0.2), Molecule.He),
+				p(random.nextGaussian(0.1), Molecule.H2),
+				p(random.nextGaussian(0.01), Molecule.Ar)
+				);
 
 		planetData.fillStandardValues(random);
 		

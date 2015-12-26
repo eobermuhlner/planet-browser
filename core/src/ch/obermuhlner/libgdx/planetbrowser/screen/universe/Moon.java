@@ -8,7 +8,6 @@ public class Moon extends AbstractRockyPlanet {
 	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
-		planetData.hasAtmosphere = false;
 		planetData.temperature = random.nextDouble(20, 200);
 
 		planetData.fillStandardValues(random);

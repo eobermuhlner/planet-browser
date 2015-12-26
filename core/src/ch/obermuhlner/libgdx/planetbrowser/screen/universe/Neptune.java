@@ -1,7 +1,10 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
+import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
+
 import com.badlogic.gdx.graphics.Color;
 
+import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
@@ -19,14 +22,20 @@ public class Neptune extends AbstractGasPlanet {
 		super(ICE_GAS_PLANET_COLORS);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
-		planetData.hasAtmosphere = true;
 		planetData.radius = Units.NEPTUNE_RADIUS * random.nextDouble(0.5, 2.5);
 		planetData.density = Units.NEPTUNE_DENSITY * random.nextDouble(0.8, 1.2);
 		planetData.temperature = random.nextDouble(100, 300);
+
+		planetData.atmosphere = random.nextProbabilityMap(
+				p(random.nextGaussian(80), Molecule.H2),
+				p(random.nextGaussian(19), Molecule.He),
+				p(random.nextGaussian(1.5), Molecule.CH4)
+				);
 
 		planetData.fillStandardValues(random);
 		

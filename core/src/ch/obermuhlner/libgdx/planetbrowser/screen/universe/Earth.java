@@ -16,20 +16,46 @@ import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctio
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
+import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class Earth extends AbstractPlanet {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
-		planetData.hasAtmosphere = true;
 		planetData.radius = Units.EARTH_RADIUS * random.nextDouble(0.5, 1.5);
 		planetData.period = Units.EARTH_PERIOD * random.nextDouble(0.5, 2.5);
 		planetData.temperature = random.nextDouble(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50));
+		boolean hot = planetData.temperature > Units.celsiusToKelvin(30);
+		planetData.hasLife = random.nextBoolean(hot ? 0.5 : 0.95);
 		
+		if (planetData.hasLife) {
+			planetData.atmosphere = random.nextProbabilityMap(
+					p(random.nextGaussian(75), Molecule.N2),
+					p(random.nextGaussian(20), Molecule.O2),
+					p(random.nextGaussian(0.4), Molecule.H2O),
+					p(random.nextGaussian(0.01), Molecule.Ar),
+					p(random.nextGaussian(0.005), Molecule.CO2)
+					);
+		} else {
+			planetData.atmosphere = random.nextProbabilityMap(
+					p(random.nextGaussian(80), Molecule.N2),
+					p(random.nextGaussian(10), Molecule.CO2),
+					p(random.nextGaussian(3.0), Molecule.SO2),
+					p(random.nextGaussian(2.0), Molecule.NH3),
+					p(random.nextGaussian(2.0), Molecule.CH4),
+					p(random.nextGaussian(2.0), Molecule.H2O),
+					p(random.nextGaussian(1.0), Molecule.CO),
+					p(random.nextGaussian(0.5), Molecule.S2),
+					p(random.nextGaussian(0.1), Molecule.Cl2),
+					p(random.nextGaussian(0.01), Molecule.Ar)
+					);
+		}
+
 		planetData.fillStandardValues(random);
 		
 		return planetData;
@@ -42,7 +68,6 @@ public class Earth extends AbstractPlanet {
 		boolean hot = planetData.temperature > Units.celsiusToKelvin(30);
 		@SuppressWarnings("unchecked")
 		String textureName = random.nextProbability(
-				p(hot ? 10 :  1, "terrestrial_nolife"), // no life
 				p(hot ? 15 :  3, "terrestrial_coastlife"), // life at the coasts
 				p(hot ? 10 : 20, "terrestrial_earthlife"), // earth-like life
 				p(hot ? 10 : 10, "terrestrial_earthvariantlife"), // earth-life life with more variations
@@ -50,6 +75,9 @@ public class Earth extends AbstractPlanet {
 				p(hot ?  5 :  2, "terrestrial_spotlife"), // life only in some spots
 				p(hot ? 10 :  1, "terrestrial_waterlife") // life only in the water
 				);
+		if (!planetData.hasLife) {
+			textureName = "terrestrial_nolife";
+		}
 		//textureName = "terrestrial_spotlife";
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_diffuse_map.png")));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture(textureName + "_specular_map.png")));

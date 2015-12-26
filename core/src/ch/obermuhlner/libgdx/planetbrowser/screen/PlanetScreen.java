@@ -1,8 +1,13 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -21,9 +26,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
@@ -40,6 +48,7 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.TexturePlanet;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
+import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units.PlanetTime;
@@ -140,8 +149,6 @@ public class PlanetScreen extends AbstractScreen {
 	public void show() {
 		stage = new Stage();
 		
-		prepareStage();
-		
 		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -168,6 +175,9 @@ public class PlanetScreen extends AbstractScreen {
 		modelInstances.addAll(modelInstanceFactory.createModelInstance(planetData, random));
 		long endMillis = System.currentTimeMillis();
 		long deltaMillis = endMillis - startMillis;
+		
+		prepareStage();
+		
 		createTimeLabel.setText(String.valueOf(deltaMillis));
 		
 		planetDayMillis = random.nextInt(7, 40) * 3600 * 1000;
@@ -313,6 +323,16 @@ public class PlanetScreen extends AbstractScreen {
 				temperatureLabel = gui.label("");
 				infoPanel.add(temperatureLabel);
 			}
+			if (planetData.atmosphere != null) {
+				infoPanel.row();
+				infoPanel.add("Atmosphere");
+				infoPanel.add(gui.button("Details", new ChangeListener() {
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						showWindow("Atmosphere", "Analysis of atmosphere.", planetData.atmosphere);
+					}
+				}));
+			}
 		}
 
 		{
@@ -351,6 +371,41 @@ public class PlanetScreen extends AbstractScreen {
 		stage.addActor(rootTable);
 	}
 
+	public static class EntryDoubleValueComparator implements Comparator<Entry<?, Double>> {
+		@Override
+		public int compare(Entry<?, Double> o1, Entry<?, Double> o2) {
+			return -Double.compare(o1.getValue(), o2.getValue());
+		}
+	}
+	
+	private void showWindow(String name, String description, Map<Molecule, Double> molecules) {
+		Gui gui = new Gui();
+		final Window window = new Window(name, gui.skin);
+		window.defaults().spaceRight(gui.textWidth("m"));
+		
+		List<Entry<Molecule, Double>> entries = new ArrayList<Entry<Molecule, Double>>(molecules.entrySet());
+		Collections.sort(entries, new EntryDoubleValueComparator());
+		for(Map.Entry<Molecule, Double> entry : entries) {
+			window.row();
+			window.add(entry.getKey().name()).left();
+			window.add(Units.percentToString(entry.getValue())).right();
+		}
+		
+		window.row().center();
+		TextButton buttonOk = new TextButton("OK", gui.skin);
+		buttonOk.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				window.remove();
+			}
+		});
+		window.add(buttonOk);
+		
+		window.pack();
+		window.setPosition(Math.round((stage.getWidth() - window.getWidth()) / 2), Math.round((stage.getHeight() - window.getHeight()) / 2));
+		stage.addActor(window);
+	}
+	
 	@Override
 	public void hide() {
 		super.hide();
