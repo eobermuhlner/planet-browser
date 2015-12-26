@@ -115,6 +115,8 @@ public class PlanetScreen extends AbstractScreen {
 	private long planetDayMillis;
 	private PlanetTime planetTime = new PlanetTime();
 
+	private Label periodLabel;
+	private Label radiusLabel;
 	private Label temperatureLabel;
 
 	public PlanetScreen() {
@@ -169,6 +171,8 @@ public class PlanetScreen extends AbstractScreen {
 		planetDayMillis = random.nextInt(7, 40) * 3600 * 1000;
 		planetYearStartMillis = endMillis - random.nextInt((int) planetDayMillis);
 		
+		periodLabel.setText(Units.secondsToString(planetData.period));
+		radiusLabel.setText(Units.meterSizeToString(planetData.radius));
 		temperatureLabel.setText(Units.kelvinToString(planetData.temperature));
 	}
 	
@@ -278,6 +282,16 @@ public class PlanetScreen extends AbstractScreen {
 				}
 			}
 			{
+				infoPanel.row();
+				infoPanel.add("Period");
+				periodLabel = gui.label("");
+				infoPanel.add(periodLabel);
+
+				infoPanel.row();
+				infoPanel.add("Radius");
+				radiusLabel = gui.label("");
+				infoPanel.add(radiusLabel);
+
 				infoPanel.row();
 				infoPanel.add("Temperature");
 				temperatureLabel = gui.label("");

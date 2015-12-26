@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
+import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class TexturePlanet extends AbstractPlanet {
 
@@ -26,6 +27,8 @@ public class TexturePlanet extends AbstractPlanet {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = true;
+		planetData.radius = random.nextDouble(Units.EARTH_RADIUS * 0.5, Units.EARTH_RADIUS * 2.5);
+		planetData.period = random.nextDouble(Units.SECONDS_PER_HOUR * 5, Units.SECONDS_PER_HOUR * 40);
 		planetData.temperature = random.nextDouble(270, 300);
 		
 		return planetData;

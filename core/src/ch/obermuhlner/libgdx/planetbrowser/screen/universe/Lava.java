@@ -14,6 +14,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribut
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
+import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class Lava extends AbstractPlanet {
 
@@ -22,6 +23,8 @@ public class Lava extends AbstractPlanet {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = false;
+		planetData.radius = random.nextDouble(Units.EARTH_RADIUS * 0.2, Units.EARTH_RADIUS * 2.5);
+		planetData.period = random.nextDouble(Units.SECONDS_PER_HOUR * 5, Units.SECONDS_PER_HOUR * 40);
 		planetData.temperature = random.nextDouble(600, 1100);
 		
 		return planetData;

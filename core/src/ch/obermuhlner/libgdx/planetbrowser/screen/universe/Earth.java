@@ -26,6 +26,8 @@ public class Earth extends AbstractPlanet {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = true;
+		planetData.radius = random.nextDouble(Units.EARTH_RADIUS * 0.5, Units.EARTH_RADIUS * 2.5);
+		planetData.period = random.nextDouble(Units.EARTH_PERIOD * 0.5, Units.EARTH_PERIOD * 2.5);
 		planetData.temperature = random.nextDouble(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50));
 		
 		return planetData;

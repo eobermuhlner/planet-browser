@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 public class Units {
 	
+	public static final double SECONDS_PER_HOUR = 60*60;
 	public static final double SECONDS_PER_DAY = 24*60*60;
 	public static final double SECONDS_PER_YEAR = SECONDS_PER_DAY * 365.25;
 	public static final double LIGHT_SECOND = 299792458;

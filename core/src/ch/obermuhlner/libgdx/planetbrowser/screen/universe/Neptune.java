@@ -3,6 +3,7 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 import com.badlogic.gdx.graphics.Color;
 
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
+import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class Neptune extends AbstractGasPlanet {
 
@@ -23,6 +24,8 @@ public class Neptune extends AbstractGasPlanet {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = true;
+		planetData.radius = random.nextDouble(Units.JUPITER_RADIUS * 0.2, Units.JUPITER_RADIUS * 1.2);
+		planetData.period = random.nextDouble(Units.SECONDS_PER_HOUR * 5, Units.SECONDS_PER_HOUR * 40);
 		planetData.temperature = random.nextDouble(100, 300);
 		
 		return planetData;
