@@ -18,9 +18,11 @@ public class Sun extends AbstractPlanet {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = false;
-		planetData.radius = random.nextDouble(Units.SUN_RADIUS * 0.5, Units.SUN_RADIUS * 5);
-		planetData.period = random.nextDouble(Units.SECONDS_PER_HOUR * 5, Units.SECONDS_PER_HOUR * 40);
+		planetData.radius = Units.SUN_RADIUS * random.nextDouble(0.5, 5);
+		planetData.density = Units.SUN_DENSITY * random.nextDouble(0.9, 1.1);
 		planetData.temperature = random.nextDouble(4000, 6000);
+		
+		planetData.fillStandardValues(random);
 		
 		return planetData;
 	}

@@ -30,15 +30,24 @@ public class Units {
 	public static final double EARTH_ORBIT_PERIOD = 1 * SECONDS_PER_YEAR;
 	public static final double EARTH_MASS = 5.9742E24;
 	public static final double EARTH_RADIUS = 6378.1E3;
+	public static final double EARTH_DENSITY = EARTH_MASS / volumeSphere(EARTH_RADIUS);
 	public static final double EARTH_PERIOD = 1 * SECONDS_PER_DAY;
 	public static final double EARTH_ATMOSPHERE_PRESSURE = 101.325E3; //Pa
 	
 	public static final double JUPITER_MASS = 1.8987E27;
 	public static final double JUPITER_RADIUS = 71492.68E3;
-	
+	public static final double JUPITER_DENSITY = JUPITER_MASS / volumeSphere(JUPITER_RADIUS);
+
+	public static final double NEPTUNE_MASS = 1.0244E26;
+	public static final double NEPTUNE_RADIUS = 24766.36E3;
+	public static final double NEPTUNE_DENSITY = NEPTUNE_MASS / volumeSphere(NEPTUNE_RADIUS);
+
 	public static final double SUN_MASS = 2E30;
 	public static final double SUN_RADIUS = 700000E3;
+	public static final double SUN_DENSITY = SUN_MASS / volumeSphere(SUN_RADIUS);
 	public static final double SUN_LUMINOSITY = 3.827E26; // W
+
+	public static final double MOON_MASS = 7.3477E22;
 
 	private static Unit meterUnits[] = {
 		new Unit(LIGHT_YEAR, "lightyears"),
@@ -78,6 +87,7 @@ public class Units {
 	};
 
 	private static Unit kilogramUnits[] = {
+		new Unit(1000, "t"),
 		new Unit(1, "kg"),
 		new Unit(0.001, "g"),
 	};
@@ -86,6 +96,7 @@ public class Units {
 		new Unit(SUN_MASS, "sun mass"),
 		new Unit(JUPITER_MASS, "jupiter mass"),
 		new Unit(EARTH_MASS, "earth mass"),
+		new Unit(MOON_MASS, "moon mass"),
 	};
 
 	public static String toString(double value) {
@@ -133,6 +144,10 @@ public class Units {
 	
 	public static String volumeToString(double value) {
 		return toString(value) + " m^3";
+	}
+
+	public static String densityToString(double value) {
+		return toString(value) + " kg/m^3";
 	}
 
 	public static String percentToString(double value) {
@@ -210,6 +225,20 @@ public class Units {
 		return celsius + CELSIUS_BASE;
 	}
 	
+	private static class Unit {
+		double value;
+		String name;
+		
+		public Unit(double value, String unit) {
+			this.value = value;
+			this.name = unit;
+		}
+	}
+
+	public static double volumeSphere(double radius) {
+		return radius * radius * radius * Math.PI * 4 / 3;
+	}
+	
 	public static double roundToSignificantDigits(double num, int n) {
 	    if(num == 0) {
 	        return 0;
@@ -223,16 +252,6 @@ public class Units {
 	    return shifted/magnitude;
 	}
 	
-	private static class Unit {
-		double value;
-		String name;
-		
-		public Unit(double value, String unit) {
-			this.value = value;
-			this.name = unit;
-		}
-	}
-
 	public static void millisToPlanetTime(PlanetTime planetTime, long millis, long planetRevolutionMillis) {
 		long days = millis / planetRevolutionMillis;
 		long dayMillis = millis % planetRevolutionMillis;

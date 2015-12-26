@@ -24,9 +24,11 @@ public class Neptune extends AbstractGasPlanet {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = true;
-		planetData.radius = random.nextDouble(Units.JUPITER_RADIUS * 0.2, Units.JUPITER_RADIUS * 1.2);
-		planetData.period = random.nextDouble(Units.SECONDS_PER_HOUR * 5, Units.SECONDS_PER_HOUR * 40);
+		planetData.radius = Units.NEPTUNE_RADIUS * random.nextDouble(0.5, 2.5);
+		planetData.density = Units.NEPTUNE_DENSITY * random.nextDouble(0.8, 1.2);
 		planetData.temperature = random.nextDouble(100, 300);
+
+		planetData.fillStandardValues(random);
 		
 		return planetData;
 	}

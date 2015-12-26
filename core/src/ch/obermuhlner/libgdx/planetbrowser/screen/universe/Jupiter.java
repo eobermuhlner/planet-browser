@@ -23,9 +23,11 @@ public class Jupiter extends AbstractGasPlanet {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = true;
-		planetData.radius = random.nextDouble(Units.JUPITER_RADIUS * 0.5, Units.JUPITER_RADIUS * 2.5);
-		planetData.period = random.nextDouble(Units.SECONDS_PER_HOUR * 5, Units.SECONDS_PER_HOUR * 40);
+		planetData.radius = Units.JUPITER_RADIUS * random.nextDouble(0.5, 2.5);
+		planetData.density = Units.JUPITER_DENSITY * random.nextDouble(0.8, 1.2);
 		planetData.temperature = random.nextDouble(180, 300);
+
+		planetData.fillStandardValues(random);
 		
 		return planetData;
 	}
