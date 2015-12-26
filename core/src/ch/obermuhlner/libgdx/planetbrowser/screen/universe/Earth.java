@@ -26,7 +26,7 @@ public class Earth extends AbstractPlanet {
 		PlanetData planetData = new PlanetData();
 		
 		planetData.hasAtmosphere = true;
-		planetData.radius = Units.EARTH_RADIUS * random.nextDouble(0.5, 2.5);
+		planetData.radius = Units.EARTH_RADIUS * random.nextDouble(0.5, 1.5);
 		planetData.period = Units.EARTH_PERIOD * random.nextDouble(0.5, 2.5);
 		planetData.temperature = random.nextDouble(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50));
 		
@@ -39,15 +39,16 @@ public class Earth extends AbstractPlanet {
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
+		boolean hot = planetData.temperature > Units.celsiusToKelvin(30);
 		@SuppressWarnings("unchecked")
 		String textureName = random.nextProbability(
-				p(3, "terrestrial_nolife"), // no life
-				p(5, "terrestrial_coastlife"), // life at the coasts
-				p(20, "terrestrial_earthlife"), // earth-like life
-				p(10, "terrestrial_earthvariantlife"), // earth-life life with more variations
-				p(8, "terrestrial_highlife"), // life only in cold climate (high altitude
-				p(3, "terrestrial_spotlife"), // life only in some spots
-				p(1, "terrestrial_waterlife") // life only in the water
+				p(hot ? 10 :  1, "terrestrial_nolife"), // no life
+				p(hot ? 15 :  3, "terrestrial_coastlife"), // life at the coasts
+				p(hot ? 10 : 20, "terrestrial_earthlife"), // earth-like life
+				p(hot ? 10 : 10, "terrestrial_earthvariantlife"), // earth-life life with more variations
+				p(hot ? 20 :  0, "terrestrial_highlife"), // life only in cold climate (high altitude
+				p(hot ?  5 :  2, "terrestrial_spotlife"), // life only in some spots
+				p(hot ? 10 :  1, "terrestrial_waterlife") // life only in the water
 				);
 		//textureName = "terrestrial_spotlife";
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_diffuse_map.png")));
