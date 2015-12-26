@@ -23,7 +23,7 @@ public class PlanetData {
 		}
 
 		if (density == 0) {
-			density = random.nextGaussian(Units.EARTH_DENSITY);
+			density = Units.EARTH_DENSITY * random.nextDouble(0.8, 1.2);
 		}
 
 		if (mass == 0) {

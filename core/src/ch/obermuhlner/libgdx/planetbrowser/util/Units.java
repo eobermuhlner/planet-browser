@@ -1,8 +1,10 @@
 package ch.obermuhlner.libgdx.planetbrowser.util;
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,8 +20,10 @@ public class Units {
 	public static final double LIGHT_SECOND = 299792458;
 	public static final double LIGHT_YEAR = LIGHT_SECOND * SECONDS_PER_YEAR;
 	public static final double ASTRONOMICAL_UNIT = 149597871E3;
+
 	private static final double CELSIUS_BASE = 273.16;
-	
+	private static final MathContext MC3 = new MathContext(3, RoundingMode.HALF_UP);
+
 	/**
 	 * See: http://en.wikipedia.org/wiki/Stefan%E2%80%93Boltzmann_constant
 	 * W*m^-2*K^-4
@@ -87,7 +91,10 @@ public class Units {
 	};
 
 	private static Unit kilogramUnits[] = {
-		new Unit(1000, "t"),
+		new Unit(1E12, "Gt"),
+		new Unit(1E9, "Mt"),
+		new Unit(1E6, "kt"),
+		new Unit(1E3, "t"),
 		new Unit(1, "kg"),
 		new Unit(0.001, "g"),
 	};
@@ -100,11 +107,11 @@ public class Units {
 	};
 
 	public static String toString(double value) {
-		return String.valueOf(roundToSignificantDigits(value, 3));
+		return new BigDecimal(value).round(MC3).toPlainString();
 	}
 	
 	public static String toString(double value, int significantDigits) {
-		return String.valueOf(roundToSignificantDigits(value, significantDigits));
+		return new BigDecimal(value).round(new MathContext(significantDigits, RoundingMode.HALF_UP)).toPlainString();
 	}
 	
 	public static String toString(double value, int leftDigits, int rightDigits) {
@@ -239,21 +246,8 @@ public class Units {
 		return radius * radius * radius * Math.PI * 4 / 3;
 	}
 	
-	public static double roundToSignificantDigits(double num, int n) {
-	    if(num == 0) {
-	        return 0;
-	    }
-
-	    final double d = Math.ceil(Math.log10(num < 0 ? -num: num));
-	    final int power = n - (int) d;
-
-	    final double magnitude = Math.pow(10, power);
-	    final long shifted = Math.round(num*magnitude);
-	    return shifted/magnitude;
-	}
-	
 	public static void millisToPlanetTime(PlanetTime planetTime, long millis, long planetRevolutionMillis) {
-		long days = millis / planetRevolutionMillis;
+		//long days = millis / planetRevolutionMillis;
 		long dayMillis = millis % planetRevolutionMillis;
 		planetTime.dayFraction = ((double) dayMillis) / planetRevolutionMillis;
 		
