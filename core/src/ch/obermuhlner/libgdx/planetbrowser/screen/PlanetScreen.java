@@ -249,7 +249,7 @@ public class PlanetScreen extends AbstractScreen {
 				TableLayout tableLayout = gui.tableLayout();
 				infoPanel.row();
 				infoPanel.add("Ship Time");
-				infoPanel.add(tableLayout).right();
+				infoPanel.add(tableLayout);
 				
 				shipTimeHourLabel = tableLayout.addNumeric("88");
 				tableLayout.add(":").spaceLeft(2).spaceRight(2);
@@ -268,10 +268,8 @@ public class PlanetScreen extends AbstractScreen {
 					TableLayout tableLayout = gui.tableLayout();
 					infoPanel.row();
 					infoPanel.add("Planet Time");
-					infoPanel.add(tableLayout).right();
+					infoPanel.add(tableLayout);
 					
-					planetTimePercentLabel = tableLayout.addNumeric("88.888");
-					tableLayout.add("%  ");
 					planetTimeHourLabel = tableLayout.addNumeric("88");
 					tableLayout.add(":").spaceLeft(2).spaceRight(2);
 					planetTimeMinLabel = tableLayout.addNumeric("88");
@@ -279,6 +277,10 @@ public class PlanetScreen extends AbstractScreen {
 					planetTimeSecLabel = tableLayout.addNumeric("88");
 					tableLayout.add(".").spaceLeft(2).spaceRight(2);
 					planetTimeMillisLabel = tableLayout.addNumeric("8");
+
+					tableLayout.add("  ");
+					planetTimePercentLabel = tableLayout.addNumeric("88.888");
+					tableLayout.add("%");
 				}
 			}
 			{
