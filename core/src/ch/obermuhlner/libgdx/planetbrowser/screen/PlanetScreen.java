@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -262,7 +263,7 @@ public class PlanetScreen extends AbstractScreen {
 			{
 				TableLayout tableLayout = gui.tableLayout();
 				infoPanel.row();
-				infoPanel.add("Ship Time");
+				infoPanel.add("Ship Time:");
 				infoPanel.add(tableLayout);
 				
 				shipTimeHourLabel = tableLayout.addNumeric("88");
@@ -281,7 +282,7 @@ public class PlanetScreen extends AbstractScreen {
 				{
 					TableLayout tableLayout = gui.tableLayout();
 					infoPanel.row();
-					infoPanel.add("Planet Time");
+					infoPanel.add("Planet Time:");
 					infoPanel.add(tableLayout);
 					
 					planetTimeHourLabel = tableLayout.addNumeric("88");
@@ -299,34 +300,34 @@ public class PlanetScreen extends AbstractScreen {
 			}
 			{
 				infoPanel.row();
-				infoPanel.add("Period");
+				infoPanel.add("Period:");
 				periodLabel = gui.label("");
 				infoPanel.add(periodLabel);
 
 				infoPanel.row();
-				infoPanel.add("Radius");
+				infoPanel.add("Radius:");
 				radiusLabel = gui.label("");
 				infoPanel.add(radiusLabel);
 
 				infoPanel.row();
-				infoPanel.add("Mass");
+				infoPanel.add("Mass:");
 				massLabel = gui.label("");
 				infoPanel.add(massLabel);
 
 				infoPanel.row();
-				infoPanel.add("Density");
+				infoPanel.add("Density:");
 				densityLabel = gui.label("");
 				infoPanel.add(densityLabel);
 
 				infoPanel.row();
-				infoPanel.add("Temperature");
+				infoPanel.add("Temperature:");
 				temperatureLabel = gui.label("");
 				infoPanel.add(temperatureLabel);
 			}
 			if (planetData.atmosphere != null) {
 				infoPanel.row();
-				infoPanel.add("Atmosphere");
-				infoPanel.add(toMoleculeOverviewString(planetData.atmosphere));
+				infoPanel.add("Atmosphere:");
+				infoPanel.add(gui.htmlLabel(toMoleculeOverviewString(planetData.atmosphere)));
 				infoPanel.add(gui.button("Details", new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
@@ -335,7 +336,7 @@ public class PlanetScreen extends AbstractScreen {
 				}));
 			}
 		}
-
+		
 		{
 			// dummy to have the center empty
 			rootTable.row().expandY();
@@ -392,7 +393,7 @@ public class PlanetScreen extends AbstractScreen {
 				if (!first) {
 					string.append(", ");
 				}
-				string.append(entry.getKey().name());
+				string.append(entry.getKey().toHtml());
 				first = false;
 			}
 		}
@@ -410,7 +411,8 @@ public class PlanetScreen extends AbstractScreen {
 		for(Map.Entry<Molecule, Double> entry : entries) {
 			if (entry.getValue().compareTo(0.0) > 0) {
 				window.row();
-				window.add(entry.getKey().name()).left();
+				window.add(gui.htmlLabel(entry.getKey().toHtml())).left();
+				window.add(Gui.firstToUppercase(entry.getKey().getHumanName())).left();
 				window.add(Units.percentToString(entry.getValue())).right();
 			}
 		}
