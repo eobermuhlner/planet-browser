@@ -72,6 +72,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
 },
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: { font: default-font, fontColor: white },
+	small: { font: small-font, fontColor: white },
 	title: { font: large-font, fontColor: yellow },
 	header: { font: large-font, fontColor: yellow },
 	good: { font: default-font, fontColor: green },
