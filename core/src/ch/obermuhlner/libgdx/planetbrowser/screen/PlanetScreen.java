@@ -128,6 +128,8 @@ public class PlanetScreen extends AbstractScreen {
 
 	private Window atmosphereWindow;
 
+	private Table infoPanel;
+
 	public PlanetScreen() {
 		this(1);
 	}
@@ -242,12 +244,20 @@ public class PlanetScreen extends AbstractScreen {
 				}
 			});
 			selectBox.setSelected(currentPlanetFactoryName);
+
+			buttonPanel.add(gui.button("Info", new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					toggleInfoWindow();
+				}
+			}));
 		}
 
 		{
 			// planet info
 			rootTable.row();
-			Table infoPanel = gui.table();
+			infoPanel = gui.table();
+			infoPanel.setVisible(false);
 			infoPanel.defaults().spaceRight(gui.textWidth("m"));
 			rootTable.add(infoPanel).left();
 			
@@ -385,6 +395,10 @@ public class PlanetScreen extends AbstractScreen {
 		}
 		
 		return string.toString();
+	}
+
+	private void toggleInfoWindow() {
+		infoPanel.setVisible(!infoPanel.isVisible());
 	}
 	
 	private void toggleAtmosphereAnalysisWindow() {
