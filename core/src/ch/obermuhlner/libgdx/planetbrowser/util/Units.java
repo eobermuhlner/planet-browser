@@ -107,11 +107,19 @@ public class Units {
 	};
 
 	public static String toString(double value) {
-		return new BigDecimal(value).round(MC3).toPlainString();
+		return toString(new BigDecimal(value).round(MC3));
 	}
 	
 	public static String toString(double value, int significantDigits) {
-		return new BigDecimal(value).round(new MathContext(significantDigits, RoundingMode.HALF_UP)).toPlainString();
+		return toString(new BigDecimal(value).round(new MathContext(significantDigits, RoundingMode.HALF_UP)));
+	}
+
+	public static String toString(BigDecimal value) {
+		String plain = value.toPlainString();
+		if (plain.length() < 8) {
+			return plain;
+		}
+		return value.toString();
 	}
 	
 	public static String toString(double value, int leftDigits, int rightDigits) {

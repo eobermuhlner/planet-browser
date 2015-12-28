@@ -49,6 +49,7 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.TexturePlanet;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
+import ch.obermuhlner.libgdx.planetbrowser.ui.SimpleHtml;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -125,12 +126,6 @@ public class PlanetScreen extends AbstractScreen {
 	private long planetDayMillis;
 	private PlanetTime planetTime = new PlanetTime();
 
-	private Label periodLabel;
-	private Label radiusLabel;
-	private Label massLabel;
-	private Label densityLabel;
-	private Label temperatureLabel;
-
 	private Window atmosphereWindow;
 
 	public PlanetScreen() {
@@ -185,12 +180,6 @@ public class PlanetScreen extends AbstractScreen {
 		
 		planetDayMillis = random.nextInt(7, 40) * 3600 * 1000;
 		planetYearStartMillis = endMillis - random.nextInt((int) planetDayMillis);
-		
-		periodLabel.setText(Units.secondsToString(planetData.period));
-		radiusLabel.setText(Units.meterSizeToString(planetData.radius));
-		massLabel.setText(Units.kilogramsToString(planetData.mass));
-		densityLabel.setText(Units.densityToString(planetData.density));
-		temperatureLabel.setText(Units.kelvinToString(planetData.temperature));
 	}
 	
 	private void prepareStage() {
@@ -303,28 +292,23 @@ public class PlanetScreen extends AbstractScreen {
 			{
 				infoPanel.row();
 				infoPanel.add("Period:");
-				periodLabel = gui.label("");
-				infoPanel.add(periodLabel);
+				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.secondsToString(planetData.period))));
 
 				infoPanel.row();
 				infoPanel.add("Radius:");
-				radiusLabel = gui.label("");
-				infoPanel.add(radiusLabel);
+				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.meterSizeToString(planetData.radius))));
 
 				infoPanel.row();
 				infoPanel.add("Mass:");
-				massLabel = gui.label("");
-				infoPanel.add(massLabel);
+				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kilogramsToString(planetData.mass))));
 
 				infoPanel.row();
 				infoPanel.add("Density:");
-				densityLabel = gui.label("");
-				infoPanel.add(densityLabel);
+				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.densityToString(planetData.density))));
 
 				infoPanel.row();
 				infoPanel.add("Temperature:");
-				temperatureLabel = gui.label("");
-				infoPanel.add(temperatureLabel);
+				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kelvinToString(planetData.temperature))));
 			}
 			if (planetData.atmosphere != null) {
 				infoPanel.row();
