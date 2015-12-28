@@ -331,7 +331,7 @@ public class PlanetScreen extends AbstractScreen {
 				infoPanel.add(gui.button("Details", new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						showMoleculeAnalysisWindow("Atmosphere", "Analysis of atmosphere.", planetData.atmosphere);
+						showMoleculeAnalysisWindow("Atmosphere", planetData.atmosphere);
 					}
 				}));
 			}
@@ -401,21 +401,32 @@ public class PlanetScreen extends AbstractScreen {
 		return string.toString();
 	}
 	
-	private void showMoleculeAnalysisWindow(String name, String description, Map<Molecule, Double> molecules) {
+	private void showMoleculeAnalysisWindow(String name, Map<Molecule, Double> molecules) {
 		Gui gui = new Gui();
-		final Window window = new Window(name, gui.skin);
-		window.defaults().spaceRight(gui.textWidth("m"));
+
+		TableLayout layout = gui.tableLayout();
+		layout.defaults().spaceRight(gui.textWidth("m"));
 		
 		List<Entry<Molecule, Double>> entries = new ArrayList<Entry<Molecule, Double>>(molecules.entrySet());
 		Collections.sort(entries, new EntryDoubleValueComparator());
 		for(Map.Entry<Molecule, Double> entry : entries) {
 			if (entry.getValue().compareTo(0.0) > 0) {
-				window.row();
-				window.add(gui.htmlLabel(entry.getKey().toHtml())).left();
-				window.add(Gui.firstToUppercase(entry.getKey().getHumanName())).left();
-				window.add(Units.percentToString(entry.getValue())).right();
+				layout.row();
+				layout.add(gui.htmlLabel(entry.getKey().toHtml())).left();
+				layout.add(Gui.firstToUppercase(entry.getKey().getHumanName())).left();
+				layout.add(Units.percentToString(entry.getValue())).right();
 			}
 		}
+	
+		showWindow(name, layout);
+	}
+
+	private void showWindow(String name, Actor actor) {
+		Gui gui = new Gui();
+		final Window window = new Window(name, gui.skin, "transparent");
+		
+		window.row();
+		window.add(actor);
 		
 		window.row().center();
 		TextButton buttonOk = new TextButton("OK", gui.skin);
@@ -431,7 +442,7 @@ public class PlanetScreen extends AbstractScreen {
 		window.setPosition(Math.round((stage.getWidth() - window.getWidth()) / 2), Math.round((stage.getHeight() - window.getHeight()) / 2));
 		stage.addActor(window);
 	}
-	
+
 	@Override
 	public void hide() {
 		super.hide();
