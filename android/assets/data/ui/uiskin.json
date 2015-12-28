@@ -60,6 +60,7 @@ com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
 },
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: { titleFont: default-font, background: default-window, titleFontColor: white },
+	transparent: { titleFont: default-font, background: transparent-window, titleFontColor: white },
 	dialog: { titleFont: default-font, background: default-window, titleFontColor: white, stageBackground: dialog },
 },
 com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
