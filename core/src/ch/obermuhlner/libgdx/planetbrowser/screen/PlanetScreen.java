@@ -99,24 +99,15 @@ public class PlanetScreen extends AbstractScreen {
 
 	private final Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
-	private final StringBuilder stringBuilder = new StringBuilder();
-
 	private PlanetData planetData;
 
 	private Label fpsLabel;
 	private Label deltaMillisLabel;
 	private Label createTimeLabel;
 
-	private Label planetTimePercentLabel;
-	private Label planetTimeHourLabel;
-	private Label planetTimeMinLabel;
-	private Label planetTimeSecLabel;
-	private Label planetTimeMillisLabel;
+	private Label planetTimeLabel;
 
-	private Label shipTimeHourLabel;
-	private Label shipTimeMinLabel;
-	private Label shipTimeSecLabel;
-	private Label shipTimeMillisLabel;
+	private Label shipTimeLabel;
 	
 	private long shipYearStartMillis;
 	private long planetYearStartMillis;
@@ -256,22 +247,14 @@ public class PlanetScreen extends AbstractScreen {
 			rootTable.row();
 			infoPanel = gui.table();
 			infoPanel.setVisible(false);
-			infoPanel.defaults().spaceRight(gui.textWidth("m"));
+			infoPanel.defaults().spaceRight(gui.textWidth("m")).left();
 			rootTable.add(infoPanel).left();
 			
 			{
-				TableLayout tableLayout = gui.tableLayout();
 				infoPanel.row();
 				infoPanel.add("Ship Time:");
-				infoPanel.add(tableLayout);
-				
-				shipTimeHourLabel = tableLayout.addNumeric("88");
-				tableLayout.add(":").spaceLeft(2).spaceRight(2);
-				shipTimeMinLabel = tableLayout.addNumeric("88");
-				tableLayout.add(":").spaceLeft(2).spaceRight(2);
-				shipTimeSecLabel = tableLayout.addNumeric("88");
-				tableLayout.add(".").spaceLeft(2).spaceRight(2);
-				shipTimeMillisLabel = tableLayout.addNumeric("8");
+				shipTimeLabel = gui.label("");
+				infoPanel.add(shipTimeLabel);
 			}
 			{
 				Calendar calendar = Calendar.getInstance();
@@ -279,22 +262,10 @@ public class PlanetScreen extends AbstractScreen {
 				shipYearStartMillis = calendar.getTimeInMillis();
 				
 				{
-					TableLayout tableLayout = gui.tableLayout();
 					infoPanel.row();
 					infoPanel.add("Planet Time:");
-					infoPanel.add(tableLayout);
-					
-					planetTimeHourLabel = tableLayout.addNumeric("88");
-					tableLayout.add(":").spaceLeft(2).spaceRight(2);
-					planetTimeMinLabel = tableLayout.addNumeric("88");
-					tableLayout.add(":").spaceLeft(2).spaceRight(2);
-					planetTimeSecLabel = tableLayout.addNumeric("88");
-					tableLayout.add(".").spaceLeft(2).spaceRight(2);
-					planetTimeMillisLabel = tableLayout.addNumeric("8");
-
-					tableLayout.add("  ");
-					planetTimePercentLabel = tableLayout.addNumeric("88.888");
-					tableLayout.add("%");
+					planetTimeLabel = gui.label("");
+					infoPanel.add(planetTimeLabel);
 				}
 			}
 			{
@@ -516,21 +487,14 @@ public class PlanetScreen extends AbstractScreen {
 			long planetTimeMillis = nowMillis - planetYearStartMillis;
 			
 			Units.millisToPlanetTime(planetTime, planetTimeMillis, planetDayMillis);
-			planetTimePercentLabel.setText(Units.toString(planetTime.dayFraction * 100, 2, 3));
-			planetTimeHourLabel.setText(Units.toString(stringBuilder, planetTime.hours, '0', 2));
-			planetTimeMinLabel.setText(Units.toString(stringBuilder, planetTime.minutes, '0', 2));
-			planetTimeSecLabel.setText(Units.toString(stringBuilder, planetTime.seconds, '0', 2));
-			planetTimeMillisLabel.setText(Units.toString(stringBuilder, planetTime.milliseconds / 100));		
+			planetTimeLabel.setText(String.format("%02d:%02d:%02d.%d  %5.4f%%", planetTime.hours, planetTime.minutes, planetTime.seconds, planetTime.milliseconds / 100, planetTime.dayFraction * 100.0));
 		}
 
 		if (SHOW_DEBUG_INFO) {
 			long shipTimeMillis = nowMillis - shipYearStartMillis;
 			
 			Units.millisToPlanetTime(planetTime, shipTimeMillis, 24 * 3600 * 1000);
-			shipTimeHourLabel.setText(Units.toString(stringBuilder, planetTime.hours, '0', 2));
-			shipTimeMinLabel.setText(Units.toString(stringBuilder, planetTime.minutes, '0', 2));
-			shipTimeSecLabel.setText(Units.toString(stringBuilder, planetTime.seconds, '0', 2));
-			shipTimeMillisLabel.setText(Units.toString(stringBuilder, planetTime.milliseconds / 100));		
+			shipTimeLabel.setText(String.format("%02d:%02d:%02d.%d", planetTime.hours, planetTime.minutes, planetTime.seconds, planetTime.milliseconds / 100));
 		}
 		
 		stage.draw();
