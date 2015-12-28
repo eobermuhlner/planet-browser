@@ -12,7 +12,7 @@ public class Mars extends AbstractRockyPlanet {
 	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
 		
-		planetData.temperature = random.nextDouble(50, 300);
+		planetData.temperature = random.nextDouble(50, 400);
 		
 		if (planetData.temperature > 60) {
 			if (random.nextBoolean(0.7)) {
@@ -31,6 +31,21 @@ public class Mars extends AbstractRockyPlanet {
 						p(random.nextBoolean(0.1) ? random.nextGaussian(0.0001) : 0.0, Molecule.Kr),
 						p(random.nextBoolean(0.1) ? random.nextGaussian(0.0001) : 0.0, Molecule.Ne)
 						);
+
+				if (planetData.temperature > 300) {
+					//Venus
+					planetData.clouds = random.nextProbabilityMap(
+							p(random.nextDouble(10, 40), Molecule.SO2),
+							p(random.nextDouble(5, 20), Molecule.H2SO4)
+							);		
+				} else {
+					//Mars
+					planetData.clouds = random.nextProbabilityMap(
+							p(random.nextDouble(10, 40), Molecule.H2O),
+							p(random.nextDouble(10, 40), Molecule.CO2)
+							);		
+				}
+				
 			} else {
 				// titan-like atmosphere
 				planetData.atmosphere = random.nextProbabilityMap(
@@ -45,6 +60,13 @@ public class Mars extends AbstractRockyPlanet {
 						p(random.nextBoolean(0.1) ? random.nextGaussian(0.0001) : 0.0, Molecule.Kr),
 						p(random.nextBoolean(0.1) ? random.nextGaussian(0.0001) : 0.0, Molecule.Ne)
 						);
+				
+				//Titan
+				planetData.clouds = random.nextProbabilityMap(
+						p(random.nextDouble(10, 40), Molecule.CH4),
+						p(random.nextDouble(10, 40), Molecule.HCN)
+						);		
+
 			}
 		} else {
 			// pluto-like atmosphere

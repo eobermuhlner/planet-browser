@@ -19,6 +19,7 @@ public class PlanetData {
 
 	public double atmospherePressure; // Pa
 	public Map<Molecule, Double> atmosphere;
+	public Map<Molecule, Double> clouds;
 	
 	public void fillStandardValues(Random random) {
 		if (radius == 0) {

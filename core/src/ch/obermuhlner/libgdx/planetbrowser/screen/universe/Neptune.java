@@ -36,6 +36,18 @@ public class Neptune extends AbstractGasPlanet {
 				p(random.nextGaussian(19), Molecule.He),
 				p(random.nextGaussian(1.5), Molecule.CH4)
 				);
+		
+		//Neptune
+		//The upper-level clouds lie at pressures below one bar, where the temperature is suitable for methane to condense.
+		//For pressures between one and five bars (100 and 500 kPa), clouds of ammonia and hydrogen sulfide are thought to form.
+		//Above a pressure of five bars, the clouds may consist of ammonia, ammonium sulfide, hydrogen sulfide and water
+		planetData.clouds = random.nextProbabilityMap(
+				p(random.nextDouble(10, 40), Molecule.CH4),
+				p(random.nextDouble(10, 40), Molecule.NH3),
+				p(random.nextDouble(10, 40), Molecule.H2S),
+				p(random.nextDouble(10, 40), Molecule.N2H8S),
+				p(random.nextDouble(10, 40), Molecule.H2O)
+				);		
 
 		planetData.fillStandardValues(random);
 		

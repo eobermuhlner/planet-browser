@@ -127,6 +127,7 @@ public class PlanetScreen extends AbstractScreen {
 	private PlanetTime planetTime = new PlanetTime();
 
 	private Window atmosphereWindow;
+	private Window cloudsWindow;
 
 	private Table infoPanel;
 
@@ -331,6 +332,17 @@ public class PlanetScreen extends AbstractScreen {
 					}
 				}));
 			}
+			if (planetData.clouds != null) {
+				infoPanel.row();
+				infoPanel.add("Clouds:");
+				infoPanel.add(gui.htmlLabel(toMoleculeOverviewString(planetData.clouds)));
+				infoPanel.add(gui.button("Details", new ChangeListener() {
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						toggleCloudsAnalysisWindow();
+					}
+				}));
+			}
 		}
 		
 		{
@@ -389,7 +401,7 @@ public class PlanetScreen extends AbstractScreen {
 				if (!first) {
 					string.append(", ");
 				}
-				string.append(entry.getKey().toHtml());
+				string.append(entry.getKey().getHtmlFormula());
 				first = false;
 			}
 		}
@@ -416,18 +428,33 @@ public class PlanetScreen extends AbstractScreen {
 		}
 	}
 
+	private void toggleCloudsAnalysisWindow() {
+		if (cloudsWindow == null) {
+			cloudsWindow = showMoleculeAnalysisWindow("Clouds", planetData.clouds, new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					cloudsWindow.remove();
+					cloudsWindow = null;
+				}
+			});
+		} else {
+			cloudsWindow.remove();
+			cloudsWindow = null;
+		}
+	}
+
 	private Window showMoleculeAnalysisWindow(String name, Map<Molecule, Double> molecules, ChangeListener okPressed) {
 		Gui gui = new Gui();
 
 		TableLayout layout = gui.tableLayout();
-		layout.defaults().spaceRight(gui.textWidth("m"));
+		layout.defaults().spaceRight(gui.textWidth("M"));
 		
 		List<Entry<Molecule, Double>> entries = new ArrayList<Entry<Molecule, Double>>(molecules.entrySet());
 		Collections.sort(entries, new EntryDoubleValueComparator());
 		for(Map.Entry<Molecule, Double> entry : entries) {
 			if (entry.getValue().compareTo(0.0) > 0) {
 				layout.row();
-				layout.add(gui.htmlLabel(entry.getKey().toHtml())).left();
+				layout.add(gui.htmlLabel(entry.getKey().getHtmlFormula())).left();
 				layout.add(Gui.firstToUppercase(entry.getKey().getHumanName())).left();
 				layout.add(Units.percentToString(entry.getValue())).right();
 			}

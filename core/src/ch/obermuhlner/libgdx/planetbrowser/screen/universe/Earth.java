@@ -70,7 +70,11 @@ public class Earth extends AbstractPlanet {
 					p(random.nextGaussian(atmosphereWaterContent), Molecule.H2O)
 					);
 		}
-
+		
+		planetData.clouds = random.nextProbabilityMap(
+				p(100, Molecule.H2O)
+		);
+		
 		planetData.fillStandardValues(random);
 		
 		return planetData;
