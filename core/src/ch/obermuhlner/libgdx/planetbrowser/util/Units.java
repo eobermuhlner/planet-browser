@@ -22,7 +22,18 @@ public class Units {
 	public static final double ASTRONOMICAL_UNIT = 149597871E3;
 
 	private static final double CELSIUS_BASE = 273.16;
-	private static final MathContext MC3 = new MathContext(3, RoundingMode.HALF_UP);
+	private static final MathContext[] MC = { 
+			new MathContext(0, RoundingMode.HALF_UP),
+			new MathContext(1, RoundingMode.HALF_UP),
+			new MathContext(2, RoundingMode.HALF_UP),
+			new MathContext(3, RoundingMode.HALF_UP),
+			new MathContext(4, RoundingMode.HALF_UP),
+			new MathContext(5, RoundingMode.HALF_UP),
+			new MathContext(6, RoundingMode.HALF_UP),
+			new MathContext(7, RoundingMode.HALF_UP),
+			new MathContext(8, RoundingMode.HALF_UP),
+			new MathContext(9, RoundingMode.HALF_UP),
+	};
 
 	/**
 	 * See: http://en.wikipedia.org/wiki/Stefan%E2%80%93Boltzmann_constant
@@ -107,11 +118,12 @@ public class Units {
 	};
 
 	public static String toString(double value) {
-		return toString(new BigDecimal(value).round(MC3));
+		return toString(new BigDecimal(value).round(MC[3]));
 	}
 	
 	public static String toString(double value, int significantDigits) {
-		return toString(new BigDecimal(value).round(new MathContext(significantDigits, RoundingMode.HALF_UP)));
+		MathContext mathContext = significantDigits<MC.length ? MC[significantDigits] : new MathContext(significantDigits, RoundingMode.HALF_UP);
+		return toString(new BigDecimal(value).round(mathContext));
 	}
 
 	public static String toString(BigDecimal value) {
