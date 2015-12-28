@@ -131,6 +131,8 @@ public class PlanetScreen extends AbstractScreen {
 	private Label densityLabel;
 	private Label temperatureLabel;
 
+	private Window atmosphereWindow;
+
 	public PlanetScreen() {
 		this(1);
 	}
@@ -331,7 +333,7 @@ public class PlanetScreen extends AbstractScreen {
 				infoPanel.add(gui.button("Details", new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						showMoleculeAnalysisWindow("Atmosphere", planetData.atmosphere);
+						toggleAtmosphereAnalysisWindow();
 					}
 				}));
 			}
@@ -401,7 +403,22 @@ public class PlanetScreen extends AbstractScreen {
 		return string.toString();
 	}
 	
-	private void showMoleculeAnalysisWindow(String name, Map<Molecule, Double> molecules) {
+	private void toggleAtmosphereAnalysisWindow() {
+		if (atmosphereWindow == null) {
+			atmosphereWindow = showMoleculeAnalysisWindow("Atmosphere", planetData.atmosphere, new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					atmosphereWindow.remove();
+					atmosphereWindow = null;
+				}
+			});
+		} else {
+			atmosphereWindow.remove();
+			atmosphereWindow = null;
+		}
+	}
+
+	private Window showMoleculeAnalysisWindow(String name, Map<Molecule, Double> molecules, ChangeListener okPressed) {
 		Gui gui = new Gui();
 
 		TableLayout layout = gui.tableLayout();
@@ -418,10 +435,10 @@ public class PlanetScreen extends AbstractScreen {
 			}
 		}
 	
-		showWindow(name, layout);
+		return showWindow(name, layout, okPressed);
 	}
 
-	private void showWindow(String name, Actor actor) {
+	private Window showWindow(String name, Actor actor, ChangeListener okPressed) {
 		Gui gui = new Gui();
 		final Window window = new Window(name, gui.skin, "transparent");
 		
@@ -430,17 +447,14 @@ public class PlanetScreen extends AbstractScreen {
 		
 		window.row().center();
 		TextButton buttonOk = new TextButton("OK", gui.skin);
-		buttonOk.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				window.remove();
-			}
-		});
+		buttonOk.addListener(okPressed);
 		window.add(buttonOk);
 		
 		window.pack();
 		window.setPosition(Math.round((stage.getWidth() - window.getWidth()) / 2), Math.round((stage.getHeight() - window.getHeight()) / 2));
 		stage.addActor(window);
+		
+		return window;
 	}
 
 	@Override
