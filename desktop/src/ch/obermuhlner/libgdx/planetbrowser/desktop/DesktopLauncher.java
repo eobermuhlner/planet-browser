@@ -39,9 +39,9 @@ public class DesktopLauncher {
 		public Skin createSkin() {
 			Skin skin = new Skin();
 			skin.addRegions(new TextureAtlas(Gdx.files.internal("data/ui/uiskin.atlas")));
-			skin.add("small-font", generateFont("data/fonts/orbitron-medium.ttf", 16));
-			skin.add("default-font", generateFont("data/fonts/orbitron-medium.ttf", 20));
-			skin.add("large-font", generateFont("data/fonts/orbitron-medium.ttf", 26));
+			skin.add("small-font", generateFont("data/fonts/orbitron-obe-medium.ttf", 14));
+			skin.add("default-font", generateFont("data/fonts/orbitron-obe-medium.ttf", 20));
+			skin.add("large-font", generateFont("data/fonts/orbitron-obe-medium.ttf", 26));
 			skin.load(Gdx.files.internal("data/ui/uiskin.json"));
 			return skin;
 		}
@@ -50,6 +50,8 @@ public class DesktopLauncher {
 			FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal(ttfFile));
 			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 			parameter.size = Config.getFontSize(size);
+			parameter.shadowOffsetX = 1;
+			parameter.shadowOffsetY = 1;
 			BitmapFont font = gen.generateFont(parameter);
 			gen.dispose();
 			return font;
