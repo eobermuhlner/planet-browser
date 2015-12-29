@@ -119,7 +119,12 @@ public class Units {
 	};
 
 	private static Unit newtonUnits[] = {
-		new Unit(1, "N"),
+			new Unit(1, "N"),
+		};
+
+	private static Unit speedUnits[] = {
+		new Unit(1000, "km/s"),
+		new Unit(1, "m/s"),
 	};
 
 	private static Unit alternateNewtonGravityUnits[] = {
@@ -191,10 +196,18 @@ public class Units {
 		return unitToString(value, true, newtonUnits, alternateNewtonGravityUnits);
 	}
 	
+	public static String metersPerSecondToString (double value) {
+		return unitToString(value, speedUnits);
+	}
+	
 	public static double gravity(double mass, double distance) {
 		return mass * Units.GRAVITATIONAL_CONSTANT / (distance * distance);
 	}
 	
+	public static double escapeVelocity(double mass, double distance) {
+		return Math.sqrt(2 * Units.GRAVITATIONAL_CONSTANT * mass / distance);
+	}
+
 	public static String percentToString(double value) {
 		return toString(value * 100) + "%";
 	}

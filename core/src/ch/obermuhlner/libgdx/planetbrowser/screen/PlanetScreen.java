@@ -290,6 +290,10 @@ public class PlanetScreen extends AbstractScreen {
 				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.newtonGravityToString(Units.gravity(planetData.mass, planetData.radius)))));
 
 				infoPanel.row();
+				infoPanel.add("Escape Velocity:");
+				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.metersPerSecondToString(Units.escapeVelocity(planetData.mass, planetData.radius)))));
+
+				infoPanel.row();
 				infoPanel.add("Temperature:");
 				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kelvinToString(planetData.temperature))));
 			}
