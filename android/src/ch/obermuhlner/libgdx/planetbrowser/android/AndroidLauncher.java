@@ -30,9 +30,9 @@ public class AndroidLauncher extends AndroidApplication {
 		public Skin createSkin() {
 			Skin skin = new Skin();
 			skin.addRegions(new TextureAtlas(Gdx.files.internal("data/ui/uiskin.atlas")));
-			skin.add("small-font", generateFont("data/fonts/orbitron-medium.ttf", 16));
-			skin.add("default-font", generateFont("data/fonts/orbitron-medium.ttf", 20));
-			skin.add("large-font", generateFont("data/fonts/orbitron-medium.ttf", 26));
+			skin.add("small-font", generateFont("data/fonts/Orbitron-Medium.ttf", 16));
+			skin.add("default-font", generateFont("data/fonts/Orbitron-Medium.ttf", 20));
+			skin.add("large-font", generateFont("data/fonts/Orbitron-Medium.ttf", 26));
 			skin.load(Gdx.files.internal("data/ui/uiskin.json"));
 			return skin;
 		}
