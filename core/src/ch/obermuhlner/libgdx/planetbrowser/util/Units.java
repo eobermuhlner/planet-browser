@@ -352,4 +352,11 @@ public class Units {
 		return stringBuilder;
 	}
 
+	public static float toRenderUnit(double meters) {
+		return (float) (meters / Units.EARTH_RADIUS);
+	}
+
+	public static double toMeter(float renderUnits) {
+		return renderUnits * Units.EARTH_RADIUS;
+	}
 }
