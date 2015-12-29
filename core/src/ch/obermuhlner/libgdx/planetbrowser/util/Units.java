@@ -133,10 +133,18 @@ public class Units {
 	};
 
 	public static String toString(double value) {
+		if (Double.isNaN(value) || Double.isInfinite(value)) {
+			return "---";
+		}
+		
 		return toString(new BigDecimal(value).round(MC[3]));
 	}
 	
 	public static String toString(double value, int significantDigits) {
+		if (Double.isNaN(value) || Double.isInfinite(value)) {
+			return "---";
+		}
+
 		MathContext mathContext = significantDigits<MC.length ? MC[significantDigits] : new MathContext(significantDigits, RoundingMode.HALF_UP);
 		return toString(new BigDecimal(value).round(mathContext));
 	}
@@ -344,7 +352,4 @@ public class Units {
 		return stringBuilder;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(toString(1));
-	}
 }
