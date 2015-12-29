@@ -63,6 +63,7 @@ public class Units {
 	public static final double SUN_LUMINOSITY = 3.827E26; // W
 
 	public static final double MOON_MASS = 7.3477E22;
+	public static final double GRAVITATIONAL_CONSTANT = 6.67408E-11; // m^3 * kg^-1 * s^-2
 
 	private static Unit meterUnits[] = {
 		new Unit(LIGHT_YEAR, "lightyears"),
@@ -115,6 +116,15 @@ public class Units {
 		new Unit(JUPITER_MASS, "jupiter mass"),
 		new Unit(EARTH_MASS, "earth mass"),
 		new Unit(MOON_MASS, "moon mass"),
+	};
+
+	private static Unit newtonUnits[] = {
+		new Unit(1, "N"),
+	};
+
+	private static Unit alternateNewtonGravityUnits[] = {
+		new Unit(gravity(SUN_MASS, SUN_RADIUS), "sun gravities"),
+		new Unit(gravity(EARTH_MASS, EARTH_RADIUS), "earth gravities"),
 	};
 
 	public static String toString(double value) {
@@ -176,7 +186,15 @@ public class Units {
 	public static String densityToString(double value) {
 		return toString(value) + " kg/m^3";
 	}
-
+	
+	public static String newtonGravityToString(double value) {
+		return unitToString(value, true, newtonUnits, alternateNewtonGravityUnits);
+	}
+	
+	public static double gravity(double mass, double distance) {
+		return mass * Units.GRAVITATIONAL_CONSTANT / (distance * distance);
+	}
+	
 	public static String percentToString(double value) {
 		return toString(value * 100) + "%";
 	}
@@ -186,13 +204,17 @@ public class Units {
 	}
 
 	public static String unitToString(double value, Unit units[], Unit[]... alternateUnits) {
+		return unitToString(value, false, units, alternateUnits);
+	}
+	
+	public static String unitToString(double value, boolean showLast, Unit units[], Unit[]... alternateUnits) {
 		StringBuilder stringBuilder = new StringBuilder();
 
 		stringBuilder.append(unitToString(value, true, units));
 
 		boolean shown = false;
 		for (Unit[] alternate : alternateUnits) {
-			String earthString = unitToString(value, false, alternate);
+			String earthString = unitToString(value, showLast, alternate);
 			if (earthString != null) {
 				if (shown) {
 					stringBuilder.append(", ");
