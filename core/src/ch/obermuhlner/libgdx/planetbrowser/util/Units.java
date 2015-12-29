@@ -74,7 +74,6 @@ public class Units {
 	private static Unit meterDistanceUnits[] = {
 		new Unit(LIGHT_YEAR, "lightyears"),
 		new Unit(LIGHT_SECOND, "lightseconds"),
-		new Unit(1000000, "Mm"),
 		new Unit(1000, "km"),
 		new Unit(1, "m"),
 	};
