@@ -152,8 +152,8 @@ public class PlanetScreen extends AbstractScreen {
 		
 		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
 		
-		float planetUnit = Units.toRenderUnit(Math.max(Units.JUPITER_RADIUS, planetData.radius));
-		float sunUnit = Units.toRenderUnit(1000* Units.EARTH_RADIUS);
+		float planetUnit = Units.toRenderUnit(Math.max(Units.JUPITER_RADIUS, 1.5 * planetData.radius));
+		float sunUnit = Units.toRenderUnit(1000 * Units.EARTH_RADIUS);
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 0.001f;
