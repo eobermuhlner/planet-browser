@@ -108,6 +108,8 @@ public class PlanetScreen extends AbstractScreen {
 	private Label planetTimeLabel;
 
 	private Label shipTimeLabel;
+	private Label shipDistanceLabel;
+	private Label shipEscapeVelocityLabel;
 	
 	private long shipYearStartMillis;
 	private long planetYearStartMillis;
@@ -136,27 +138,7 @@ public class PlanetScreen extends AbstractScreen {
 
 	@Override
 	public void show() {
-		stage = new Stage();
-		
-		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
-		
-		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.near = 0.001f;
-		camera.far = 400f;
-		camera.position.set(2, 1, 2);
-		camera.lookAt(0, 0, 0);
-		camera.update(true);
-		
-//		float ambientLight = 0.1f;
-//		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight, ambientLight, ambientLight, 1f));
-
-		PointLight light = new PointLight();
-		light.set(Color.WHITE, 30f, 0f, -30f, 1.0f);
-		environment.add(light);
-		
-		cameraInputController = new CameraInputController(camera);
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, cameraInputController));
-
+		// create planet
 		Random random = new Random(randomSeed);
 		ModelInstanceFactory modelInstanceFactory = random.next(mapPlanetFactories.get(currentPlanetFactoryName));
 		long startMillis = System.currentTimeMillis();
@@ -165,9 +147,37 @@ public class PlanetScreen extends AbstractScreen {
 		long endMillis = System.currentTimeMillis();
 		long deltaMillis = endMillis - startMillis;
 		
+		// setup rendering
+		stage = new Stage();
+		
+		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
+		
+		float planetUnit = Units.toRenderUnit(Math.max(Units.JUPITER_RADIUS, planetData.radius));
+		float sunUnit = Units.toRenderUnit(1000* Units.EARTH_RADIUS);
+		
+		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.near = 0.001f;
+		camera.far = 400f;
+		camera.position.set(planetUnit, 0.5f * planetUnit, planetUnit);
+		camera.lookAt(0, 0, 0);
+		camera.update(true);
+		
+//		float ambientLight = 0.1f;
+//		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight, ambientLight, ambientLight, 1f));
+
+		PointLight light = new PointLight();
+		light.set(Color.WHITE, 10f * sunUnit, 0f * sunUnit, -30f * sunUnit, 1.0f);
+		environment.add(light);
+		
+		cameraInputController = new CameraInputController(camera);
+		cameraInputController.forwardTarget = false;
+		Gdx.input.setInputProcessor(new InputMultiplexer(stage, cameraInputController));
+
 		prepareStage();
 		
-		createTimeLabel.setText(String.valueOf(deltaMillis));
+		if (SHOW_DEBUG_INFO) {
+			createTimeLabel.setText(String.valueOf(deltaMillis));
+		}
 		
 		planetDayMillis = random.nextInt(7, 40) * 3600 * 1000;
 		planetYearStartMillis = endMillis - random.nextInt((int) planetDayMillis);
@@ -290,9 +300,19 @@ public class PlanetScreen extends AbstractScreen {
 				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.newtonGravityToString(Units.gravity(planetData.mass, planetData.radius)))));
 
 				infoPanel.row();
-				infoPanel.add("Escape Velocity:");
+				infoPanel.add("Surface Escape Velocity:");
 				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.metersPerSecondToString(Units.escapeVelocity(planetData.mass, planetData.radius)))));
 
+				infoPanel.row();
+				infoPanel.add("Ship Distance:");
+				shipDistanceLabel = gui.label("");
+				infoPanel.add(shipDistanceLabel);
+				
+				infoPanel.row();
+				infoPanel.add("Ship Escape Velocity:");
+				shipEscapeVelocityLabel = gui.label("");
+				infoPanel.add(shipEscapeVelocityLabel);
+				
 				infoPanel.row();
 				infoPanel.add("Temperature:");
 				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kelvinToString(planetData.temperature))));
@@ -491,18 +511,26 @@ public class PlanetScreen extends AbstractScreen {
 		deltaMillisLabel.setText(String.valueOf((int) (Gdx.graphics.getDeltaTime() * 1000)));
 		
 		long nowMillis = System.currentTimeMillis();
-		if (SHOW_DEBUG_INFO) {
+
+		{
 			long planetTimeMillis = nowMillis - planetYearStartMillis;
 			
 			Units.millisToPlanetTime(planetTime, planetTimeMillis, planetDayMillis);
-			planetTimeLabel.setText(String.format("%02d:%02d:%02d.%d  %5.4f%%", planetTime.hours, planetTime.minutes, planetTime.seconds, planetTime.milliseconds / 100, planetTime.dayFraction * 100.0));
+			planetTimeLabel.setText(String.format("%02d:%02d:%02d.%d  (%5.4f%%)", planetTime.hours, planetTime.minutes, planetTime.seconds, planetTime.milliseconds / 100, planetTime.dayFraction * 100.0));
 		}
 
-		if (SHOW_DEBUG_INFO) {
+		{
 			long shipTimeMillis = nowMillis - shipYearStartMillis;
 			
 			Units.millisToPlanetTime(planetTime, shipTimeMillis, 24 * 3600 * 1000);
 			shipTimeLabel.setText(String.format("%02d:%02d:%02d.%d", planetTime.hours, planetTime.minutes, planetTime.seconds, planetTime.milliseconds / 100));
+		}
+
+		{
+			double shipDistance = Units.toMeter(camera.position.len());
+			double shipDistanceToSurface = shipDistance - planetData.radius;
+			shipDistanceLabel.setText(Units.meterDistanceToString(shipDistanceToSurface) + "  (" + Units.toString(shipDistanceToSurface / planetData.radius) + " radii)");
+			shipEscapeVelocityLabel.setText(Units.metersPerSecondToString(Units.escapeVelocity(planetData.mass, shipDistance)));
 		}
 		
 		stage.draw();
