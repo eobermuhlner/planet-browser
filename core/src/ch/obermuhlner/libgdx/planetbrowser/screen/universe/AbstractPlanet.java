@@ -26,6 +26,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribut
 import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
+import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public abstract class AbstractPlanet implements ModelInstanceFactory {
 
@@ -35,7 +36,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	public Array<ModelInstance> createModelInstance(PlanetData planetData, Random random) {
 		Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
-		float size = (float) random.nextGaussian(getPlanetRadius());
+		float size = Units.toRenderUnit(planetData.radius) * 2;
 
 		{
 			Material material = createPlanetMaterial(random, planetData);
@@ -84,10 +85,6 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 
 		Material material = new Material(materialAttributes);
 		return material;
-	}
-
-	protected float getPlanetRadius() {
-		return 3.0f;
 	}
 
 	public Color[] randomColors(Random random, int colorCount, Color[] colors, float deltaColor, float deltaLuminance) {
