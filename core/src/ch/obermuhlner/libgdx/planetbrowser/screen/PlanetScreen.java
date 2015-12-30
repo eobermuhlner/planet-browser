@@ -250,6 +250,12 @@ public class PlanetScreen extends AbstractScreen {
 					toggleInfoWindow();
 				}
 			}));
+			buttonPanel.add(gui.button("Land", new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					PlanetBrowser.INSTANCE.setScreen(new FlyPlanetScreen(null, randomSeed));
+				}
+			}));
 		}
 
 		{
@@ -497,12 +503,12 @@ public class PlanetScreen extends AbstractScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-//		camera.rotateAround(target, Vector3.Y, delta * autoRotateAngle);
+		camera.rotateAround(target, Vector3.Y, delta * autoRotateAngle);
 		camera.update();
 
 		for (int i = 0; i < modelInstances.size; i++) {
 			ModelInstance modelInstance = modelInstances.get(i);
-			modelInstance.transform.rotate(Vector3.Y, delta * -10);
+//			modelInstance.transform.rotate(Vector3.Y, delta * -10);
 		}
 		
 		cameraInputController.update();
