@@ -139,11 +139,10 @@ public class PlanetScreen extends AbstractScreen {
 	@Override
 	public void show() {
 		// create planet
-		Random random = new Random(randomSeed);
-		ModelInstanceFactory modelInstanceFactory = random.next(mapPlanetFactories.get(currentPlanetFactoryName));
+		ModelInstanceFactory modelInstanceFactory = new Random(randomSeed).next(mapPlanetFactories.get(currentPlanetFactoryName));
 		long startMillis = System.currentTimeMillis();
-		planetData = modelInstanceFactory.createPlanetData(random);
-		modelInstances.addAll(modelInstanceFactory.createModelInstance(planetData, random));
+		planetData = modelInstanceFactory.createPlanetData(new Random(randomSeed));
+		modelInstances.addAll(modelInstanceFactory.createModelInstance(planetData, new Random(randomSeed)));
 		long endMillis = System.currentTimeMillis();
 		long deltaMillis = endMillis - startMillis;
 		
@@ -179,6 +178,7 @@ public class PlanetScreen extends AbstractScreen {
 			createTimeLabel.setText(String.valueOf(deltaMillis));
 		}
 		
+		Random random = new Random(randomSeed);
 		planetDayMillis = random.nextInt(7, 40) * 3600 * 1000;
 		planetYearStartMillis = endMillis - random.nextInt((int) planetDayMillis);
 	}
@@ -497,9 +497,14 @@ public class PlanetScreen extends AbstractScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		camera.rotateAround(target, Vector3.Y, delta * autoRotateAngle);
+//		camera.rotateAround(target, Vector3.Y, delta * autoRotateAngle);
 		camera.update();
 
+		for (int i = 0; i < modelInstances.size; i++) {
+			ModelInstance modelInstance = modelInstances.get(i);
+			modelInstance.transform.rotate(Vector3.Y, delta * -10);
+		}
+		
 		cameraInputController.update();
 		stage.act(delta);
 		
