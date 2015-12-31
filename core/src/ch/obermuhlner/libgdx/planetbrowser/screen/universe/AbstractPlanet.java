@@ -2,6 +2,9 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -55,7 +58,13 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		
 		return modelInstances;
 	}
-
+	
+	@Override
+	public Map<TextureType, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, Set<TextureType> textureTypes, int textureSize) {
+		// TODO implement createTexture()
+		return null;
+	}
+	
 	private Model createSphere(float size, Material material) {
 		long attributes = Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates;
 		int divisions = PlanetBrowser.INSTANCE.options.getSphereDivisions();

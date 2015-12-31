@@ -1,6 +1,12 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2;
 
 import com.badlogic.gdx.graphics.Color;
@@ -15,6 +21,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory.TextureType;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
@@ -79,9 +86,26 @@ public class Earth extends AbstractPlanet {
 		
 		return planetData;
 	}
-	
+
 	@Override
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
+		Array<Attribute> materialAttributes = new Array<Attribute>();
+		
+		Set<TextureType> textureTypes = EnumSet.of(
+				TextureType.Diffuse,
+				TextureType.Normal,
+				TextureType.Specular);
+		Map<TextureType, Texture> textures = createTextures(planetData, random, 0, 1, 0, 1, textureTypes, 2048);
+
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(ModelInstanceFactory.TextureType.Diffuse)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(ModelInstanceFactory.TextureType.Normal)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(ModelInstanceFactory.TextureType.Specular)));
+		
+		return new Material(materialAttributes);
+	}
+	
+	@Override
+	public Map<TextureType, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, Set<TextureType> textureTypes, int textureSize) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		boolean hot = planetData.temperature > Units.celsiusToKelvin(30);
@@ -129,18 +153,12 @@ public class Earth extends AbstractPlanet {
 
 		Material material = new Material(materialAttributes);
 
-		if (true) {
-			materialAttributes.clear();
-
-			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), true, true, true, false);
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(1)));
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(2)));
-			
-			material = new Material(materialAttributes);
-		}
-		
-		return material;
+		Map<TextureType, Texture> texturesMap = new HashMap<TextureType, Texture>();
+		Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), true, true, true, false);
+		texturesMap.put(TextureType.Diffuse, textures.get(0));
+		texturesMap.put(TextureType.Normal, textures.get(1));
+		texturesMap.put(TextureType.Specular, textures.get(2));
+		return texturesMap;
 	}
 
 	@Override

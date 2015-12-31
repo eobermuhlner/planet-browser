@@ -121,6 +121,8 @@ public class PlanetScreen extends AbstractScreen {
 
 	private Table infoPanel;
 
+	private ModelInstanceFactory modelInstanceFactory;
+
 	public PlanetScreen() {
 		this(1);
 	}
@@ -139,7 +141,7 @@ public class PlanetScreen extends AbstractScreen {
 	@Override
 	public void show() {
 		// create planet
-		ModelInstanceFactory modelInstanceFactory = new Random(randomSeed).next(mapPlanetFactories.get(currentPlanetFactoryName));
+		modelInstanceFactory = new Random(randomSeed).next(mapPlanetFactories.get(currentPlanetFactoryName));
 		long startMillis = System.currentTimeMillis();
 		planetData = modelInstanceFactory.createPlanetData(new Random(randomSeed));
 		modelInstances.addAll(modelInstanceFactory.createModelInstance(planetData, new Random(randomSeed)));
@@ -151,7 +153,8 @@ public class PlanetScreen extends AbstractScreen {
 		
 		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
 		
-		float planetUnit = Units.toRenderUnit(Math.max(Units.JUPITER_RADIUS, 1.5 * planetData.radius));
+		//float planetUnit = Units.toRenderUnit(Math.max(Units.JUPITER_RADIUS, 1.5 * planetData.radius));
+		float planetUnit = Units.toRenderUnit(1.5 * planetData.radius);
 		float sunUnit = Units.toRenderUnit(1000 * Units.EARTH_RADIUS);
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -253,7 +256,7 @@ public class PlanetScreen extends AbstractScreen {
 			buttonPanel.add(gui.button("Land", new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
-					PlanetBrowser.INSTANCE.setScreen(new FlyPlanetScreen(null, randomSeed));
+					PlanetBrowser.INSTANCE.setScreen(new FlyPlanetScreen(modelInstanceFactory, randomSeed));
 				}
 			}));
 		}
