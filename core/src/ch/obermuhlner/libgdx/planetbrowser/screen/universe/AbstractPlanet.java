@@ -141,6 +141,11 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		return new FloatArrayAttribute(FloatArrayAttribute.PlanetColorFrequencies, floatArray);
 	}
 	
+	public Texture renderTextureBump (Material material, ShaderProvider shaderProvider) {
+		material.set(TerrestrialPlanetFloatAttribute.createCreateBump()); // FIXME just adding attribute is wrong, modifies the material
+		return renderTextures(material, shaderProvider, 1).get(0);
+	}
+
 	public Texture renderTextureDiffuse (Material material, ShaderProvider shaderProvider) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateDiffuse()); // FIXME just adding attribute is wrong, modifies the material
 		return renderTextures(material, shaderProvider, 1).get(0);
@@ -161,10 +166,11 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		return renderTextures(material, shaderProvider, 1).get(0);
 	}
 	
-	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
+	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
 		if (useMultiTextureRendering()) {
-			material.set(TerrestrialPlanetFloatAttribute.createTextures(diffuse, normal, specular, emissive));
+			material.set(TerrestrialPlanetFloatAttribute.createTextures(bump, diffuse, normal, specular, emissive));
 			int textureCount = 0;
+			textureCount += bump ? 1 : 0;
 			textureCount += diffuse ? 1 : 0;
 			textureCount += normal ? 1 : 0;
 			textureCount += specular ? 1 : 0;
@@ -172,6 +178,9 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 			return renderTextures(material, shaderProvider, textureCount);
 		} else {
 			Array<Texture> textures = new Array<Texture>();
+			if (bump) {
+				textures.add(renderTextureBump(material, shaderProvider));
+			}
 			if (diffuse) {
 				textures.add(renderTextureDiffuse(material, shaderProvider));
 			}

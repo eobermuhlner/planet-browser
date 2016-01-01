@@ -31,10 +31,11 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 	public static final String CreateTextureAlias = "createTexture";
 	public static final long CreateTexture = register(CreateTextureAlias);
 
-	public static final int CREATE_DIFFUSE_TEXTURE = 1;
-	public static final int CREATE_NORMAL_TEXTURE = 2;
-	public static final int CREATE_SPECULAR_TEXTURE = 4;
-	public static final int CREATE_EMISSIVE_TEXTURE = 8;
+	public static final int CREATE_BUMP_TEXTURE = 1;
+	public static final int CREATE_DIFFUSE_TEXTURE = 2;
+	public static final int CREATE_NORMAL_TEXTURE = 4;
+	public static final int CREATE_SPECULAR_TEXTURE = 8;
+	public static final int CREATE_EMISSIVE_TEXTURE = 16;
 	
 	public static TerrestrialPlanetFloatAttribute createHeightMin (float value) {
 		return new TerrestrialPlanetFloatAttribute(HeightMin, value);
@@ -68,6 +69,10 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 		return new TerrestrialPlanetFloatAttribute(HeightMountains, value);
 	}
 
+	public static TerrestrialPlanetFloatAttribute createCreateBump () {
+		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_BUMP_TEXTURE);
+	}
+
 	public static TerrestrialPlanetFloatAttribute createCreateDiffuse () {
 		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_DIFFUSE_TEXTURE);
 	}
@@ -84,8 +89,11 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_EMISSIVE_TEXTURE);
 	}
 
-	public static TerrestrialPlanetFloatAttribute createTextures (boolean diffuse, boolean normal, boolean specular, boolean emissive) {
+	public static TerrestrialPlanetFloatAttribute createTextures(boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
 		int value = 0;
+		if (bump) {
+			value |= CREATE_BUMP_TEXTURE;
+		}
 		if (diffuse) {
 			value |= CREATE_DIFFUSE_TEXTURE;
 		}

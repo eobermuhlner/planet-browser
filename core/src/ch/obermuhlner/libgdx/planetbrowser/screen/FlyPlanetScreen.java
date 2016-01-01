@@ -1,8 +1,6 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen;
 
-import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -17,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
@@ -80,7 +79,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		// create planet surface
 
 		planetData = factory.createPlanetData(new Random(randomSeed));
-		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
+		long textureTypes = TextureAttribute.Bump | TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
 		float xFrom = 0.5f;
 		float xTo = 0.6f;
 		float yFrom = 0.5f;
@@ -89,6 +88,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		Map<Long, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, 2048);
 
 		Array<Attribute> materialAttributes = new Array<Attribute>();
+//		materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, textures.get(TextureAttribute.Bump)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));

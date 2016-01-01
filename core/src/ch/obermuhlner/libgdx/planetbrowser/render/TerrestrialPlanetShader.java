@@ -138,6 +138,11 @@ public class TerrestrialPlanetShader implements Shader {
 		
 		int createTexture = (int) getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CreateTexture, TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE);
 		int createTextureCount = 0;
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_BUMP_TEXTURE) != 0) {
+			prefix.append("#define createBumpFlag\n");
+			prefix.append("#define createBumpOutput " + createTextureCount + "\n");
+			createTextureCount++;
+		}
 		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE) != 0) {
 			prefix.append("#define createDiffuseFlag\n");
 			prefix.append("#define createDiffuseOutput " + createTextureCount + "\n");

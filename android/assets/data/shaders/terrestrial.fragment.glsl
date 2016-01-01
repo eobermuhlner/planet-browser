@@ -315,6 +315,7 @@ void main() {
 	vec2 r2 = vec2(u_random0+u_random6, u_random1+u_random3);
 	vec2 r3 = vec2(u_random0+u_random7, u_random1+u_random2);
 
+	vec3 bumpColor = vec3(0.0, 0.0, 0.0);
 	vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
 	vec3 normalColor = vec3(0.5, 0.5, 1.0);
 	vec3 specularColor = vec3(0.0, 0.0, 0.0);
@@ -323,7 +324,7 @@ void main() {
 	float height = calculateHeight(v_texCoords0);
 	float distEquator = abs(v_texCoords0.t - 0.5) * 2.0;
 
-	#if defined(createDiffuseFlag) || defined(createSpecularFlag)
+	#if defined(createBumpFlag) || defined(createDiffuseFlag) || defined(createSpecularFlag)
 		distEquator += pnoise2(v_texCoords0,  8.0) * 0.04;
 		distEquator += pnoise2(v_texCoords0, 16.0) * 0.02;
 		distEquator += pnoise2(v_texCoords0, 32.0) * 0.01;
@@ -339,6 +340,10 @@ void main() {
 		#ifdef planetColorsFlag
 			vec4 diffuseColorAndSpecularValue = planetColor(v_texCoords0, height, distEquator);
 		#endif
+	#endif
+
+	#if defined(createBumpFlag)
+		bumpColor = vec3(if_then_else(when_gt(height, u_heightWater), height, u_heightWater));
 	#endif
 
 	#if defined(createDiffuseFlag)
@@ -400,6 +405,9 @@ void main() {
 	#endif
 
 	#if defined(multiTextureRenderingFlag)
+		#if defined(createBumpFlag)
+			gl_FragData[createBumpOutput].rgb = bumpColor;
+		#endif
 		#if defined(createDiffuseFlag)
 			gl_FragData[createDiffuseOutput].rgb = diffuseColor;
 		#endif
@@ -413,6 +421,9 @@ void main() {
 			gl_FragData[createEmissiveOutput].rgb = emissiveColor;
 		#endif
 	#else
+		#if defined(createBumpFlag)
+			gl_FragColor.rgb = bumpColor;
+		#endif
 		#if defined(createDiffuseFlag)
 			gl_FragColor.rgb = diffuseColor;
 		#endif

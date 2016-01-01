@@ -138,7 +138,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		{
 			materialAttributes.clear();
 
-			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), true, false, true, false);
+			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), false, true, false, true, false);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(1)));
 
