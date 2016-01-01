@@ -100,7 +100,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 
 		int meshDivisions = 16;
 		Texture bumpTexture = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
-		surface = createTerrainMesh(bumpTexture, 100, material, xFrom, xTo, yFrom, yTo);
+		surface = createTerrainMesh(bumpTexture, 100, material, 0, 1, 0, 1);
 	}
 	
 	private final VertexInfo vertTmp1 = new VertexInfo();
