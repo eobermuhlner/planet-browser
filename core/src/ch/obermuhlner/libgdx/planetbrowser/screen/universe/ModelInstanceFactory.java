@@ -12,7 +12,7 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 public interface ModelInstanceFactory {
 
 	public enum TextureType {
-		Height,
+		Bump,
 		Diffuse,
 		Specular,
 		Normal

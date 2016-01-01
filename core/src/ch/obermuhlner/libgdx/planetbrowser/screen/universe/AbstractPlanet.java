@@ -61,7 +61,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	
 	@Override
 	public Map<TextureType, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, Set<TextureType> textureTypes, int textureSize) {
-		// TODO implement createTexture()
+		// FIXME implement createTexture()
 		return null;
 	}
 	
