@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,7 +22,9 @@ import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.graphics.glutils.MultiTextureFrameBuffer;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
+import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
+import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
@@ -201,18 +204,38 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		}
 	}
 	
+	private final VertexInfo vertTmp1 = new VertexInfo();
+	private final VertexInfo vertTmp2 = new VertexInfo();
+	private final VertexInfo vertTmp3 = new VertexInfo();
+	private final VertexInfo vertTmp4 = new VertexInfo();
 	private Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, int textureCount) {
 		final int rectSize = 1;
-		Model model;
 		ModelBuilder modelBuilder = new ModelBuilder();
-		model = modelBuilder.createRect(
-			rectSize, 0f, -rectSize,
-			-rectSize, 0f, -rectSize,
-			-rectSize, 0f, rectSize,
-			rectSize, 0f, rectSize,
-			0, 1, 0,
-			material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		modelBuilder.begin();
+		MeshPartBuilder part = modelBuilder.part("terrain", GL20.GL_TRIANGLES, (long) (Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates), material);
 
+		float x00 = rectSize;
+		float y00 = 0f;
+		float z00 = -rectSize;
+		float x10 = -rectSize;
+		float y10 = 0f;
+		float z10 = -rectSize;
+		float x11 = -rectSize;
+		float y11 = 0f;
+		float z11 = rectSize;
+		float x01 = rectSize;
+		float y01 = 0f;
+		float z01 = rectSize;
+		float normalX = 0;
+		float normalY = 1;
+		float normalZ = 0;
+		part.rect(
+				vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(xFrom, yTo),
+				vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(xTo, yTo),
+				vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(xTo, yFrom),
+				vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(xFrom, yFrom));
+
+		Model model = modelBuilder.end();
 		ModelInstance instance = new ModelInstance(model);
 
 		ModelBatch modelBatch = new ModelBatch(shaderProvider == null ? UberShaderProvider.DEFAULT : shaderProvider);
