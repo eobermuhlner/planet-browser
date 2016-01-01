@@ -147,8 +147,8 @@ public class Earth extends AbstractPlanet {
 		Material material = new Material(materialAttributes);
 
 		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
-		// FIXME only calculated asked textures
-		Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), textureSize, true, true, true, true, false);
+		// FIXME only calculate asked textures
+		Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), textureSize, xFrom, xTo, yFrom, yTo, true, true, true, true, false);
 		texturesMap.put(TextureAttribute.Bump, textures.get(0));
 		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
 		texturesMap.put(TextureAttribute.Normal, textures.get(2));

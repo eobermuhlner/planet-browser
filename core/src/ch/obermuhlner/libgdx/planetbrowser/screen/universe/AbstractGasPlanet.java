@@ -33,10 +33,10 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 			materialAttributes.clear();
 
 			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-			Texture textureDiffuse = renderTextureDiffuse(material, new GasPlanetShader.Provider(), textureSize);
+			Texture textureDiffuse = renderTextureDiffuse(material, new GasPlanetShader.Provider(), textureSize, 0, 1, 0, 1);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
 
-//			Texture textureNormal = renderTextureNormal(material, new GasPlanetShader.Provider());
+//			Texture textureNormal = renderTextureNormal(material, new GasPlanetShader.Provider(), 0, 1, 0, 1);
 //			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
 			
 			material = new Material(materialAttributes);
