@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
@@ -84,8 +85,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 		float xTo = 0.6f;
 		float yFrom = 0.5f;
 		float yTo = 0.6f;
-		
-		Map<Long, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, 2048);
+		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+		Map<Long, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
 
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 //		materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, textures.get(TextureAttribute.Bump)));

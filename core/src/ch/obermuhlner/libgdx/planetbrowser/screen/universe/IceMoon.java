@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
@@ -51,10 +52,12 @@ public class IceMoon extends AbstractPlanet {
 		if (true) {
 			materialAttributes.clear();
 
-			Texture textureDiffuse = renderTextureDiffuse(material, new TerrestrialPlanetShader.Provider());
+			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+
+			Texture textureDiffuse = renderTextureDiffuse(material, new TerrestrialPlanetShader.Provider(), textureSize);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
 			
-			Texture textureNormal = renderTextureNormal(material, new TerrestrialPlanetShader.Provider());
+			Texture textureNormal = renderTextureNormal(material, new TerrestrialPlanetShader.Provider(), textureSize);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
 
 			materialAttributes.add(ColorAttribute.createSpecular(Color.WHITE));

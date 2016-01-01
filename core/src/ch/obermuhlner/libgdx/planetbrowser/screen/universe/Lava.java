@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
@@ -78,7 +79,8 @@ public class Lava extends AbstractPlanet {
 		if (true) {
 			materialAttributes.clear();
 
-			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), false, true, true, false, true);
+			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), textureSize, false, true, true, false, true);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(1)));
 			//materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(2)));

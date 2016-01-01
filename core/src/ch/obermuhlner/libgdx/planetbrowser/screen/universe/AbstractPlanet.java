@@ -141,32 +141,32 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		return new FloatArrayAttribute(FloatArrayAttribute.PlanetColorFrequencies, floatArray);
 	}
 	
-	public Texture renderTextureBump (Material material, ShaderProvider shaderProvider) {
+	public Texture renderTextureBump (Material material, ShaderProvider shaderProvider, int textureSize) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateBump()); // FIXME just adding attribute is wrong, modifies the material
-		return renderTextures(material, shaderProvider, 1).get(0);
+		return renderTextures(material, shaderProvider, textureSize, 1).get(0);
 	}
 
-	public Texture renderTextureDiffuse (Material material, ShaderProvider shaderProvider) {
+	public Texture renderTextureDiffuse (Material material, ShaderProvider shaderProvider, int textureSize) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateDiffuse()); // FIXME just adding attribute is wrong, modifies the material
-		return renderTextures(material, shaderProvider, 1).get(0);
+		return renderTextures(material, shaderProvider, textureSize, 1).get(0);
 	}
 
-	public Texture renderTextureNormal (Material material, ShaderProvider shaderProvider) {
+	public Texture renderTextureNormal (Material material, ShaderProvider shaderProvider, int textureSize) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateNormal()); // FIXME just adding attribute is wrong, modifies the material
-		return renderTextures(material, shaderProvider, 1).get(0);
+		return renderTextures(material, shaderProvider, textureSize, 1).get(0);
 	}
 	
-	public Texture renderTextureSpecular (Material material, ShaderProvider shaderProvider) {
+	public Texture renderTextureSpecular (Material material, ShaderProvider shaderProvider, int textureSize) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular()); // FIXME just adding attribute is wrong, modifies the material
-		return renderTextures(material, shaderProvider, 1).get(0);
+		return renderTextures(material, shaderProvider, textureSize, 1).get(0);
 	}
 	
-	public Texture renderTextureEmissive (Material material, ShaderProvider shaderProvider) {
+	public Texture renderTextureEmissive (Material material, ShaderProvider shaderProvider, int textureSize) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateEmissive()); // FIXME just adding attribute is wrong, modifies the material
-		return renderTextures(material, shaderProvider, 1).get(0);
+		return renderTextures(material, shaderProvider, textureSize, 1).get(0);
 	}
 	
-	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
+	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
 		if (useMultiTextureRendering()) {
 			material.set(TerrestrialPlanetFloatAttribute.createTextures(bump, diffuse, normal, specular, emissive));
 			int textureCount = 0;
@@ -175,31 +175,29 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 			textureCount += normal ? 1 : 0;
 			textureCount += specular ? 1 : 0;
 			textureCount += emissive ? 1 : 0;
-			return renderTextures(material, shaderProvider, textureCount);
+			return renderTextures(material, shaderProvider, textureSize, textureCount);
 		} else {
 			Array<Texture> textures = new Array<Texture>();
 			if (bump) {
-				textures.add(renderTextureBump(material, shaderProvider));
+				textures.add(renderTextureBump(material, shaderProvider, textureSize));
 			}
 			if (diffuse) {
-				textures.add(renderTextureDiffuse(material, shaderProvider));
+				textures.add(renderTextureDiffuse(material, shaderProvider, textureSize));
 			}
 			if (normal) {
-				textures.add(renderTextureNormal(material, shaderProvider));
+				textures.add(renderTextureNormal(material, shaderProvider, textureSize));
 			}
 			if (specular) {
-				textures.add(renderTextureSpecular(material, shaderProvider));
+				textures.add(renderTextureSpecular(material, shaderProvider, textureSize));
 			}
 			if (emissive) {
-				textures.add(renderTextureEmissive(material, shaderProvider));
+				textures.add(renderTextureEmissive(material, shaderProvider, textureSize));
 			}
 			return textures;
 		}
 	}
 	
-	private Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureCount) {
-		final int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-		
+	private Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, int textureCount) {
 		final int rectSize = 1;
 		Model model;
 		ModelBuilder modelBuilder = new ModelBuilder();

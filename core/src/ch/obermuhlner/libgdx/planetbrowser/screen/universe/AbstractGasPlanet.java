@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.GasPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
@@ -31,7 +32,8 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 		if (true) {
 			materialAttributes.clear();
 
-			Texture textureDiffuse = renderTextureDiffuse(material, new GasPlanetShader.Provider());
+			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+			Texture textureDiffuse = renderTextureDiffuse(material, new GasPlanetShader.Provider(), textureSize);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
 
 //			Texture textureNormal = renderTextureNormal(material, new GasPlanetShader.Provider());
