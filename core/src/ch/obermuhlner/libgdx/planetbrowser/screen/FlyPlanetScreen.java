@@ -26,6 +26,7 @@ import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
+import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
@@ -97,22 +98,42 @@ public class FlyPlanetScreen extends AbstractScreen {
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
 		Material material = new Material(materialAttributes);
 
-		int meshDivisions = 128;
+		int meshDivisions = 16;
 		Texture bumpTexture = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
-		surface = createTerrainMesh(bumpTexture, 100, material);
+		surface = createTerrainMesh(bumpTexture, 100, material, xFrom, xTo, yFrom, yTo);
 	}
 	
-	private ModelInstance createTerrainMesh(Texture bumpTexture, float rectSize, Material material) {
+	private final VertexInfo vertTmp1 = new VertexInfo();
+	private final VertexInfo vertTmp2 = new VertexInfo();
+	private final VertexInfo vertTmp3 = new VertexInfo();
+	private final VertexInfo vertTmp4 = new VertexInfo();
+	private ModelInstance createTerrainMesh(Texture bumpTexture, float rectSize, Material material, float uFrom, float uTo, float vFrom, float vTo) {
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
-		MeshBuilder part = (MeshBuilder) modelBuilder.part("terrain", GL20.GL_TRIANGLES, (long) (Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates), material);
-		part.patch(
-				rectSize, 0f, -rectSize,
-				-rectSize, 0f, -rectSize,
-				-rectSize, 0f, rectSize,
-				rectSize, 0f, rectSize,
-				0, 1, 0,
-				bumpTexture.getWidth(), bumpTexture.getHeight());
+		MeshPartBuilder part = modelBuilder.part("terrain", GL20.GL_TRIANGLES, (long) (Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates), material);
+
+		float x00 = rectSize;
+		float y00 = 0f;
+		float z00 = -rectSize;
+		float x10 = -rectSize;
+		float y10 = 0f;
+		float z10 = -rectSize;
+		float x11 = -rectSize;
+		float y11 = 0f;
+		float z11 = rectSize;
+		float x01 = rectSize;
+		float y01 = 0f;
+		float z01 = rectSize;
+		float normalX = 0;
+		float normalY = 1;
+		float normalZ = 0;
+		int divisionsU = bumpTexture.getWidth();
+		int divisionsV = bumpTexture.getHeight();
+		part.rect(
+				vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(uFrom, vTo),
+				vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(uTo, vTo),
+				vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(uTo, vFrom),
+				vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(uFrom, vFrom));
 		Model model = modelBuilder.end();
 		return new ModelInstance(model);
 	}
