@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
+import ch.obermuhlner.libgdx.planetbrowser.model.MeshBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
@@ -80,32 +81,42 @@ public class FlyPlanetScreen extends AbstractScreen {
 		// create planet surface
 
 		planetData = factory.createPlanetData(new Random(randomSeed));
-		long textureTypes = TextureAttribute.Bump | TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
+		
 		float xFrom = 0.5f;
 		float xTo = 0.6f;
 		float yFrom = 0.5f;
 		float yTo = 0.6f;
+
 		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
 		Map<Long, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
 
 		Array<Attribute> materialAttributes = new Array<Attribute>();
-//		materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, textures.get(TextureAttribute.Bump)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
 		Material material = new Material(materialAttributes);
-		
-		final int rectSize = 100;
-		ModelBuilder modelBuilder = new ModelBuilder();
-		final Material material1 = material;
-		modelBuilder.begin();
-		int divisions = 100;
-		MeshPartBuilder part = modelBuilder.part("rect", GL20.GL_TRIANGLES, (long) (Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates), material1);
-		part.patch((float) rectSize, 0f, (float) -rectSize, (float) -rectSize, 0f, (float) -rectSize, (float) -rectSize, 0f, (float) rectSize, (float) rectSize, 0f, (float) rectSize, (float) 0, (float) 1, (float) 0, divisions, divisions);
-		Model model = modelBuilder.end();
-		surface = new ModelInstance(model);
+
+		int meshDivisions = 128;
+		Texture bumpTexture = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
+		surface = createTerrainMesh(bumpTexture, 100, material);
 	}
 	
+	private ModelInstance createTerrainMesh(Texture bumpTexture, float rectSize, Material material) {
+		ModelBuilder modelBuilder = new ModelBuilder();
+		modelBuilder.begin();
+		MeshBuilder part = (MeshBuilder) modelBuilder.part("terrain", GL20.GL_TRIANGLES, (long) (Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates), material);
+		part.patch(
+				rectSize, 0f, -rectSize,
+				-rectSize, 0f, -rectSize,
+				-rectSize, 0f, rectSize,
+				rectSize, 0f, rectSize,
+				0, 1, 0,
+				bumpTexture.getWidth(), bumpTexture.getHeight());
+		Model model = modelBuilder.end();
+		return new ModelInstance(model);
+	}
+
 	@Override
 	public void hide() {
 		super.hide();
