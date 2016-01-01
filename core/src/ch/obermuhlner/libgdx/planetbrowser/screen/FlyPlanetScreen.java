@@ -27,7 +27,6 @@ import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
-import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory.TextureType;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
@@ -81,21 +80,18 @@ public class FlyPlanetScreen extends AbstractScreen {
 		// create planet surface
 
 		planetData = factory.createPlanetData(new Random(randomSeed));
-		Set<TextureType> textureTypes = EnumSet.of(
-				TextureType.Diffuse,
-				TextureType.Normal,
-				TextureType.Specular);
+		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
 		float xFrom = 0.5f;
 		float xTo = 0.6f;
 		float yFrom = 0.5f;
 		float yTo = 0.6f;
 		
-		Map<TextureType, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, 2048);
+		Map<Long, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, 2048);
 
 		Array<Attribute> materialAttributes = new Array<Attribute>();
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(ModelInstanceFactory.TextureType.Diffuse)));
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(ModelInstanceFactory.TextureType.Normal)));
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(ModelInstanceFactory.TextureType.Specular)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
 		Material material = new Material(materialAttributes);
 		
 		final int rectSize = 100;

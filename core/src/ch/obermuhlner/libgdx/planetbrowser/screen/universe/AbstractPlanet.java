@@ -3,7 +3,6 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
 import java.util.Map;
-import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -60,7 +59,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	}
 	
 	@Override
-	public Map<TextureType, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, Set<TextureType> textureTypes, int textureSize) {
+	public Map<Long, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
 		// FIXME implement createTexture()
 		return null;
 	}
