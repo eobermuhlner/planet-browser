@@ -274,41 +274,39 @@ public class PlanetScreen extends AbstractScreen {
 			planetInfoPanel.defaults().spaceRight(gui.textWidth("m")).left();
 			rootTable.add(planetInfoPanel).left();
 			
-			{
-				planetInfoPanel.row();
-				planetInfoPanel.add("Planet Time:");
-				planetTimeLabel = gui.label("");
-				planetInfoPanel.add(planetTimeLabel);
-			}
-			{
-				planetInfoPanel.row();
-				planetInfoPanel.add("Period:");
-				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.secondsToString(planetData.period))));
+			planetInfoPanel.row();
+			planetInfoPanel.add("Planet Time:");
+			planetTimeLabel = gui.label("");
+			planetInfoPanel.add(planetTimeLabel);
 
-				planetInfoPanel.row();
-				planetInfoPanel.add("Radius:");
-				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.meterSizeToString(planetData.radius))));
+			planetInfoPanel.row();
+			planetInfoPanel.add("Period:");
+			planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.secondsToString(planetData.period))));
 
-				planetInfoPanel.row();
-				planetInfoPanel.add("Mass:");
-				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kilogramsToString(planetData.mass))));
+			planetInfoPanel.row();
+			planetInfoPanel.add("Radius:");
+			planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.meterSizeToString(planetData.radius))));
 
-				planetInfoPanel.row();
-				planetInfoPanel.add("Density:");
-				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.densityToString(planetData.density))));
+			planetInfoPanel.row();
+			planetInfoPanel.add("Mass:");
+			planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kilogramsToString(planetData.mass))));
 
-				planetInfoPanel.row();
-				planetInfoPanel.add("Surface Gravity:");
-				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.newtonGravityToString(Units.gravity(planetData.mass, planetData.radius)))));
+			planetInfoPanel.row();
+			planetInfoPanel.add("Density:");
+			planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.densityToString(planetData.density))));
 
-				planetInfoPanel.row();
-				planetInfoPanel.add("Surface Escape Velocity:");
-				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.metersPerSecondToString(Units.escapeVelocity(planetData.mass, planetData.radius)))));
+			planetInfoPanel.row();
+			planetInfoPanel.add("Surface Gravity:");
+			planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.newtonGravityToString(Units.gravity(planetData.mass, planetData.radius)))));
 
-				planetInfoPanel.row();
-				planetInfoPanel.add("Temperature:");
-				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kelvinToString(planetData.temperature))));
-			}
+			planetInfoPanel.row();
+			planetInfoPanel.add("Surface Escape Velocity:");
+			planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.metersPerSecondToString(Units.escapeVelocity(planetData.mass, planetData.radius)))));
+
+			planetInfoPanel.row();
+			planetInfoPanel.add("Temperature:");
+			planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kelvinToString(planetData.temperature))));
+
 			if (planetData.atmosphere != null) {
 				planetInfoPanel.row();
 				planetInfoPanel.add("Atmosphere:");
