@@ -7,7 +7,9 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -44,6 +46,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 	private PerspectiveCamera camera;
 	private ModelInstance surface;
 	private PlanetData planetData;
+	private Color atmosphereColor;
 
 	public FlyPlanetScreen(ModelInstanceFactory factory, long randomSeed) {
 		this.factory = factory;
@@ -75,6 +78,10 @@ public class FlyPlanetScreen extends AbstractScreen {
 //		light.set(Color.WHITE, -30f, 10f, 30f, 1.0f);
 //		environment.add(light);
 		
+		atmosphereColor = new Color(0x87ceebff);
+		
+		environment.set(new ColorAttribute(ColorAttribute.Fog, atmosphereColor));
+		
 		cameraInputController = new CameraInputController(camera);
 		cameraInputController.forwardTarget = false;
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, cameraInputController));
@@ -100,40 +107,65 @@ public class FlyPlanetScreen extends AbstractScreen {
 
 		int meshDivisions = 16;
 		Texture bumpTexture = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
-		surface = createTerrainMesh(bumpTexture, 100, material, 0, 1, 0, 1);
+		float terrainSize = 500;
+		surface = createTerrainMesh(bumpTexture, terrainSize, material, 0, 1, 0, 1);
 	}
 	
 	private final VertexInfo vertTmp1 = new VertexInfo();
-	private final VertexInfo vertTmp2 = new VertexInfo();
-	private final VertexInfo vertTmp3 = new VertexInfo();
-	private final VertexInfo vertTmp4 = new VertexInfo();
 	private ModelInstance createTerrainMesh(Texture bumpTexture, float rectSize, Material material, float uFrom, float uTo, float vFrom, float vTo) {
+		TextureData textureData = bumpTexture.getTextureData();
+//		Pixmap pixmap = textureData.consumePixmap();
+		
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
 		MeshPartBuilder part = modelBuilder.part("terrain", GL20.GL_TRIANGLES, (long) (Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates), material);
 
-		float x00 = rectSize;
-		float y00 = 0f;
-		float z00 = -rectSize;
-		float x10 = -rectSize;
-		float y10 = 0f;
-		float z10 = -rectSize;
-		float x11 = -rectSize;
-		float y11 = 0f;
-		float z11 = rectSize;
-		float x01 = rectSize;
-		float y01 = 0f;
-		float z01 = rectSize;
+		int divisionsU = bumpTexture.getWidth();
+		int divisionsV = bumpTexture.getHeight();
+
 		float normalX = 0;
 		float normalY = 1;
 		float normalZ = 0;
-		int divisionsU = bumpTexture.getWidth();
-		int divisionsV = bumpTexture.getHeight();
-		part.rect(
-				vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(uFrom, vTo),
-				vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(uTo, vTo),
-				vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(uTo, vFrom),
-				vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(uFrom, vFrom));
+
+		float vStep = (vTo - vFrom) / divisionsV;
+		float uStep = (uTo - uFrom) / divisionsU;
+		
+		float xStep = 2 * rectSize / divisionsU;
+		float zStep = 2 * rectSize / divisionsV;
+		
+		Color color = new Color();
+		for (int indexV = 0; indexV < divisionsV; indexV++) {
+			float v = vFrom + vStep * indexV;
+			float z = -rectSize + zStep * indexV;
+			for (int indexU = 0; indexU < divisionsU; indexU++) {
+				float u = uFrom + uStep * indexU;
+				float x = -rectSize + xStep * indexU;
+//				System.out.print(Integer.toHexString(pixmap.getPixel(indexU, indexV)));
+//				System.out.print(" ");
+//				Color.rgb888ToColor(color, pixmap.getPixel(indexU, indexV));
+//				float y = color.r * 10.0f;
+				float y = 0.1f;
+				vertTmp1.set(null).setPos(x, y, z).setNor(normalX, normalY, normalZ).setUV(u, v);
+				part.vertex(vertTmp1);
+			}
+			System.out.println();
+		}
+
+		int index = 0;
+		int indexStepV = divisionsU;
+		for (int indexV = 0; indexV < divisionsV-1; indexV++) {
+			for (int indexU = 0; indexU < divisionsU-1; indexU++) {
+				part.index((short) (index));
+				part.index((short) (index + indexStepV));
+				part.index((short) (index + indexStepV + 1));
+
+				part.index((short) (index + indexStepV + 1));
+				part.index((short) (index + 1));
+				part.index((short) (index));
+				index++;
+			}
+			index++;
+		}
 		Model model = modelBuilder.end();
 		return new ModelInstance(model);
 	}
@@ -153,7 +185,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(atmosphereColor.r, atmosphereColor.g, atmosphereColor.b, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		stage.act(delta);
