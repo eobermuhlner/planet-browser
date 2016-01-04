@@ -3,12 +3,15 @@ package ch.obermuhlner.libgdx.planetbrowser.ui;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -105,6 +108,25 @@ public class Gui {
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems(items);
 		return selectBox;
+	}
+
+	public ScrollPane scrollPane(Actor content) {
+		ScrollPane scrollPane = new ScrollPane(content);
+		scrollPane.setOverscroll(false, false);
+		return scrollPane;
+	}
+
+	public void pack(Window window) {
+		window.setSize(
+				Math.min(window.getMaxWidth(), window.getPrefWidth()),
+				Math.min(window.getMaxHeight(), window.getPrefHeight()));
+		window.validate();
+		if (window.needsLayout()) {
+			window.setSize(
+					Math.min(window.getMaxWidth(), window.getPrefWidth()),
+					Math.min(window.getMaxHeight(), window.getPrefHeight()));
+			window.validate();
+		}
 	}
 	
 	private static Pattern TAG_PATTERN = Pattern.compile("<(/?)([a-z]*)>");

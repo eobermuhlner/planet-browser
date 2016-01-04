@@ -273,9 +273,7 @@ public class PlanetScreen extends AbstractScreen {
 			planetInfoPanel = gui.table();
 			planetInfoPanel.setVisible(false);
 			planetInfoPanel.defaults().spaceRight(gui.textWidth("m")).left();
-			ScrollPane scrollPane = new ScrollPane(planetInfoPanel);
-			scrollPane.setOverscroll(false, false);
-			rootTable.add(scrollPane).left();
+			rootTable.add(gui.scrollPane(planetInfoPanel)).left();
 			
 			planetInfoPanel.row();
 			planetInfoPanel.add("Planet Time:");
@@ -340,9 +338,7 @@ public class PlanetScreen extends AbstractScreen {
 			shipInfoPanel = gui.table();
 			shipInfoPanel.setVisible(false);
 			shipInfoPanel.defaults().spaceRight(gui.textWidth("m")).left();
-			ScrollPane scrollPane = new ScrollPane(shipInfoPanel);
-			scrollPane.setOverscroll(false, false);
-			rootTable.add(scrollPane).left();
+			rootTable.add(gui.scrollPane(shipInfoPanel)).left();
 
 			shipInfoPanel.row();
 			shipInfoPanel.add("Ship Time:");
@@ -481,17 +477,28 @@ public class PlanetScreen extends AbstractScreen {
 
 	private Window showWindow(String name, Actor actor, ChangeListener okPressed) {
 		Gui gui = new Gui();
-		final Window window = new Window(name, gui.skin, "transparent");
+		final Window window = new Window(name, gui.skin, "transparent") {
+			@Override
+			public float getMaxWidth() {
+				return stage.getWidth() * 0.75f;
+			}
+
+			@Override
+			public float getMaxHeight() {
+				return stage.getHeight() * 0.75f;
+			}
+		};
 		
 		window.row();
-		window.add(actor);
+		window.add(gui.scrollPane(actor));
 		
 		window.row().center();
 		TextButton buttonOk = new TextButton("OK", gui.skin);
 		buttonOk.addListener(okPressed);
 		window.add(buttonOk);
 		
-		window.pack();
+		gui.pack(window);
+		
 		window.setPosition(Math.round((stage.getWidth() - window.getWidth()) / 2), Math.round((stage.getHeight() - window.getHeight()) / 2));
 		stage.addActor(window);
 		
