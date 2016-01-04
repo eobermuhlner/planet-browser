@@ -119,7 +119,8 @@ public class PlanetScreen extends AbstractScreen {
 	private Window atmosphereWindow;
 	private Window cloudsWindow;
 
-	private Table infoPanel;
+	private Table planetInfoPanel;
+	private Table shipInfoPanel;
 
 	private ModelInstanceFactory modelInstanceFactory;
 
@@ -184,6 +185,10 @@ public class PlanetScreen extends AbstractScreen {
 		Random random = new Random(randomSeed);
 		planetDayMillis = random.nextInt(7, 40) * 3600 * 1000;
 		planetYearStartMillis = endMillis - random.nextInt((int) planetDayMillis);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(calendar.get(Calendar.YEAR), 0, 1, 0, 0);
+		shipYearStartMillis = calendar.getTimeInMillis();
 	}
 	
 	private void prepareStage() {
@@ -264,73 +269,51 @@ public class PlanetScreen extends AbstractScreen {
 		{
 			// planet info
 			rootTable.row();
-			infoPanel = gui.table();
-			infoPanel.setVisible(false);
-			infoPanel.defaults().spaceRight(gui.textWidth("m")).left();
-			rootTable.add(infoPanel).left();
+			planetInfoPanel = gui.table();
+			planetInfoPanel.setVisible(false);
+			planetInfoPanel.defaults().spaceRight(gui.textWidth("m")).left();
+			rootTable.add(planetInfoPanel).left();
 			
 			{
-				infoPanel.row();
-				infoPanel.add("Ship Time:");
-				shipTimeLabel = gui.label("");
-				infoPanel.add(shipTimeLabel);
+				planetInfoPanel.row();
+				planetInfoPanel.add("Planet Time:");
+				planetTimeLabel = gui.label("");
+				planetInfoPanel.add(planetTimeLabel);
 			}
 			{
-				Calendar calendar = Calendar.getInstance();
-				calendar.set(calendar.get(Calendar.YEAR), 0, 1, 0, 0);
-				shipYearStartMillis = calendar.getTimeInMillis();
-				
-				{
-					infoPanel.row();
-					infoPanel.add("Planet Time:");
-					planetTimeLabel = gui.label("");
-					infoPanel.add(planetTimeLabel);
-				}
-			}
-			{
-				infoPanel.row();
-				infoPanel.add("Period:");
-				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.secondsToString(planetData.period))));
+				planetInfoPanel.row();
+				planetInfoPanel.add("Period:");
+				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.secondsToString(planetData.period))));
 
-				infoPanel.row();
-				infoPanel.add("Radius:");
-				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.meterSizeToString(planetData.radius))));
+				planetInfoPanel.row();
+				planetInfoPanel.add("Radius:");
+				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.meterSizeToString(planetData.radius))));
 
-				infoPanel.row();
-				infoPanel.add("Mass:");
-				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kilogramsToString(planetData.mass))));
+				planetInfoPanel.row();
+				planetInfoPanel.add("Mass:");
+				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kilogramsToString(planetData.mass))));
 
-				infoPanel.row();
-				infoPanel.add("Density:");
-				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.densityToString(planetData.density))));
+				planetInfoPanel.row();
+				planetInfoPanel.add("Density:");
+				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.densityToString(planetData.density))));
 
-				infoPanel.row();
-				infoPanel.add("Surface Gravity:");
-				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.newtonGravityToString(Units.gravity(planetData.mass, planetData.radius)))));
+				planetInfoPanel.row();
+				planetInfoPanel.add("Surface Gravity:");
+				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.newtonGravityToString(Units.gravity(planetData.mass, planetData.radius)))));
 
-				infoPanel.row();
-				infoPanel.add("Surface Escape Velocity:");
-				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.metersPerSecondToString(Units.escapeVelocity(planetData.mass, planetData.radius)))));
+				planetInfoPanel.row();
+				planetInfoPanel.add("Surface Escape Velocity:");
+				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.metersPerSecondToString(Units.escapeVelocity(planetData.mass, planetData.radius)))));
 
-				infoPanel.row();
-				infoPanel.add("Ship Distance:");
-				shipDistanceLabel = gui.label("");
-				infoPanel.add(shipDistanceLabel);
-				
-				infoPanel.row();
-				infoPanel.add("Ship Escape Velocity:");
-				shipEscapeVelocityLabel = gui.label("");
-				infoPanel.add(shipEscapeVelocityLabel);
-				
-				infoPanel.row();
-				infoPanel.add("Temperature:");
-				infoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kelvinToString(planetData.temperature))));
+				planetInfoPanel.row();
+				planetInfoPanel.add("Temperature:");
+				planetInfoPanel.add(gui.htmlLabel(SimpleHtml.scientificUnitsToHtml(Units.kelvinToString(planetData.temperature))));
 			}
 			if (planetData.atmosphere != null) {
-				infoPanel.row();
-				infoPanel.add("Atmosphere:");
-				infoPanel.add(gui.htmlLabel(toMoleculeOverviewString(planetData.atmosphere)));
-				infoPanel.add(gui.button("Details", new ChangeListener() {
+				planetInfoPanel.row();
+				planetInfoPanel.add("Atmosphere:");
+				planetInfoPanel.add(gui.htmlLabel(toMoleculeOverviewString(planetData.atmosphere)));
+				planetInfoPanel.add(gui.button("Details", new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
 						toggleAtmosphereAnalysisWindow();
@@ -338,16 +321,40 @@ public class PlanetScreen extends AbstractScreen {
 				}));
 			}
 			if (planetData.clouds != null) {
-				infoPanel.row();
-				infoPanel.add("Clouds:");
-				infoPanel.add(gui.htmlLabel(toMoleculeOverviewString(planetData.clouds)));
-				infoPanel.add(gui.button("Details", new ChangeListener() {
+				planetInfoPanel.row();
+				planetInfoPanel.add("Clouds:");
+				planetInfoPanel.add(gui.htmlLabel(toMoleculeOverviewString(planetData.clouds)));
+				planetInfoPanel.add(gui.button("Details", new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
 						toggleCloudsAnalysisWindow();
 					}
 				}));
 			}
+		}
+
+		{
+			// ship info
+			rootTable.row();
+			shipInfoPanel = gui.table();
+			shipInfoPanel.setVisible(false);
+			shipInfoPanel.defaults().spaceRight(gui.textWidth("m")).left();
+			rootTable.add(shipInfoPanel).left();
+
+			shipInfoPanel.row();
+			shipInfoPanel.add("Ship Time:");
+			shipTimeLabel = gui.label("");
+			shipInfoPanel.add(shipTimeLabel);
+
+			shipInfoPanel.row();
+			shipInfoPanel.add("Ship Distance:");
+			shipDistanceLabel = gui.label("");
+			shipInfoPanel.add(shipDistanceLabel);
+			
+			shipInfoPanel.row();
+			shipInfoPanel.add("Ship Escape Velocity:");
+			shipEscapeVelocityLabel = gui.label("");
+			shipInfoPanel.add(shipEscapeVelocityLabel);
 		}
 		
 		{
@@ -415,7 +422,8 @@ public class PlanetScreen extends AbstractScreen {
 	}
 
 	private void toggleInfoWindow() {
-		infoPanel.setVisible(!infoPanel.isVisible());
+		planetInfoPanel.setVisible(!planetInfoPanel.isVisible());
+		shipInfoPanel.setVisible(!shipInfoPanel.isVisible());
 	}
 	
 	private void toggleAtmosphereAnalysisWindow() {
