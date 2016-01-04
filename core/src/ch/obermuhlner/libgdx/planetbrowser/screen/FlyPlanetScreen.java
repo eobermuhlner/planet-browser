@@ -78,7 +78,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 //		light.set(Color.WHITE, -30f, 10f, 30f, 1.0f);
 //		environment.add(light);
 		
-		atmosphereColor = new Color(0x87ceebff);
+		atmosphereColor = new Color(0x87cefaff);
 		
 		environment.set(new ColorAttribute(ColorAttribute.Fog, atmosphereColor));
 		
