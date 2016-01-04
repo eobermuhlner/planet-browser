@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -272,7 +273,9 @@ public class PlanetScreen extends AbstractScreen {
 			planetInfoPanel = gui.table();
 			planetInfoPanel.setVisible(false);
 			planetInfoPanel.defaults().spaceRight(gui.textWidth("m")).left();
-			rootTable.add(planetInfoPanel).left();
+			ScrollPane scrollPane = new ScrollPane(planetInfoPanel);
+			scrollPane.setOverscroll(false, false);
+			rootTable.add(scrollPane).left();
 			
 			planetInfoPanel.row();
 			planetInfoPanel.add("Planet Time:");
@@ -337,7 +340,9 @@ public class PlanetScreen extends AbstractScreen {
 			shipInfoPanel = gui.table();
 			shipInfoPanel.setVisible(false);
 			shipInfoPanel.defaults().spaceRight(gui.textWidth("m")).left();
-			rootTable.add(shipInfoPanel).left();
+			ScrollPane scrollPane = new ScrollPane(shipInfoPanel);
+			scrollPane.setOverscroll(false, false);
+			rootTable.add(scrollPane).left();
 
 			shipInfoPanel.row();
 			shipInfoPanel.add("Ship Time:");
