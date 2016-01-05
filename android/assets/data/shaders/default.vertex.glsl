@@ -1,6 +1,6 @@
 //varying vec3 v_debug_vec3;
 
-#if defined(diffuseTextureFlag) || defined(emissiveTextureFlag) || defined(specularTextureFlag)
+#if defined(bumpTextureFlag) || defined(diffuseTextureFlag) || defined(emissiveTextureFlag) || defined(specularTextureFlag)
 #define textureFlag
 #endif
 
@@ -38,6 +38,10 @@ varying vec3 v_normal;
 attribute vec2 a_texCoord0;
 varying vec2 v_texCoords0;
 #endif // textureFlag
+
+#ifdef bumpTextureFlag
+uniform sampler2D u_bumpTexture;
+#endif
 
 #ifdef normalTextureFlag
 attribute vec2 a_texCoord1;
@@ -297,6 +301,12 @@ void main() {
 		vec4 pos = u_worldTrans * skinning * vec4(a_position, 1.0);
 	#else
 		vec4 pos = u_worldTrans * vec4(a_position, 1.0);
+	#endif
+	
+	#ifdef bumpTextureFlag
+		float bump = texture2D(u_bumpTexture, v_texCoords0).r;
+		bump = bump - 0.44;
+		pos.y = pos.y + bump * 1.0;
 	#endif
 		
 	gl_Position = u_projViewTrans * pos;
