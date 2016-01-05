@@ -19,6 +19,13 @@ public class TerrestrialHeightShaderFunctionAttribute extends ShaderFunctionAttr
 			+ "  h = (h - u_heightWater) / (1.0 - u_heightWater);"
 			+ "  return h * h * (1.0 - u_heightWater) + u_heightWater;"
 			+ "}";
+	public static final String CONTINENT_POWER_3 = ""
+			+ "if (h <= u_heightWater) {"
+			+ "  return h;"
+			+ "} else {"
+			+ "  h = (h - u_heightWater) / (1.0 - u_heightWater);"
+			+ "  return h * h * h * (1.0 - u_heightWater) + u_heightWater;"
+			+ "}";
 
 	public static String functionPowerMid0(float power) {
 		return "h = abs(pow(h - 0.5, " + power + ")) * 2.0;";
