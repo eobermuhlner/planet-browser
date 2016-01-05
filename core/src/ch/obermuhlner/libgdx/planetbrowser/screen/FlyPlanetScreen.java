@@ -7,9 +7,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -25,10 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
-import ch.obermuhlner.libgdx.planetbrowser.model.MeshBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
-import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
+import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
@@ -61,7 +58,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.near = 0.001f;
+		camera.near = 0.1f;
 		camera.far = 400f;
 		camera.position.set(3, 3, 3);
 		camera.lookAt(0, 0, 0);
@@ -91,9 +88,9 @@ public class FlyPlanetScreen extends AbstractScreen {
 		planetData = factory.createPlanetData(new Random(randomSeed));
 		
 		float xFrom = 0.5f;
-		float xTo = 0.6f;
+		float xTo = xFrom + 0.1f;
 		float yFrom = 0.5f;
-		float yTo = 0.6f;
+		float yTo = yFrom + 0.1f;
 
 		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
@@ -103,17 +100,18 @@ public class FlyPlanetScreen extends AbstractScreen {
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
-		Material material = new Material(materialAttributes);
 
-		int meshDivisions = 16;
+		int meshDivisions = 32;
 		Texture bumpTexture = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
-		float terrainSize = 500;
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
+		Material material = new Material(materialAttributes);
+		float terrainSize = 5;
 		surface = createTerrainMesh(bumpTexture, terrainSize, material, 0, 1, 0, 1);
 	}
 	
 	private final VertexInfo vertTmp1 = new VertexInfo();
 	private ModelInstance createTerrainMesh(Texture bumpTexture, float rectSize, Material material, float uFrom, float uTo, float vFrom, float vTo) {
-		TextureData textureData = bumpTexture.getTextureData();
+//		TextureData textureData = bumpTexture.getTextureData();
 //		Pixmap pixmap = textureData.consumePixmap();
 		
 		ModelBuilder modelBuilder = new ModelBuilder();
