@@ -80,6 +80,7 @@ public class DefaultShader extends BaseShader {
 
 		public final static Uniform shininess = new Uniform("u_shininess", FloatAttribute.Shininess);
 		public final static Uniform opacity = new Uniform("u_opacity", BlendingAttribute.Type);
+		public final static Uniform bumpTexture = new Uniform("u_bumpTexture", TextureAttribute.Bump);
 		public final static Uniform diffuseColor = new Uniform("u_diffuseColor", ColorAttribute.Diffuse);
 		public final static Uniform diffuseTexture = new Uniform("u_diffuseTexture", TextureAttribute.Diffuse);
 		public final static Uniform diffuseUVTransform = new Uniform("u_diffuseUVTransform", TextureAttribute.Diffuse);
@@ -203,6 +204,14 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, ((FloatAttribute)(combinedAttributes.get(FloatAttribute.Shininess))).value);
+			}
+		};
+		public final static Setter bumpTexture = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
+					.get(TextureAttribute.Bump))).textureDescription);
+				shader.set(inputID, unit);
 			}
 		};
 		public final static Setter diffuseColor = new LocalSetter() {
@@ -442,6 +451,7 @@ public class DefaultShader extends BaseShader {
 	// Material uniforms
 	public final int u_shininess;
 	public final int u_opacity;
+	public final int u_bumpTexture;
 	public final int u_diffuseColor;
 	public final int u_diffuseTexture;
 	public final int u_diffuseUVTransform;
@@ -585,6 +595,7 @@ public class DefaultShader extends BaseShader {
 
 		u_shininess = register(Inputs.shininess, Setters.shininess);
 		u_opacity = register(Inputs.opacity);
+		u_bumpTexture = register(Inputs.bumpTexture, Setters.bumpTexture);
 		u_diffuseColor = register(Inputs.diffuseColor, Setters.diffuseColor);
 		u_diffuseTexture = register(Inputs.diffuseTexture, Setters.diffuseTexture);
 		u_diffuseUVTransform = register(Inputs.diffuseUVTransform, Setters.diffuseUVTransform);
@@ -696,6 +707,10 @@ public class DefaultShader extends BaseShader {
 		}
 		if ((attributesMask & BlendingAttribute.Type) == BlendingAttribute.Type)
 			prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
+		if ((attributesMask & TextureAttribute.Bump) == TextureAttribute.Bump) {
+			prefix += "#define " + TextureAttribute.BumpAlias + "Flag\n";
+			prefix += "#define " + TextureAttribute.BumpAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+		}
 		if ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
