@@ -244,6 +244,10 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	noise += pnoise2(P+vec2(u_random0+u_random5, u_random7+u_random7), baseFrequency * 32.0) * baseFactor / 32.0;
 	noise += pnoise2(P+vec2(u_random2+u_random5, u_random5+u_random7), baseFrequency * 64.0) * baseFactor / 64.0;
 	noise += pnoise2(P+vec2(u_random4+u_random5, u_random3+u_random7), baseFrequency * 128.0) * baseFactor / 128.0;
+
+	noise += pnoise2(P+vec2(u_random6+u_random5, u_random1+u_random7), baseFrequency * 256.0) * baseFactor / 256.0;
+	noise += pnoise2(P+vec2(u_random8+u_random5, u_random3+u_random7), baseFrequency * 512.0) * baseFactor / 512.0;
+	noise += pnoise2(P+vec2(u_random0+u_random5, u_random7+u_random8), baseFrequency * 1024.0) * baseFactor / 1024.0;
 	return noise;
 }
 
