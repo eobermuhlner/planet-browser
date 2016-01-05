@@ -1,6 +1,5 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
-import static ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2;
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
 import java.util.HashMap;
@@ -140,7 +139,7 @@ public class Earth extends AbstractPlanet {
 //			materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMountains(random.nextFloat(0.8f, 1.0f)));
 //		}
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createIceLevel(iceLevel));
-		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(CONTINENT_POWER_2));
+		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3));
 
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
