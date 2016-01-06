@@ -123,13 +123,13 @@ public class Earth extends AbstractPlanet {
 		int heightFrequency = random.nextInt(3, 5);
 		float iceLevel = (float) MathUtil.transform(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50), 1f, -1f, planetData.temperature);
 
-		System.out.println();
-		System.out.println("texture=" + textureName);
-		System.out.println("water=" + water);
-		System.out.println("temperature=" + planetData.temperature);
-		System.out.println("ice=" + iceLevel);
-		System.out.println("height=" + heightMin + " - " + heightMax);
-		System.out.println("heightFrequency=" + heightFrequency);
+//		System.out.println("texture=" + textureName);
+//		System.out.println("water=" + water);
+//		System.out.println("temperature=" + planetData.temperature);
+//		System.out.println("ice=" + iceLevel);
+//		System.out.println("height=" + heightMin + " - " + heightMax);
+//		System.out.println("heightFrequency=" + heightFrequency);
+//		System.out.println();
 		
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightWater(0.45f)); // depends on texture
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
