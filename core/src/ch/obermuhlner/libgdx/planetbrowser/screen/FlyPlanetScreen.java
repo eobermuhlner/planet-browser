@@ -19,7 +19,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
@@ -29,6 +32,7 @@ import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
+import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public class FlyPlanetScreen extends AbstractScreen {
@@ -41,10 +45,11 @@ public class FlyPlanetScreen extends AbstractScreen {
 	private CameraInputController cameraInputController;
 	private ModelBatch modelBatch;
 	private PerspectiveCamera camera;
-	private ModelInstance surface;
 	private PlanetData planetData;
 	private Color atmosphereColor;
 
+	private TerrainChunk[] terrain = new TerrainChunk[9];
+	
 	public FlyPlanetScreen(ModelInstanceFactory factory, long randomSeed) {
 		this.factory = factory;
 		this.randomSeed = randomSeed;
@@ -86,13 +91,32 @@ public class FlyPlanetScreen extends AbstractScreen {
 		// create planet surface
 
 		planetData = factory.createPlanetData(new Random(randomSeed));
-		
-		float xFrom = 0.5f;
-		float xTo = xFrom + 0.1f;
-		float yFrom = 0.5f;
-		float yTo = yFrom + 0.1f;
 
-		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+		prepareStage();
+
+		//int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+		int textureSize = 64;
+		float terrainSize = 5.0f;
+		int meshDivisions = 8;
+		float stepX = 0.1f;
+		float stepY = 0.1f;
+		for (int dy = 0; dy < 3; dy++) {
+			for (int dx = 0; dx < 3; dx++) {
+				boolean best = dx == 0 && dy == 0;
+				float fromX = 0.5f - stepX * dx;
+				float fromY = 0.5f + stepY * dy;
+				float terrainX = dx * terrainSize * 2;
+				float terrainY = dy * terrainSize * 2;
+				terrain[dy * 3 + dx] = createTerrainChunk(
+						fromX, fromX + stepX, fromY, fromY + stepY, 
+						best ? 1024 : textureSize, 
+						best ? 32 : meshDivisions, 
+						terrainX, terrainY, terrainSize);
+			}
+		}
+	}
+	
+	private TerrainChunk createTerrainChunk(float xFrom, float xTo, float yFrom, float yTo, int textureSize, int meshDivisions, float terrainX, float terrainY, float terrainSize) {
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
 		Map<Long, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
 
@@ -101,19 +125,41 @@ public class FlyPlanetScreen extends AbstractScreen {
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
 
-		int meshDivisions = 32;
 		Texture bumpTexture = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
 		Material material = new Material(materialAttributes);
-		float terrainSize = 5;
-		surface = createTerrainMesh(bumpTexture, terrainSize, material, 0, 1, 0, 1);
-	}
-	
-	private final VertexInfo vertTmp1 = new VertexInfo();
-	private ModelInstance createTerrainMesh(Texture bumpTexture, float rectSize, Material material, float uFrom, float uTo, float vFrom, float vTo) {
-//		TextureData textureData = bumpTexture.getTextureData();
-//		Pixmap pixmap = textureData.consumePixmap();
 		
+		ModelInstance modelInstance = createTerrainMesh(bumpTexture, terrainSize, material, 0, 1, 0, 1);
+		TerrainChunk chunk = new TerrainChunk();
+		chunk.surface = modelInstance;
+		chunk.surface.transform.setToTranslation(terrainX, 0, terrainY);
+		return chunk;
+	}
+
+	private void prepareStage() {
+		Gui gui = new Gui();
+		Table rootTable = gui.rootTable();
+		stage.addActor(rootTable);
+
+		{
+			// catalog control panel
+			rootTable.row().expandX();
+			Table buttonPanel = gui.table();
+			buttonPanel.center();
+			rootTable.add(buttonPanel);
+			buttonPanel.row();
+			
+			buttonPanel.add(gui.button("Orbit", new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed));
+				}
+			}));
+		}
+	}
+	private ModelInstance createTerrainMesh(Texture bumpTexture, float rectSize, Material material, float uFrom, float uTo, float vFrom, float vTo) {
+		final VertexInfo vertTmp1 = new VertexInfo();
+
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
 		MeshPartBuilder part = modelBuilder.part("terrain", GL20.GL_TRIANGLES, (long) (Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates), material);
@@ -130,29 +176,23 @@ public class FlyPlanetScreen extends AbstractScreen {
 		
 		float xStep = 2 * rectSize / divisionsU;
 		float zStep = 2 * rectSize / divisionsV;
-		
-		Color color = new Color();
-		for (int indexV = 0; indexV < divisionsV; indexV++) {
+
+		for (int indexV = 0; indexV <= divisionsV; indexV++) {
 			float v = vFrom + vStep * indexV;
 			float z = -rectSize + zStep * indexV;
-			for (int indexU = 0; indexU < divisionsU; indexU++) {
+			for (int indexU = 0; indexU <= divisionsU; indexU++) {
 				float u = uFrom + uStep * indexU;
 				float x = -rectSize + xStep * indexU;
-//				System.out.print(Integer.toHexString(pixmap.getPixel(indexU, indexV)));
-//				System.out.print(" ");
-//				Color.rgb888ToColor(color, pixmap.getPixel(indexU, indexV));
-//				float y = color.r * 10.0f;
 				float y = 0.1f;
 				vertTmp1.set(null).setPos(x, y, z).setNor(normalX, normalY, normalZ).setUV(u, v);
 				part.vertex(vertTmp1);
 			}
-			System.out.println();
 		}
 
 		int index = 0;
-		int indexStepV = divisionsU;
-		for (int indexV = 0; indexV < divisionsV-1; indexV++) {
-			for (int indexU = 0; indexU < divisionsU-1; indexU++) {
+		int indexStepV = divisionsU + 1;
+		for (int indexV = 0; indexV < divisionsV; indexV++) {
+			for (int indexU = 0; indexU < divisionsU; indexU++) {
 				part.index((short) (index));
 				part.index((short) (index + indexStepV));
 				part.index((short) (index + indexStepV + 1));
@@ -190,8 +230,19 @@ public class FlyPlanetScreen extends AbstractScreen {
 		cameraInputController.update();
 
 		modelBatch.begin(camera);
-		modelBatch.render(surface, environment);
+		for (int i = 0; i < terrain.length; i++) {
+			modelBatch.render(terrain[i].surface, environment);
+		}
 		modelBatch.end();
 		stage.draw();
+	}
+	
+	private static class TerrainChunk {
+		float xFrom;
+		float xTo;
+		float yFrom;
+		float yTo;
+		
+		ModelInstance surface;
 	}
 }
