@@ -230,10 +230,10 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		float normalY = 1;
 		float normalZ = 0;
 		part.rect(
-				vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(xTo, yTo),
-				vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(xFrom, yTo),
-				vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(xFrom, yFrom),
-				vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(xTo, yFrom));
+				vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(xFrom, yTo),
+				vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(xTo, yTo),
+				vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(xTo, yFrom),
+				vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(xFrom, yFrom));
 
 		Model model = modelBuilder.end();
 		ModelInstance instance = new ModelInstance(model);
