@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -24,7 +23,10 @@ public class TerrestrialPlanetShader implements Shader {
 
 	private static final float DEFAULT_HEIGHT_MOUNTAINS = 0.0f;
 	
+
 	private Renderable renderable;
+	private String prefix;
+	
 	private final String vertexProgram;
 	private final String fragmentProgram;
 
@@ -71,9 +73,10 @@ public class TerrestrialPlanetShader implements Shader {
 	private RenderContext context;
 	
 	private float time;
-	
-	public TerrestrialPlanetShader (Renderable renderable, String vertexProgram, String fragmentProgram) {
+
+	public TerrestrialPlanetShader (Renderable renderable, String vertexProgram, String fragmentProgram, String prefix) {
 		this.renderable = renderable;
+		this.prefix = prefix;
 
 		String code = getShaderFunctionAttributeValue(renderable, TerrestrialHeightShaderFunctionAttribute.TerrestrialHeightFunction, "");
 		fragmentProgram = fragmentProgram.replace("$HEIGHT_FUNCTION", code);
@@ -84,7 +87,6 @@ public class TerrestrialPlanetShader implements Shader {
 	
 	@Override
 	public void init () {
-		String prefix = createPrefix();
 		StopWatch watch = new StopWatch();
 		program = new ShaderProgram(prefix + vertexProgram, prefix + fragmentProgram);
 		System.out.println("Compiled terrestrial shader in " + watch);
@@ -131,7 +133,7 @@ public class TerrestrialPlanetShader implements Shader {
 		u_random9 = program.getUniformLocation("u_random9");
 	}
 
-	private String createPrefix() {
+	private static String createPrefix(Renderable renderable) {
 		StringBuilder prefix = new StringBuilder();
 		
 		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.ColorNoise, DEFAULT_COLOR_NOISE) != 0.0f) {
@@ -181,6 +183,10 @@ public class TerrestrialPlanetShader implements Shader {
 		if (renderable.material.get(TextureAttribute.Specular) != null) {
 			prefix.append("#define specularTextureFlag\n");			
 		}
+
+		// add hash of height function so they can be distinguished
+		String code = getShaderFunctionAttributeValue(renderable, TerrestrialHeightShaderFunctionAttribute.TerrestrialHeightFunction, "");
+		prefix.append("#define heighFunctionHash " + code.hashCode() + "\n");
 		
 		return prefix.toString();
 	}
@@ -284,12 +290,12 @@ public class TerrestrialPlanetShader implements Shader {
 		renderable.meshPart.render(program);
 	}
 
-	private String getShaderFunctionAttributeValue(Renderable renderable, long attributeType, String defaultValue) {
+	private static String getShaderFunctionAttributeValue(Renderable renderable, long attributeType, String defaultValue) {
 		ShaderFunctionAttribute codeAttribute = (ShaderFunctionAttribute) renderable.material.get(attributeType);
 		return codeAttribute == null ? defaultValue : codeAttribute.code;
 	}
 	
-	private float getFloatAttributeValue(Renderable renderable, long attributeType, float defaultValue) {
+	private static float getFloatAttributeValue(Renderable renderable, long attributeType, float defaultValue) {
 		FloatAttribute floatAttribute = (FloatAttribute) renderable.material.get(attributeType);
 		return floatAttribute == null ? defaultValue : floatAttribute.value;
 	}
@@ -309,17 +315,23 @@ public class TerrestrialPlanetShader implements Shader {
 		return true;
 	}
 
-	public static class Provider extends BaseShaderProvider {
-		
+	public static class Provider extends PrefixShaderProvider {
+		private String vert = Gdx.files.internal("data/shaders/terrestrial.vertex.glsl").readString();
+		private String frag = Gdx.files.internal("data/shaders/terrestrial.fragment.glsl").readString();
+
 		private Provider() {
 		}
 		
 		@Override
-		protected Shader createShader(Renderable renderable) {
-			String vert = Gdx.files.internal("data/shaders/terrestrial.vertex.glsl").readString();
-			String frag = Gdx.files.internal("data/shaders/terrestrial.fragment.glsl").readString();
+		protected String createPrefix(Renderable renderable) {
+			return TerrestrialPlanetShader.createPrefix(renderable);
+		}
 
-			return new TerrestrialPlanetShader(renderable, vert, frag);
+		@Override
+		protected Shader createShader(Renderable renderable, String prefix) {
+			TerrestrialPlanetShader shader = new TerrestrialPlanetShader(renderable, vert, frag, prefix);
+			shader.init();
+			return shader;
 		}
 	}
 }
