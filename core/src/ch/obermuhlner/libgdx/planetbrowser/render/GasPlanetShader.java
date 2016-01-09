@@ -10,7 +10,11 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader.Provider;
+
 public class GasPlanetShader implements Shader {
+
+	public static final Provider PROVIDER = new GasPlanetShader.Provider();
 
 	private final String vertexProgram;
 	private final String fragmentProgram;
@@ -37,6 +41,10 @@ public class GasPlanetShader implements Shader {
 	public GasPlanetShader (String vertexProgram, String fragmentProgram) {
 		this.vertexProgram = vertexProgram;
 		this.fragmentProgram = fragmentProgram;
+	}
+	
+	private static String createPrefix(Renderable renderable) {
+		return "";
 	}
 	
 	@Override
@@ -126,13 +134,23 @@ public class GasPlanetShader implements Shader {
 		return true;
 	}
 	
-	public static class Provider extends BaseShaderProvider {
-		@Override
-		protected Shader createShader(Renderable renderable) {
-			String vert = Gdx.files.internal("data/shaders/jupiter.vertex.glsl").readString();
-			String frag = Gdx.files.internal("data/shaders/jupiter.fragment.glsl").readString();
+	public static class Provider extends PrefixShaderProvider {
+		private String vert = Gdx.files.internal("data/shaders/jupiter.vertex.glsl").readString();
+		private String frag = Gdx.files.internal("data/shaders/jupiter.fragment.glsl").readString();
 
-			return new GasPlanetShader(vert, frag);
+		private Provider() {
+		}
+		
+		@Override
+		protected String createPrefix(Renderable renderable) {
+			return GasPlanetShader.createPrefix(renderable);
+		}
+
+		@Override
+		protected Shader createShader(Renderable renderable, String prefix) {
+			GasPlanetShader shader = new GasPlanetShader(vert, frag);
+			shader.init();
+			return shader;
 		}
 	}
 }
