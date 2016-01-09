@@ -18,6 +18,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader.Provider;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Tuple2;
@@ -139,11 +140,11 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			materialAttributes.clear();
 
 			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), textureSize, false, true, false, true, false);
+			Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, false, true, false, true, false);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(1)));
 
-			Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, new TerrestrialPlanetShader.Provider());
+			Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, TerrestrialPlanetShader.PROVIDER);
 			materialAttributes.add(TextureAttribute.createNormal(textureNormal));
 
 			material = new Material(materialAttributes);
@@ -177,7 +178,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		int totalCraterCount = craterFactor * (hugeCraterCount + bigCraterCount + mediumCraterCount + smallCraterCount + tinyCraterCount);
 		System.out.println("Generating craterFactor=" + craterFactor + " huge=" + hugeCraterCount + " big=" + bigCraterCount + " medium=" + mediumCraterCount + " small=" + smallCraterCount + " tiny=" + tinyCraterCount + " softCount=" + softCount + " total=" + totalCraterCount);
 
-		FrameBuffer frameBuffer = renderFrameBufferNormal(material, new TerrestrialPlanetShader.Provider());
+		FrameBuffer frameBuffer = renderFrameBufferNormal(material, TerrestrialPlanetShader.PROVIDER);
 
 		frameBuffer.begin();		
 

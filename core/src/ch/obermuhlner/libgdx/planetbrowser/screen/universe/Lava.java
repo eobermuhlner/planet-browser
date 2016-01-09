@@ -80,7 +80,7 @@ public class Lava extends AbstractPlanet {
 			materialAttributes.clear();
 
 			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-			Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), textureSize, false, true, true, false, true);
+			Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, false, true, true, false, true);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(1)));
 			//materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(2)));

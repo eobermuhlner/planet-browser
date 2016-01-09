@@ -14,8 +14,11 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
+import ch.obermuhlner.libgdx.planetbrowser.util.StopWatch;
 
 public class TerrestrialPlanetShader implements Shader {
+
+	public static final Provider PROVIDER = new TerrestrialPlanetShader.Provider();
 
 	private static final float DEFAULT_COLOR_NOISE = 0.0f;
 
@@ -82,7 +85,9 @@ public class TerrestrialPlanetShader implements Shader {
 	@Override
 	public void init () {
 		String prefix = createPrefix();
+		StopWatch watch = new StopWatch();
 		program = new ShaderProgram(prefix + vertexProgram, prefix + fragmentProgram);
+		System.out.println("Compiled terrestrial shader in " + watch);
 		if (!program.isCompiled()) {
 			throw new GdxRuntimeException(ShaderUtils.createErrorMessage(program));
 		}
@@ -305,6 +310,10 @@ public class TerrestrialPlanetShader implements Shader {
 	}
 
 	public static class Provider extends BaseShaderProvider {
+		
+		private Provider() {
+		}
+		
 		@Override
 		protected Shader createShader(Renderable renderable) {
 			String vert = Gdx.files.internal("data/shaders/terrestrial.vertex.glsl").readString();

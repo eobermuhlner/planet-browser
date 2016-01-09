@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.Config;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
@@ -87,7 +88,8 @@ public class Earth extends AbstractPlanet {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
-		Map<Long, Texture> textures = createTextures(planetData, random, 0, 1, 0, 1, textureTypes, 2048);
+		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+		Map<Long, Texture> textures = createTextures(planetData, random, 0, 1, 0, 1, textureTypes, textureSize);
 
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
@@ -147,7 +149,7 @@ public class Earth extends AbstractPlanet {
 
 		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
 		// FIXME only calculate asked textures
-		Array<Texture> textures = renderTextures(material, new TerrestrialPlanetShader.Provider(), textureSize, xFrom, xTo, yFrom, yTo, true, true, true, true, false);
+		Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, true, true, true, true, false);
 		texturesMap.put(TextureAttribute.Bump, textures.get(0));
 		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
 		texturesMap.put(TextureAttribute.Normal, textures.get(2));

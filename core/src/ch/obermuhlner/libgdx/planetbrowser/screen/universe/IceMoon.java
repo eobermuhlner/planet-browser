@@ -54,10 +54,10 @@ public class IceMoon extends AbstractPlanet {
 
 			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
 
-			Texture textureDiffuse = renderTextureDiffuse(material, new TerrestrialPlanetShader.Provider(), textureSize, 0, 1, 0, 1);
+			Texture textureDiffuse = renderTextureDiffuse(material, TerrestrialPlanetShader.PROVIDER, textureSize, 0, 1, 0, 1);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
 			
-			Texture textureNormal = renderTextureNormal(material, new TerrestrialPlanetShader.Provider(), textureSize, 0, 1, 0, 1);
+			Texture textureNormal = renderTextureNormal(material, TerrestrialPlanetShader.PROVIDER, textureSize, 0, 1, 0, 1);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
 
 			materialAttributes.add(ColorAttribute.createSpecular(Color.WHITE));
