@@ -256,7 +256,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 	}
 
 	private class Terrain {
-		private int chunkCount = 3; // number of chunks in one axis
+		private int chunkCount = 5; // number of chunks in one axis
 		private float planetX;
 		private float planetY;
 		private float planetStep;
@@ -282,38 +282,33 @@ public class FlyPlanetScreen extends AbstractScreen {
 			int y = (int) ((cameraTerrainY - terrainY) / terrainStep);
 			//System.out.println("CENTER " + x + " " + y);
 			if (x != 0 || y != 0) {
-				System.out.println("MOVE " + x + " " + y);
+				//System.out.println("MOVE " + x + " " + y);
 				moveChunks(x, y);
 			}
 		}
 
 		private void moveChunks(int moveX, int moveY) {
-//			for (int i = 0; i < terrain.length; i++) {
-//				int chunkX = i % chunkCount;
-//				int chunkY = i / chunkCount;
-//				
-//				int moveChunkX = chunkX + moveX;
-//				int moveChunkY = chunkY + moveY;
-//				if (moveChunkX >= 0 && moveChunkX < chunkCount && moveChunkY >= 0 && moveChunkY < chunkCount) {
-//					int moveIndex = moveChunkX + moveChunkY * chunkCount;
-//					terrainCopy[i] = terrain[moveIndex];
-//				} else {
-//					terrainCopy[i] = new TerrainChunk();
-//				}
-//			}
-//			TerrainChunk[] tmp = terrain; 
-//			terrain = terrainCopy;
-//			terrainCopy = tmp;
-
 			for (int i = 0; i < terrain.length; i++) {
-				terrain[i].surface = null;
+				int chunkX = i % chunkCount;
+				int chunkY = i / chunkCount;
+				
+				int moveChunkX = chunkX + moveX;
+				int moveChunkY = chunkY + moveY;
+				if (moveChunkX >= 0 && moveChunkX < chunkCount && moveChunkY >= 0 && moveChunkY < chunkCount) {
+					int moveIndex = moveChunkX + moveChunkY * chunkCount;
+					terrainCopy[i] = terrain[moveIndex];
+				} else {
+					terrainCopy[i] = new TerrainChunk();
+				}
 			}
-			
+			TerrainChunk[] tmp = terrain; 
+			terrain = terrainCopy;
+			terrainCopy = tmp;
+
 			terrainX += moveX * terrainStep;
 			terrainY += moveY * terrainStep;
 			planetX -= moveX * planetStep;
 			planetY += moveY * planetStep;
-			System.out.println("New terrain center " + terrainX + "," + terrainY + " : " + planetX + "," + planetY);
 		}
 
 		public void render(ModelBatch modelBatch, Environment environment) {
