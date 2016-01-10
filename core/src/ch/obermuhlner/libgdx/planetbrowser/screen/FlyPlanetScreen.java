@@ -28,6 +28,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
+import ch.obermuhlner.libgdx.planetbrowser.control.Player;
+import ch.obermuhlner.libgdx.planetbrowser.control.PlayerController;
+import ch.obermuhlner.libgdx.planetbrowser.control.Ship;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
@@ -48,7 +51,6 @@ public class FlyPlanetScreen extends AbstractScreen {
 
 	private final Environment environment = new Environment();
 	private Stage stage;
-	private CameraInputController cameraInputController;
 	private ModelBatch modelBatch;
 	private PerspectiveCamera camera;
 	
@@ -61,6 +63,9 @@ public class FlyPlanetScreen extends AbstractScreen {
 
 	private Terrain terrain = new Terrain();
 	//private TerrainChunk[] terrain = new TerrainChunk[9];
+
+	private Player player;
+	private PlayerController playerController;
 	
 	public FlyPlanetScreen(ModelInstanceFactory factory, long randomSeed) {
 		this.factory = factory;
@@ -95,10 +100,10 @@ public class FlyPlanetScreen extends AbstractScreen {
 		atmosphereColor = new Color(0x87cefaff);
 		
 		environment.set(new ColorAttribute(ColorAttribute.Fog, atmosphereColor));
-		
-		cameraInputController = new CameraInputController(camera);
-		cameraInputController.forwardTarget = false;
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, cameraInputController));
+	
+		player = new Player(new Ship(), camera);
+		playerController = new PlayerController(player);
+		Gdx.input.setInputProcessor(new InputMultiplexer(stage, playerController));
 
 		// create planet surface
 
@@ -236,8 +241,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		stage.act(delta);
-		cameraInputController.update();
-
+		playerController.update(delta);
+		player.update(delta);
 		
 		modelBatch.begin(camera);
 		terrain.center(camera.position.x, camera.position.z);
@@ -273,8 +278,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 		}
 		
 		public void center(float cameraTerrainX, float cameraTerrainY) {
-			int x = (int) ((cameraTerrainX - terrainX - terrainStep / 2) / terrainStep);
-			int y = (int) ((cameraTerrainY - terrainY - terrainStep / 2) / terrainStep);
+			int x = (int) ((cameraTerrainX - terrainX) / terrainStep);
+			int y = (int) ((cameraTerrainY - terrainY) / terrainStep);
 			//System.out.println("CENTER " + x + " " + y);
 			if (x != 0 || y != 0) {
 				System.out.println("MOVE " + x + " " + y);
@@ -283,27 +288,32 @@ public class FlyPlanetScreen extends AbstractScreen {
 		}
 
 		private void moveChunks(int moveX, int moveY) {
+//			for (int i = 0; i < terrain.length; i++) {
+//				int chunkX = i % chunkCount;
+//				int chunkY = i / chunkCount;
+//				
+//				int moveChunkX = chunkX + moveX;
+//				int moveChunkY = chunkY + moveY;
+//				if (moveChunkX >= 0 && moveChunkX < chunkCount && moveChunkY >= 0 && moveChunkY < chunkCount) {
+//					int moveIndex = moveChunkX + moveChunkY * chunkCount;
+//					terrainCopy[i] = terrain[moveIndex];
+//				} else {
+//					terrainCopy[i] = new TerrainChunk();
+//				}
+//			}
+//			TerrainChunk[] tmp = terrain; 
+//			terrain = terrainCopy;
+//			terrainCopy = tmp;
+
 			for (int i = 0; i < terrain.length; i++) {
-				int chunkX = i % chunkCount;
-				int chunkY = i / chunkCount;
-				
-				int moveChunkX = chunkX + moveX;
-				int moveChunkY = chunkY + moveY;
-				if (moveChunkX >= 0 && moveChunkX < chunkCount && moveChunkY >= 0 && moveChunkY < chunkCount) {
-					int moveIndex = moveChunkX + moveChunkY * chunkCount;
-					terrainCopy[i] = terrain[moveIndex];
-				} else {
-					terrainCopy[i] = new TerrainChunk();
-				}
+				terrain[i].surface = null;
 			}
-			TerrainChunk[] tmp = terrain; 
-			terrain = terrainCopy;
-			terrainCopy = tmp;
 			
 			terrainX += moveX * terrainStep;
 			terrainY += moveY * terrainStep;
-			planetX += moveX * planetStep;
+			planetX -= moveX * planetStep;
 			planetY += moveY * planetStep;
+			System.out.println("New terrain center " + terrainX + "," + terrainY + " : " + planetX + "," + planetY);
 		}
 
 		public void render(ModelBatch modelBatch, Environment environment) {
@@ -347,18 +357,14 @@ public class FlyPlanetScreen extends AbstractScreen {
 		}
 		
 		private ModelInstance createTerrainSurface(float xFrom, float xTo, float yFrom, float yTo, int textureSize, int meshDivisions, float terrainSize) {
-			StopWatch stopWatch = new StopWatch();
 			long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
 			Map<Long, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
-			System.out.println("create main textures " + stopWatch);
 			Array<Attribute> materialAttributes = new Array<Attribute>();
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
 
-			stopWatch.start();
 			Texture bumpTexture = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
-			System.out.println("create bump texture " + stopWatch);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
 			Material material = new Material(materialAttributes);
 			
