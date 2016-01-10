@@ -347,7 +347,7 @@ void main() {
 	#endif
 
 	#if defined(createBumpFlag)
-		bumpColor = vec3(if_then_else(when_gt(height, u_heightWater), height, u_heightWater));
+		bumpColor = vec3((height - u_heightWater) * 0.5);
 	#endif
 
 	#if defined(createDiffuseFlag)

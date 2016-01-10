@@ -61,8 +61,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 	private PlanetData planetData;
 	private Color atmosphereColor;
 
-	private Terrain terrain = new Terrain();
-	//private TerrainChunk[] terrain = new TerrainChunk[9];
+	private Terrain terrain;
 
 	private Player player;
 	private PlayerController playerController;
@@ -98,8 +97,9 @@ public class FlyPlanetScreen extends AbstractScreen {
 //		environment.add(light);
 		
 		atmosphereColor = new Color(0x87cefaff);
+		Color fogColor = new Color(0x60a0d0ff);
 		
-		environment.set(new ColorAttribute(ColorAttribute.Fog, atmosphereColor));
+		environment.set(new ColorAttribute(ColorAttribute.Fog, fogColor));
 	
 		player = new Player(new Ship(), camera);
 		playerController = new PlayerController(player);
@@ -111,12 +111,24 @@ public class FlyPlanetScreen extends AbstractScreen {
 
 		prepareStage();
 
+		TerrainLod[] lod = new TerrainLod[5];
+		lod[0] = new TerrainLod(1, 512, 128);
+		lod[1] = new TerrainLod(2, 256, 128);
+		lod[2] = new TerrainLod(3, 128, 64);
+		lod[3] = new TerrainLod(6, 32, 16);
+		lod[4] = new TerrainLod(Integer.MAX_VALUE, 8, 8);
+
+//		TerrainLod[] lod = new TerrainLod[2];
+//		lod[0] = new TerrainLod(1, 512, 128);
+//		lod[1] = new TerrainLod(4, 64, 64);
+
+		terrain = new Terrain(15, lod);
 		terrain.planetX = 0.5f;
 		terrain.planetY = 0.5f;
-		terrain.planetStep = 0.1f;
+		terrain.planetStep = 0.02f;
 		terrain.terrainX = 0f;
 		terrain.terrainY = 0f;
-		terrain.terrainStep = 5f;
+		terrain.terrainStep = 10f;
 	}
 	
 	private void prepareStage() {
@@ -256,7 +268,9 @@ public class FlyPlanetScreen extends AbstractScreen {
 	}
 
 	private class Terrain {
-		private int chunkCount = 5; // number of chunks in one axis
+		private final int chunkCount;
+		private TerrainLod lod[];
+		
 		private float planetX;
 		private float planetY;
 		private float planetStep;
@@ -265,22 +279,43 @@ public class FlyPlanetScreen extends AbstractScreen {
 		private float terrainY;
 		private float terrainStep;
 
-		private int textureSize = 1024;
-		private int meshDivisions = 128;
 		
-		private TerrainChunk[] terrain = new TerrainChunk[chunkCount * chunkCount];
-		private TerrainChunk[] terrainCopy = new TerrainChunk[chunkCount * chunkCount];
+		private TerrainChunk[] terrain;
+		private TerrainChunk[] terrainCopy;
+		private int[] terrainLodIndex;
 
-		public Terrain() {
+		public Terrain(int chunkCount, TerrainLod lod[]) {
+			this.chunkCount = chunkCount;
+			this.lod = lod;
+
+			terrain = new TerrainChunk[chunkCount * chunkCount];
+			terrainCopy = new TerrainChunk[chunkCount * chunkCount];
+			terrainLodIndex = new int[chunkCount * chunkCount];
+
 			for (int i = 0; i < terrain.length; i++) {
-				terrain[i] = new TerrainChunk();
+				terrain[i] = new TerrainChunk(lod.length);
 			}
+
+			int centerChunk = chunkCount / 2;
+			for (int i = 0; i < terrainLodIndex.length; i++) {
+				int chunkX = i % chunkCount;
+				int chunkY = i / chunkCount;
+				int distSquare = (centerChunk - chunkX) * (centerChunk - chunkX) + (centerChunk - chunkY) * (centerChunk - chunkY);
+				terrainLodIndex[i] = lod.length - 1;
+				for (int lodIndex = 0; lodIndex < lod.length; lodIndex++) {
+					if (distSquare <= lod[lodIndex].chunkDistanceSquare) {
+						terrainLodIndex[i] = lodIndex;
+						break;
+					}
+				}
+			}
+			terrainLodIndex[chunkCount / 2 + (chunkCount / 2 * chunkCount)] = 0;
 		}
 		
 		public void center(float cameraTerrainX, float cameraTerrainY) {
-			int x = (int) ((cameraTerrainX - terrainX) / terrainStep);
-			int y = (int) ((cameraTerrainY - terrainY) / terrainStep);
-			//System.out.println("CENTER " + x + " " + y);
+			int x = (int) ((cameraTerrainX - terrainX) / terrainStep + 0.5f);
+			int y = (int) ((cameraTerrainY - terrainY) / terrainStep + 0.5f);
+			System.out.println("CENTER camera=" + cameraTerrainX + "," + cameraTerrainY + " terrain=" + terrainX + "," + terrainY + " chunk=" + x + "," + y);
 			if (x != 0 || y != 0) {
 				//System.out.println("MOVE " + x + " " + y);
 				moveChunks(x, y);
@@ -298,7 +333,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 					int moveIndex = moveChunkX + moveChunkY * chunkCount;
 					terrainCopy[i] = terrain[moveIndex];
 				} else {
-					terrainCopy[i] = new TerrainChunk();
+					terrainCopy[i] = new TerrainChunk(lod.length);
 				}
 			}
 			TerrainChunk[] tmp = terrain; 
@@ -316,24 +351,25 @@ public class FlyPlanetScreen extends AbstractScreen {
 			for (int i = 0; i < terrain.length; i++) {
 				int chunkX = i % chunkCount;
 				int chunkY = i / chunkCount;
-
-				if (terrain[i].surface == null) {
+				int lodIndex = terrainLodIndex[i];
+						
+				if (terrain[i].surface[lodIndex] == null) {
 					if (createTimeText == null) {
 						createTimeText = new StringBuilder();
 					} else {
 						createTimeText.append(" ");
 					}
 					StopWatch stopWatch = new StopWatch();
-					terrain[i].surface = createTerrainSurface(chunkX, chunkY);
+					terrain[i].surface[lodIndex] = createTerrainSurface(chunkX, chunkY, lod[lodIndex]);
 					createTimeText.append((int) stopWatch.getElapsedMilliseconds());
 				}
 				
 				int centerChunk = chunkCount / 2;
-				float chunkTerrainX = terrainX + (chunkX - centerChunk) * terrainStep * 2;
-				float chunkTerrainY = terrainY + (chunkY - centerChunk) * terrainStep * 2;
-				terrain[i].surface.transform.setTranslation(chunkTerrainX, 0, chunkTerrainY);
+				float chunkTerrainX = terrainX + (chunkX - centerChunk) * terrainStep;
+				float chunkTerrainY = terrainY + (chunkY - centerChunk) * terrainStep;
+				terrain[i].surface[lodIndex].transform.setTranslation(chunkTerrainX, 0, chunkTerrainY);
 				
-				modelBatch.render(terrain[i].surface, environment);
+				modelBatch.render(terrain[i].surface[lodIndex], environment);
 			}
 			if (createTimeText != null) {
 				createTimeText.append(" ms");
@@ -341,13 +377,13 @@ public class FlyPlanetScreen extends AbstractScreen {
 			}
 		}
 
-		private ModelInstance createTerrainSurface(int dx, int dy) {
-			float fromX = planetX - planetStep * dx;
-			float fromY = planetY + planetStep * dy;
+		private ModelInstance createTerrainSurface(int chunkX, int chunkY, TerrainLod lod) {
+			float fromX = planetX - planetStep * chunkX;
+			float fromY = planetY + planetStep * chunkY;
 			return createTerrainSurface(
 					fromX, fromX + planetStep, fromY, fromY + planetStep, 
-					textureSize, 
-					meshDivisions, 
+					lod.textureSize, 
+					lod.meshDivisions, 
 					terrainStep);
 		}
 		
@@ -363,12 +399,28 @@ public class FlyPlanetScreen extends AbstractScreen {
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
 			Material material = new Material(materialAttributes);
 			
-			ModelInstance modelInstance = createTerrainMesh(bumpTexture, terrainSize, material, 0, 1, 0, 1);
+			ModelInstance modelInstance = createTerrainMesh(bumpTexture, terrainSize / 2, material, 0, 1, 0, 1);
 			return modelInstance;
 		}
 	}
 	
+	private static class TerrainLod {
+		int chunkDistanceSquare;
+		int textureSize;
+		int meshDivisions;
+
+		public TerrainLod(int chunkDistance, int textureSize, int meshDivisions) {
+			this.chunkDistanceSquare = chunkDistance * chunkDistance;
+			this.textureSize = textureSize;
+			this.meshDivisions = meshDivisions;
+		}
+	}
+	
 	private static class TerrainChunk {
-		ModelInstance surface;
+		ModelInstance surface[];
+		
+		public TerrainChunk(int lodLevels) {
+			surface = new ModelInstance[lodLevels];
+		}
 	}
 }
