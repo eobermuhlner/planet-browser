@@ -305,7 +305,7 @@ void main() {
 	
 	#ifdef bumpTextureFlag
 		float bump = texture2D(u_bumpTexture, v_texCoords0).r;
-		pos.y = pos.y + bump * 4.0;
+		pos.y = pos.y + bump * 8.0;
 	#endif
 		
 	gl_Position = u_projViewTrans * pos;

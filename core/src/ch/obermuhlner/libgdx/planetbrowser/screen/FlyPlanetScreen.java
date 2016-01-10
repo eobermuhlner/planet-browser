@@ -115,20 +115,20 @@ public class FlyPlanetScreen extends AbstractScreen {
 		lod[0] = new TerrainLod(1, 512, 128);
 		lod[1] = new TerrainLod(2, 256, 128);
 		lod[2] = new TerrainLod(3, 128, 64);
-		lod[3] = new TerrainLod(6, 32, 16);
+		lod[3] = new TerrainLod(5, 32, 16);
 		lod[4] = new TerrainLod(Integer.MAX_VALUE, 8, 8);
 
 //		TerrainLod[] lod = new TerrainLod[2];
 //		lod[0] = new TerrainLod(1, 512, 128);
 //		lod[1] = new TerrainLod(4, 64, 64);
 
-		terrain = new Terrain(15, lod);
+		terrain = new Terrain(11, lod);
 		terrain.planetX = 0.5f;
 		terrain.planetY = 0.5f;
 		terrain.planetStep = 0.02f;
 		terrain.terrainX = 0f;
 		terrain.terrainY = 0f;
-		terrain.terrainStep = 10f;
+		terrain.terrainStep = 20f;
 	}
 	
 	private void prepareStage() {
@@ -348,12 +348,15 @@ public class FlyPlanetScreen extends AbstractScreen {
 
 		public void render(ModelBatch modelBatch, Environment environment) {
 			StringBuilder createTimeText = null;
+			boolean hasCreated = false;
+			
 			for (int i = 0; i < terrain.length; i++) {
 				int chunkX = i % chunkCount;
 				int chunkY = i / chunkCount;
 				int lodIndex = terrainLodIndex[i];
 						
-				if (terrain[i].surface[lodIndex] == null) {
+				if (terrain[i].surface[lodIndex] == null && !hasCreated) {
+					hasCreated = true;
 					if (createTimeText == null) {
 						createTimeText = new StringBuilder();
 					} else {
@@ -364,12 +367,18 @@ public class FlyPlanetScreen extends AbstractScreen {
 					createTimeText.append((int) stopWatch.getElapsedMilliseconds());
 				}
 				
-				int centerChunk = chunkCount / 2;
-				float chunkTerrainX = terrainX + (chunkX - centerChunk) * terrainStep;
-				float chunkTerrainY = terrainY + (chunkY - centerChunk) * terrainStep;
-				terrain[i].surface[lodIndex].transform.setTranslation(chunkTerrainX, 0, chunkTerrainY);
+				while (lodIndex < lod.length-1 && terrain[i].surface[lodIndex] == null) {
+					lodIndex++;
+				}
 				
-				modelBatch.render(terrain[i].surface[lodIndex], environment);
+				if (terrain[i].surface[lodIndex] != null) {
+					int centerChunk = chunkCount / 2;
+					float chunkTerrainX = terrainX + (chunkX - centerChunk) * terrainStep;
+					float chunkTerrainY = terrainY + (chunkY - centerChunk) * terrainStep;
+					terrain[i].surface[lodIndex].transform.setTranslation(chunkTerrainX, 0, chunkTerrainY);
+					
+					modelBatch.render(terrain[i].surface[lodIndex], environment);
+				}
 			}
 			if (createTimeText != null) {
 				createTimeText.append(" ms");
