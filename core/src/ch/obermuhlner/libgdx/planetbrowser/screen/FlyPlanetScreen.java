@@ -18,7 +18,6 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -115,7 +114,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 
 		TerrainQuality terrainQuality = PlanetBrowser.INSTANCE.options.getTerrainQuality();
 		TerrainLod[] lod = toLod(terrainQuality);
-		int chunkCount = toChunkCount(terrainQuality);
+		int chunkCount = PlanetBrowser.INSTANCE.options.getTerrainChunks();
 		terrain = new Terrain(chunkCount, lod);
 		terrain.planetX = 0.5f;
 		terrain.planetY = 0.5f;
@@ -168,25 +167,6 @@ public class FlyPlanetScreen extends AbstractScreen {
 			return lod;
 		}
 
-		throw new RuntimeException("Unknown: " + terrainQuality);
-	}
-
-	private int toChunkCount(TerrainQuality terrainQuality) {
-		switch(terrainQuality) {
-		case Best:
-			return 11;
-		case VeryGood:
-			return 9;
-		case Good:
-			return 7;
-		case Poor:
-			return 5;
-		case VeryPoor:
-			return 5;
-		case Worst:
-			return 3;
-		}
-		
 		throw new RuntimeException("Unknown: " + terrainQuality);
 	}
 
@@ -374,7 +354,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		public void center(float cameraTerrainX, float cameraTerrainY) {
 			int x = (int) ((cameraTerrainX - terrainX) / terrainStep + 0.5f);
 			int y = (int) ((cameraTerrainY - terrainY) / terrainStep + 0.5f);
-			System.out.println("CENTER camera=" + cameraTerrainX + "," + cameraTerrainY + " terrain=" + terrainX + "," + terrainY + " chunk=" + x + "," + y);
+			//System.out.println("CENTER camera=" + cameraTerrainX + "," + cameraTerrainY + " terrain=" + terrainX + "," + terrainY + " chunk=" + x + "," + y);
 			if (x != 0 || y != 0) {
 				//System.out.println("MOVE " + x + " " + y);
 				moveChunks(x, y);

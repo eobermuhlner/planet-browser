@@ -29,6 +29,8 @@ public class OptionsScreen extends AbstractStageScreen {
 
 	private CheckBox checkUseMultiTextureRendering;
 
+	private SelectBox<Integer> selectTerrainChunks;
+
 
 	protected void prepareStage(Stage stage, Gui gui) {
 		Table rootTable = gui.rootTable();
@@ -62,18 +64,30 @@ public class OptionsScreen extends AbstractStageScreen {
 		table.add(selectSphereDivisions);
 		selectSphereDivisions.setItems(100, 90, 80, 70, 60, 50, 40, 30, 20);
 	
+		table.row();
+		table.add(gui.label("Terrain Quality"));		
+		selectTerrainQuality = new SelectBox<TerrainQuality>(gui.skin);
+		table.add(selectTerrainQuality);
+		selectTerrainQuality.setItems(TerrainQuality.values());
+		selectTerrainQuality.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				selectTerrainChunks.setSelected(toDefaultChunkCount(selectTerrainQuality.getSelected()));
+			}
+		});
+		
+		table.row();
+		table.add(gui.label("Terrain Chunks"));		
+		selectTerrainChunks = new SelectBox<Integer>(gui.skin);
+		table.add(selectTerrainChunks);
+		selectTerrainChunks.setItems(21, 15, 11, 9, 7, 5, 3);
+
 		if (Gdx.graphics.isGL30Available()) {
 			table.row();
 			table.add(gui.label("Multi Texture Rendering"));
 			checkUseMultiTextureRendering = new CheckBox("", gui.skin);
 			table.add(checkUseMultiTextureRendering);
 		}
-
-		table.row();
-		table.add(gui.label("Terrain Quality"));		
-		selectTerrainQuality = new SelectBox<TerrainQuality>(gui.skin);
-		table.add(selectTerrainQuality);
-		selectTerrainQuality.setItems(TerrainQuality.values());
 
 		// button row
 		
@@ -103,10 +117,30 @@ public class OptionsScreen extends AbstractStageScreen {
 		pushOptionsToGui();
 	}
 	
+	private int toDefaultChunkCount(TerrainQuality terrainQuality) {
+		switch(terrainQuality) {
+		case Best:
+			return 11;
+		case VeryGood:
+			return 9;
+		case Good:
+			return 7;
+		case Poor:
+			return 5;
+		case VeryPoor:
+			return 5;
+		case Worst:
+			return 3;
+		}
+		
+		throw new RuntimeException("Unknown: " + terrainQuality);
+	}
+
 	private void pushOptionsToGui() {
 		selectGeneratedTexturesSize.setSelected(PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize());
 		selectSphereDivisions.setSelected(PlanetBrowser.INSTANCE.options.getSphereDivisions());
 		selectTerrainQuality.setSelected(PlanetBrowser.INSTANCE.options.getTerrainQuality());
+		selectTerrainChunks.setSelected(PlanetBrowser.INSTANCE.options.getTerrainChunks());
 		if (Gdx.graphics.isGL30Available()) {
 			checkUseMultiTextureRendering.setChecked(PlanetBrowser.INSTANCE.options.getUseMultiTextureRendering());
 		}
@@ -116,6 +150,7 @@ public class OptionsScreen extends AbstractStageScreen {
 		PlanetBrowser.INSTANCE.options.setGeneratedTexturesSize(selectGeneratedTexturesSize.getSelected());
 		PlanetBrowser.INSTANCE.options.setSphereDivisions(selectSphereDivisions.getSelected());
 		PlanetBrowser.INSTANCE.options.setTerrainQuality(selectTerrainQuality.getSelected());
+		PlanetBrowser.INSTANCE.options.setTerrainChunks(selectTerrainChunks.getSelected());
 		if (Gdx.graphics.isGL30Available()) {
 			PlanetBrowser.INSTANCE.options.setMultiTextureRendering(checkUseMultiTextureRendering.isChecked());
 		}

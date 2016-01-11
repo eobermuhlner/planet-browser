@@ -9,6 +9,7 @@ public class Options {
 	private static final String SPHERE_DIVISIONS = "sphereDivisions";
 	private static final String USE_MULTI_TEXTURE_RENDERING = "useMultiTextureRendering";
 	private static final String TERRAIN_QUALITY = "terrainQuality";
+	private static final String TERRAIN_CHUNKS = "terrainChunks";
 	
 	private final Preferences optionPreferences = Gdx.app.getPreferences(Options.class.getName());
 	
@@ -51,6 +52,14 @@ public class Options {
 
 	public void setTerrainQuality(TerrainQuality quality) {
 		optionPreferences.putString(TERRAIN_QUALITY, quality.name());
+	}
+	
+	public int getTerrainChunks() {
+		return optionPreferences.getInteger(TERRAIN_CHUNKS, 5);
+	}
+	
+	public void setTerrainChunks(int chunkCount) {
+		optionPreferences.putInteger(TERRAIN_CHUNKS, chunkCount);
 	}
 
 	public void save() {
