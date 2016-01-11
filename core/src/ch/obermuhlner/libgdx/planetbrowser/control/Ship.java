@@ -1,7 +1,7 @@
 package ch.obermuhlner.libgdx.planetbrowser.control;
 
 public class Ship {
-	public float forwardThrust = 1000000f;
+	public float forwardThrust = 5000000f;
 	public float upThrust = 10000f;
 	public float rightThrust = 10000f;
 	public float rollThrust = 1f;
