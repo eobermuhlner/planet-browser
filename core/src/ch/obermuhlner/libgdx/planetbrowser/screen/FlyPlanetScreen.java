@@ -81,7 +81,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 0.1f;
 		camera.far = 400f;
-		camera.position.set(3, 3, 3);
+		camera.position.set(20, 50, 20);
 		camera.lookAt(0, 0, 0);
 		camera.update(true);
 		
@@ -437,12 +437,13 @@ public class FlyPlanetScreen extends AbstractScreen {
 			float xTo = xFrom + xyStep / meshDivisions * (meshDivisions + 1);
 			float yTo = yFrom + xyStep / meshDivisions * (meshDivisions + 1);
 			
-			long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
+			long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular | TextureAttribute.Emissive;
 			Map<Long, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
 			Array<Attribute> materialAttributes = new Array<Attribute>();
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
+			addMaterialTexture(materialAttributes, TextureAttribute.Diffuse, textures);
+			addMaterialTexture(materialAttributes, TextureAttribute.Normal, textures);
+			addMaterialTexture(materialAttributes, TextureAttribute.Specular, textures);
+			addMaterialTexture(materialAttributes, TextureAttribute.Emissive, textures);
 
 			Texture bumpTexture = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
 			materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
@@ -450,6 +451,13 @@ public class FlyPlanetScreen extends AbstractScreen {
 			
 			ModelInstance modelInstance = createTerrainMesh(bumpTexture, terrainSize / 2, material, 0, 1, 0, 1);
 			return modelInstance;
+		}
+		
+		private void addMaterialTexture(Array<Attribute> materialAttributes, long textureType, Map<Long, Texture> textures) {
+			Texture texture = textures.get(textureType);
+			if (texture != null) {
+				materialAttributes.add(new TextureAttribute(textureType, texture));
+			}
 		}
 	}
 	

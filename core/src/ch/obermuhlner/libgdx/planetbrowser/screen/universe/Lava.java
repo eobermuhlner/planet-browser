@@ -2,6 +2,9 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
@@ -52,6 +55,24 @@ public class Lava extends AbstractPlanet {
 	@Override
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
+		
+		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Emissive;
+		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+		Map<Long, Texture> textures = createTextures(planetData, random, 0, 1, 0, 1, textureTypes, textureSize);
+
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Emissive, textures.get(TextureAttribute.Emissive)));
+
+		float emissive = 0.5f;
+		materialAttributes.add(new ColorAttribute(ColorAttribute.Emissive, emissive, emissive, emissive, 1.0f));
+
+		return new Material(materialAttributes);
+	}
+	
+	@Override
+	public Map<Long, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
+		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		float temperatureAsPower = (float)MathUtil.transform(
 				Units.celsiusToKelvin(500), Units.celsiusToKelvin(1200),
@@ -76,22 +97,13 @@ public class Lava extends AbstractPlanet {
 
 		Material material = new Material(materialAttributes);
 
-		if (true) {
-			materialAttributes.clear();
-
-			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-			Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, false, true, true, false, true);
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(1)));
-			//materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(2)));
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Emissive, textures.get(2)));
-
-			float emissive = 0.5f;
-			materialAttributes.add(new ColorAttribute(ColorAttribute.Emissive, emissive, emissive, emissive, 1.0f));
-		
-			material = new Material(materialAttributes);
-		}
-
-		return material;
+		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
+		// FIXME only calculate asked textures
+		Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, true, true, true, false, true);
+		texturesMap.put(TextureAttribute.Bump, textures.get(0));
+		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
+		texturesMap.put(TextureAttribute.Normal, textures.get(2));
+		texturesMap.put(TextureAttribute.Emissive, textures.get(3));
+		return texturesMap;
 	}
 }
