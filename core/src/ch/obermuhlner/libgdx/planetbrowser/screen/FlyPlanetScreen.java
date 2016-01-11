@@ -424,16 +424,19 @@ public class FlyPlanetScreen extends AbstractScreen {
 		}
 
 		private ModelInstance createTerrainSurface(int chunkX, int chunkY, TerrainLod lod) {
-			float fromX = planetX - planetStep * chunkX;
-			float fromY = planetY + planetStep * chunkY;
+			float xFrom = planetX - planetStep * chunkX;
+			float yFrom = planetY + planetStep * chunkY;
 			return createTerrainSurface(
-					fromX, fromX + planetStep, fromY, fromY + planetStep, 
+					xFrom, yFrom, planetStep, 
 					lod.textureSize, 
 					lod.meshDivisions, 
 					terrainStep);
 		}
 		
-		private ModelInstance createTerrainSurface(float xFrom, float xTo, float yFrom, float yTo, int textureSize, int meshDivisions, float terrainSize) {
+		private ModelInstance createTerrainSurface(float xFrom, float yFrom, float xyStep, int textureSize, int meshDivisions, float terrainSize) {
+			float xTo = xFrom + xyStep / meshDivisions * (meshDivisions + 1);
+			float yTo = yFrom + xyStep / meshDivisions * (meshDivisions + 1);
+			
 			long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
 			Map<Long, Texture> textures = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
 			Array<Attribute> materialAttributes = new Array<Attribute>();
