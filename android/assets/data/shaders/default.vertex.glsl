@@ -305,7 +305,7 @@ void main() {
 	
 	#ifdef bumpTextureFlag
 		float bump = texture2D(u_bumpTexture, v_texCoords0).r;
-		pos.y = pos.y + bump * 8.0;
+		pos.y = pos.y + bump * 16.0;
 	#endif
 		
 	gl_Position = u_projViewTrans * pos;
@@ -336,7 +336,7 @@ void main() {
         vec3 flen = u_cameraPosition.xyz - pos.xyz;
         //float fog = dot(flen, flen) * u_cameraPosition.w;
         float fog = length(flen);
-        float fogLevel = 0.04;
+        float fogLevel = 0.01;
         fog = 1.0 - exp(-fog * fogLevel);
         v_fog = min(fog, 1.0);
     #endif
