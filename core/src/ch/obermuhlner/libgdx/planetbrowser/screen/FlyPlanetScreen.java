@@ -366,11 +366,11 @@ public class FlyPlanetScreen extends AbstractScreen {
 				int chunkX = i % chunkCount;
 				int chunkY = i / chunkCount;
 				
-				int targetChunkX = chunkX + moveX;
-				int targetChunkY = chunkY + moveY;
-				if (targetChunkX >= 0 && targetChunkX < chunkCount && targetChunkY >= 0 && targetChunkY < chunkCount) {
-					int targetIndex = targetChunkX + targetChunkY * chunkCount;
-					terrainCopy[i] = terrain[targetIndex];
+				int sourceChunkX = chunkX + moveX;
+				int sourceChunkY = chunkY + moveY;
+				if (sourceChunkX >= 0 && sourceChunkX < chunkCount && sourceChunkY >= 0 && sourceChunkY < chunkCount) {
+					int sourceIndex = sourceChunkX + sourceChunkY * chunkCount;
+					terrainCopy[i] = terrain[sourceIndex];
 				} else {
 					terrainCopy[i] = new TerrainChunk(lod.length);
 				}
