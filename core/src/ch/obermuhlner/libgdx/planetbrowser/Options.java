@@ -8,8 +8,18 @@ public class Options {
 	private static final String GENERATED_TEXTURES_SIZE = "generatedTexturesSize";
 	private static final String SPHERE_DIVISIONS = "sphereDivisions";
 	private static final String USE_MULTI_TEXTURE_RENDERING = "useMultiTextureRendering";
+	private static final String TERRAIN_QUALITY = "terrainQuality";
 	
 	private final Preferences optionPreferences = Gdx.app.getPreferences(Options.class.getName());
+	
+	public enum TerrainQuality {
+		Best,
+		VeryGood,
+		Good,
+		Poor,
+		VeryPoor,
+		Worst
+	}
 	
 	public int getGeneratedTexturesSize() {
 		return optionPreferences.getInteger(GENERATED_TEXTURES_SIZE, 1024);
@@ -35,6 +45,14 @@ public class Options {
 		optionPreferences.putBoolean(USE_MULTI_TEXTURE_RENDERING, multiTextureRendering);
 	}
 	
+	public TerrainQuality getTerrainQuality() {
+		return TerrainQuality.valueOf(optionPreferences.getString(TERRAIN_QUALITY, TerrainQuality.Good.name()));
+	}
+
+	public void setTerrainQuality(TerrainQuality quality) {
+		optionPreferences.putString(TERRAIN_QUALITY, quality.name());
+	}
+
 	public void save() {
 		optionPreferences.flush();
 	}

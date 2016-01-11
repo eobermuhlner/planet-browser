@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.Options.TerrainQuality;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.control.Player;
 import ch.obermuhlner.libgdx.planetbrowser.control.PlayerController;
@@ -97,7 +98,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 //		environment.add(light);
 		
 		atmosphereColor = new Color(0x87cefaff);
-		Color fogColor = new Color(0x60a0d0ff);
+		Color fogColor = atmosphereColor;
+		//Color fogColor = new Color(0x60a0d0ff);
 		
 		environment.set(new ColorAttribute(ColorAttribute.Fog, fogColor));
 	
@@ -111,26 +113,83 @@ public class FlyPlanetScreen extends AbstractScreen {
 
 		prepareStage();
 
-		TerrainLod[] lod = new TerrainLod[5];
-		lod[0] = new TerrainLod(1, 512, 128);
-		lod[1] = new TerrainLod(2, 256, 128);
-		lod[2] = new TerrainLod(3, 128, 64);
-		lod[3] = new TerrainLod(5, 32, 16);
-		lod[4] = new TerrainLod(Integer.MAX_VALUE, 8, 8);
-
-//		TerrainLod[] lod = new TerrainLod[2];
-//		lod[0] = new TerrainLod(1, 512, 128);
-//		lod[1] = new TerrainLod(4, 64, 64);
-
-		terrain = new Terrain(11, lod);
+		TerrainQuality terrainQuality = PlanetBrowser.INSTANCE.options.getTerrainQuality();
+		TerrainLod[] lod = toLod(terrainQuality);
+		int chunkCount = toChunkCount(terrainQuality);
+		terrain = new Terrain(chunkCount, lod);
 		terrain.planetX = 0.5f;
 		terrain.planetY = 0.5f;
 		terrain.planetStep = 0.02f;
 		terrain.terrainX = 0f;
 		terrain.terrainY = 0f;
-		terrain.terrainStep = 20f;
+		terrain.terrainStep = 40f;
 	}
 	
+	private TerrainLod[] toLod(TerrainQuality terrainQuality) {
+		TerrainLod[] lod;
+		
+		switch(terrainQuality) {
+		case Best:
+			lod = new TerrainLod[5];
+			lod[0] = new TerrainLod(1, 1024, 128);
+			lod[1] = new TerrainLod(2, 256, 128);
+			lod[2] = new TerrainLod(3, 128, 64);
+			lod[3] = new TerrainLod(5, 32, 16);
+			lod[4] = new TerrainLod(Integer.MAX_VALUE, 8, 8);
+			return lod;
+		case VeryGood:
+			lod = new TerrainLod[5];
+			lod[0] = new TerrainLod(1, 512, 128);
+			lod[1] = new TerrainLod(2, 256, 128);
+			lod[2] = new TerrainLod(3, 128, 64);
+			lod[3] = new TerrainLod(5, 32, 16);
+			lod[4] = new TerrainLod(Integer.MAX_VALUE, 8, 8);
+			return lod;
+		case Good:
+			lod = new TerrainLod[5];
+			lod[0] = new TerrainLod(1, 512, 128);
+			lod[1] = new TerrainLod(2, 256, 64);
+			lod[2] = new TerrainLod(Integer.MAX_VALUE, 8, 8);
+			return lod;
+		case Poor:
+			lod = new TerrainLod[2];
+			lod[0] = new TerrainLod(1, 512, 128);
+			lod[1] = new TerrainLod(Integer.MAX_VALUE, 64, 64);
+			return lod;
+		case VeryPoor:
+			lod = new TerrainLod[2];
+			lod[0] = new TerrainLod(1, 512, 64);
+			lod[1] = new TerrainLod(Integer.MAX_VALUE, 128, 32);
+			return lod;
+		case Worst:
+			lod = new TerrainLod[2];
+			lod[0] = new TerrainLod(1, 512, 64);
+			lod[1] = new TerrainLod(Integer.MAX_VALUE, 64, 32);
+			return lod;
+		}
+
+		throw new RuntimeException("Unknown: " + terrainQuality);
+	}
+
+	private int toChunkCount(TerrainQuality terrainQuality) {
+		switch(terrainQuality) {
+		case Best:
+			return 11;
+		case VeryGood:
+			return 9;
+		case Good:
+			return 7;
+		case Poor:
+			return 5;
+		case VeryPoor:
+			return 5;
+		case Worst:
+			return 3;
+		}
+		
+		throw new RuntimeException("Unknown: " + terrainQuality);
+	}
+
 	private void prepareStage() {
 		Gui gui = new Gui();
 		Table rootTable = gui.rootTable();
@@ -367,17 +426,15 @@ public class FlyPlanetScreen extends AbstractScreen {
 					createTimeText.append((int) stopWatch.getElapsedMilliseconds());
 				}
 				
-				while (lodIndex < lod.length-1 && terrain[i].surface[lodIndex] == null) {
-					lodIndex++;
-				}
+				ModelInstance surface = terrain[i].bestSurface(lodIndex);
 				
-				if (terrain[i].surface[lodIndex] != null) {
+				if (surface != null) {
 					int centerChunk = chunkCount / 2;
 					float chunkTerrainX = terrainX + (chunkX - centerChunk) * terrainStep;
 					float chunkTerrainY = terrainY + (chunkY - centerChunk) * terrainStep;
-					terrain[i].surface[lodIndex].transform.setTranslation(chunkTerrainX, 0, chunkTerrainY);
+					surface.transform.setTranslation(chunkTerrainX, 0, chunkTerrainY);
 					
-					modelBatch.render(terrain[i].surface[lodIndex], environment);
+					modelBatch.render(surface, environment);
 				}
 			}
 			if (createTimeText != null) {
@@ -430,6 +487,20 @@ public class FlyPlanetScreen extends AbstractScreen {
 		
 		public TerrainChunk(int lodLevels) {
 			surface = new ModelInstance[lodLevels];
+		}
+
+		public ModelInstance bestSurface(int lodIndex) {
+			if (surface[lodIndex] != null) {
+				return surface[lodIndex];
+			}
+			
+			for (int i = 0; i < surface.length; i++) {
+				if (surface[i] != null) {
+					return surface[i];
+				}
+			}
+
+			return null;
 		}
 	}
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 
+import ch.obermuhlner.libgdx.planetbrowser.Options.TerrainQuality;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 
@@ -24,8 +25,10 @@ public class OptionsScreen extends AbstractStageScreen {
 	
 	private SelectBox<Integer> selectGeneratedTexturesSize;
 	private SelectBox<Integer> selectSphereDivisions;
+	private SelectBox<TerrainQuality> selectTerrainQuality;
 
 	private CheckBox checkUseMultiTextureRendering;
+
 
 	protected void prepareStage(Stage stage, Gui gui) {
 		Table rootTable = gui.rootTable();
@@ -65,7 +68,13 @@ public class OptionsScreen extends AbstractStageScreen {
 			checkUseMultiTextureRendering = new CheckBox("", gui.skin);
 			table.add(checkUseMultiTextureRendering);
 		}
-		
+
+		table.row();
+		table.add(gui.label("Terrain Quality"));		
+		selectTerrainQuality = new SelectBox<TerrainQuality>(gui.skin);
+		table.add(selectTerrainQuality);
+		selectTerrainQuality.setItems(TerrainQuality.values());
+
 		// button row
 		
 		table.row();
@@ -97,6 +106,7 @@ public class OptionsScreen extends AbstractStageScreen {
 	private void pushOptionsToGui() {
 		selectGeneratedTexturesSize.setSelected(PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize());
 		selectSphereDivisions.setSelected(PlanetBrowser.INSTANCE.options.getSphereDivisions());
+		selectTerrainQuality.setSelected(PlanetBrowser.INSTANCE.options.getTerrainQuality());
 		if (Gdx.graphics.isGL30Available()) {
 			checkUseMultiTextureRendering.setChecked(PlanetBrowser.INSTANCE.options.getUseMultiTextureRendering());
 		}
@@ -105,6 +115,7 @@ public class OptionsScreen extends AbstractStageScreen {
 	private void pullOptionsFromGui() {
 		PlanetBrowser.INSTANCE.options.setGeneratedTexturesSize(selectGeneratedTexturesSize.getSelected());
 		PlanetBrowser.INSTANCE.options.setSphereDivisions(selectSphereDivisions.getSelected());
+		PlanetBrowser.INSTANCE.options.setTerrainQuality(selectTerrainQuality.getSelected());
 		if (Gdx.graphics.isGL30Available()) {
 			PlanetBrowser.INSTANCE.options.setMultiTextureRendering(checkUseMultiTextureRendering.isChecked());
 		}
