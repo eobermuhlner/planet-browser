@@ -19,7 +19,10 @@ public class Options {
 		Good,
 		Poor,
 		VeryPoor,
-		Worst
+		Worst,
+		SimpleBest,
+		SimpleGood,
+		SimplePoor,
 	}
 	
 	public int getGeneratedTexturesSize() {

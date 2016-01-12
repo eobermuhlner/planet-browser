@@ -165,6 +165,20 @@ public class FlyPlanetScreen extends AbstractScreen {
 			lod[0] = new TerrainLod(1, 512, 64);
 			lod[1] = new TerrainLod(Integer.MAX_VALUE, 64, 32);
 			return lod;
+		case SimpleBest:
+			lod = new TerrainLod[1];
+			lod[0] = new TerrainLod(Integer.MAX_VALUE, 1024, 128);
+			return lod;
+		case SimpleGood:
+			lod = new TerrainLod[1];
+			lod[0] = new TerrainLod(Integer.MAX_VALUE, 512, 64);
+			return lod;
+		case SimplePoor:
+			lod = new TerrainLod[1];
+			lod[0] = new TerrainLod(Integer.MAX_VALUE, 256, 64);
+			return lod;
+		default:
+			break;
 		}
 
 		throw new RuntimeException("Unknown: " + terrainQuality);

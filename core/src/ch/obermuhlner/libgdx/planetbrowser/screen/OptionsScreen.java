@@ -131,6 +131,14 @@ public class OptionsScreen extends AbstractStageScreen {
 			return 5;
 		case Worst:
 			return 3;
+		case SimpleBest:
+			return 7;
+		case SimpleGood:
+			return 5;
+		case SimplePoor:
+			return 5;
+		default:
+			break;
 		}
 		
 		throw new RuntimeException("Unknown: " + terrainQuality);
