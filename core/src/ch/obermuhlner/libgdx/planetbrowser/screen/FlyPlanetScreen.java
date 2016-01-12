@@ -121,7 +121,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		terrain.planetStep = 0.02f;
 		terrain.terrainX = 0f;
 		terrain.terrainY = 0f;
-		terrain.terrainStep = 40f;
+		terrain.terrainStep = 80f;
 	}
 	
 	private TerrainLod[] toLod(TerrainQuality terrainQuality) {
