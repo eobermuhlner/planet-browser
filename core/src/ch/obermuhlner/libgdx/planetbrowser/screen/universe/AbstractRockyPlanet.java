@@ -2,11 +2,15 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -111,10 +115,25 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 	@Override
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
+		
+		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Emissive;
+		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+		Map<Long, Texture> textures = createTextures(planetData, random, 0, 1, 0, 1, textureTypes, textureSize);
+
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
+
+		return new Material(materialAttributes);
+	}
+	
+	@Override
+	public Map<Long, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
+		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		Color[] colors = random.next(MOON_COLORS_VARIANTS);
 		float heightMin = 0.3f;
-		float heightMax = 0.8f;
+		float heightMax = 0.5f;
 		int heightFrequency = random.nextInt(2, 4);
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
@@ -136,21 +155,18 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
 		Material material = new Material(materialAttributes);
-		{
-			materialAttributes.clear();
 
-			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-			Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, false, true, false, true, false);
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(0)));
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(1)));
+		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
+		// FIXME only calculate asked textures
+		Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, true, true, false, true, false);
+		texturesMap.put(TextureAttribute.Bump, textures.get(0));
+		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
+		texturesMap.put(TextureAttribute.Specular, textures.get(2));
 
-			Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, TerrestrialPlanetShader.PROVIDER);
-			materialAttributes.add(TextureAttribute.createNormal(textureNormal));
+		Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, TerrestrialPlanetShader.PROVIDER);
+		texturesMap.put(TextureAttribute.Normal, textureNormal);
 
-			material = new Material(materialAttributes);
-		}
-
-		return material;
+		return texturesMap;
 	}
 	
 	public Texture renderTextureNormalsCraters(Random random, PlanetData planetData, Material material, ShaderProvider shaderProvider) {
