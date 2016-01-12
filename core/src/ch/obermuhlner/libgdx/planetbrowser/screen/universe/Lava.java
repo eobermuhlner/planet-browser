@@ -85,8 +85,17 @@ public class Lava extends AbstractPlanet {
 				-1.0, 1.0,
 				planetData.temperature);
 		float heightPower = MathUtil.pow(10, temperatureAsPower);
-		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower);
-		
+		float heightFlatGround = random.nextFloat(0.0f, 0.5f);
+		@SuppressWarnings("unchecked")
+		String heightFunction = random.nextProbability(
+				p(1, TerrestrialHeightShaderFunctionAttribute.SMOOTH),
+				p(1, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
+				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
+				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3),
+				p(5, TerrestrialHeightShaderFunctionAttribute.functionPower(random.nextFloat(1.0f, 4.0f))),
+				p(10, TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower))
+				);
+
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, new Color[] {
 				new Color(0xff0000ff), // red
 				new Color(0xee2200ff), // red-orange
@@ -97,6 +106,7 @@ public class Lava extends AbstractPlanet {
 		}));
 
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(random.nextInt(2, 4)));
+		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightWater(heightFlatGround));
 		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(heightFunction));
 		
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
