@@ -78,6 +78,11 @@ public class Earth extends AbstractPlanet {
 				p(100, Molecule.H2O)
 		);
 		
+		planetData.atmosphereScatterColor = randomColor(random, new Color(0x87cefaff), 0.1f, 0.1f); // new Color(0.8f, 0.8f, 1.0f, 1.0f); 
+		planetData.atmospherePassColor = randomColor(random, new Color(0xe56666ff), 0.1f, 0.1f);
+		planetData.atmosphereFogColor = randomColor(random, new Color(0x80c0f0ff), 0.1f, 0.1f);
+		planetData.fogLevel = random.nextDouble(0.001, 0.02);
+		
 		planetData.fillStandardValues(random);
 		
 		return planetData;
@@ -141,7 +146,7 @@ public class Earth extends AbstractPlanet {
 //			materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMountains(random.nextFloat(0.8f, 1.0f)));
 //		}
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createIceLevel(iceLevel));
-		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3));
+		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2));
 
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
@@ -164,10 +169,10 @@ public class Earth extends AbstractPlanet {
 		float horizonAlpha = random.nextFloat(0.1f, 0.8f);
 		float refractionFactor = random.nextFloat(0.3f, 0.7f);
 		return new AtmosphereAttribute(
-				new Color(0.8f, 0.8f, 1.0f, 1.0f),
+				planetData.atmosphereScatterColor,
 				centerAlpha,
 				horizonAlpha,
-				new Color(0.9f, 0.4f, 0.4f, 1.0f),
+				planetData.atmospherePassColor,
 				refractionFactor,
 				atmosphereEnd);
 	}

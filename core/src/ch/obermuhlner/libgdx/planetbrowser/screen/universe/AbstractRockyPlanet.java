@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -22,7 +21,6 @@ import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader.Provider;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Tuple2;
@@ -96,7 +94,8 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			new Color(0xefe4c4ff), // light yellow
 		}
 	};
-	private static final Color[] ATMOSPHERE_COLORS = {
+	
+	protected static final Color[] ATMOSPHERE_COLORS = {
 			new Color(0xffffffff), // white
 			new Color(0xffccccff), // light red
 			new Color(0xccffccff), // light green
@@ -132,9 +131,10 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		Color[] colors = random.next(MOON_COLORS_VARIANTS);
-		float heightMin = 0.3f;
-		float heightMax = 0.5f;
-		int heightFrequency = random.nextInt(2, 4);
+		float heightFlatGround = 0.3f;
+		float heightMin = 0.1f;
+		float heightMax = 0.8f;
+		int heightFrequency = random.nextInt(3, 5);
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
 				p(2, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
@@ -142,12 +142,14 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 				p(3, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
 				p(20, TerrestrialHeightShaderFunctionAttribute.functionPower(random.nextFloat(1.0f, 4.0f)))
 				);
+		heightFunction = TerrestrialHeightShaderFunctionAttribute.POWER_2;
 		Color[] randomColors = randomColors(random, 6, colors, 0.01f, 0.1f);
 		for (int i = 0; i < randomColors.length; i++) {
 			randomColors[i].a = random.nextBoolean(0.1) ? random.nextFloat(0.5f, 1.0f) : random.nextFloat(0.0f, 0.3f);
 		}
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors));
 		materialAttributes.add(createPlanetColorFrequenciesAttribute(random));
+		//materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightWater(heightFlatGround));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(heightFrequency));
@@ -158,20 +160,18 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 
 		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
 		// FIXME only calculate asked textures
-		Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, true, true, false, true, false);
+		Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, true, true, false, true, false);
 		texturesMap.put(TextureAttribute.Bump, textures.get(0));
 		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
 		texturesMap.put(TextureAttribute.Specular, textures.get(2));
 
-		Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, TerrestrialPlanetShader.PROVIDER);
+		Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo);
 		texturesMap.put(TextureAttribute.Normal, textureNormal);
 
 		return texturesMap;
 	}
 	
-	public Texture renderTextureNormalsCraters(Random random, PlanetData planetData, Material material, ShaderProvider shaderProvider) {
-		final int targetTextureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-		
+	public Texture renderTextureNormalsCraters(Random random, PlanetData planetData, Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
 		int craterFactor;
 		if (planetData.atmosphere != null && random.nextBoolean(0.8)) {
 			craterFactor = random.nextInt(1, 2);
@@ -199,7 +199,10 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		frameBuffer.begin();		
 
 		SpriteBatch spriteBatch = new SpriteBatch();
-		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, targetTextureSize, targetTextureSize * 2 / 3);
+		//spriteBatch.getProjectionMatrix().setToOrtho2D(xFrom, yFrom, xTo, yTo);
+		float textureWidth = 500;
+		float textureHeight = 500;
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, textureWidth, textureHeight);
 
 		spriteBatch.begin();
 
@@ -239,17 +242,21 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			int count = texturesToDraw[i].getValue1();
 			Texture texture = texturesToDraw[i].getValue2();
 			for (int j = 0; j < count; j++) {
-				float x = random.nextFloat(0, targetTextureSize);
-				float y = random.nextFloat(0, targetTextureSize);
-				spriteBatch.draw(texture, x, y);
+				float x = random.nextFloat(0, 1);
+				float y = random.nextFloat(0, 1);
+				if (x >= xFrom && x < xTo && y >= yFrom && y < yTo) {
+					float textureX = MathUtil.transform(xFrom, xTo, 0, textureWidth, x);
+					float textureY = MathUtil.transform(yFrom, yTo, 0, textureHeight, y);
+					spriteBatch.draw(texture, textureX, textureY);
+				}
 			}
 		}
 		
 		for (int i = 0; i < softCount; i++) {
 			Texture texture = soft1;
-			float x = random.nextFloat(0, targetTextureSize);
-			float y = random.nextFloat(0, targetTextureSize);
-			spriteBatch.draw(texture, x, y);
+			float x = random.nextFloat(0, 1);
+			float y = random.nextFloat(0, 1);
+			//FIXME spriteBatch.draw(texture, x, y);
 		}
 
 		spriteBatch.end();
@@ -269,18 +276,15 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			return null;
 		}
 		
-		Color atmosphereColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f);
-		Color refractionColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f); // TODO contrary color than atmosphereColor
-		
 		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);
 		float centerAlpha = random.nextFloat(0.0f, 0.3f);
 		float horizonAlpha = random.nextFloat(centerAlpha, 0.5f);
 		float refractionFactor = random.nextFloat(0.0f, 0.7f);
 		return new AtmosphereAttribute(
-				atmosphereColor,
+				planetData.atmosphereScatterColor,
 				centerAlpha,
 				horizonAlpha,
-				refractionColor,
+				planetData.atmospherePassColor,
 				refractionFactor,
 				atmosphereEnd);
 	}

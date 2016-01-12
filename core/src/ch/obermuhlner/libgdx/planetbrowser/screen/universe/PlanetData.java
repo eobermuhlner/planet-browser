@@ -2,6 +2,8 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -20,6 +22,11 @@ public class PlanetData {
 	public double atmospherePressure; // Pa
 	public Map<Molecule, Double> atmosphere;
 	public Map<Molecule, Double> clouds;
+	
+	public Color atmosphereScatterColor;
+	public Color atmospherePassColor;
+	public Color atmosphereFogColor;
+	public double fogLevel;
 	
 	public void fillStandardValues(Random random) {
 		if (radius == 0) {

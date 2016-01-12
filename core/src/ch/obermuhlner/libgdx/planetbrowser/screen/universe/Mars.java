@@ -80,7 +80,11 @@ public class Mars extends AbstractRockyPlanet {
 					);
 		}
 		
-		
+		planetData.atmosphereScatterColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f);
+		planetData.atmospherePassColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f);
+		planetData.atmosphereFogColor = randomColor(random, planetData.atmosphereScatterColor, 0.1f, 0.1f);
+		planetData.fogLevel = random.nextDouble(0.001, 0.02);
+
 		planetData.fillStandardValues(random);
 		
 		return planetData;

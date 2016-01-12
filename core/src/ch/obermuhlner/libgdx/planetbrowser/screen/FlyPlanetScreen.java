@@ -34,6 +34,7 @@ import ch.obermuhlner.libgdx.planetbrowser.control.Ship;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
+import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
@@ -41,6 +42,7 @@ import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.StopWatch;
+import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class FlyPlanetScreen extends AbstractScreen {
 
@@ -54,6 +56,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 	private ModelBatch modelBatch;
 	private PerspectiveCamera camera;
 	
+	private Label positionLabel;
+
 	private Label fpsLabel;
 	private Label deltaMillisLabel;
 	private Label createTimeLabel;
@@ -73,6 +77,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 	
 	@Override
 	public void show() {
+		planetData = factory.createPlanetData(new Random(randomSeed));
+
 		// setup rendering
 		stage = new Stage();
 		
@@ -80,7 +86,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 0.1f;
-		camera.far = 400f;
+		camera.far = 600f;
 		camera.position.set(20, 50, 20);
 		camera.lookAt(0, 0, 0);
 		camera.update(true);
@@ -95,20 +101,18 @@ public class FlyPlanetScreen extends AbstractScreen {
 //		PointLight light = new PointLight();
 //		light.set(Color.WHITE, -30f, 10f, 30f, 1.0f);
 //		environment.add(light);
-		
-		atmosphereColor = new Color(0x87cefaff);
-		Color fogColor = atmosphereColor;
-		//Color fogColor = new Color(0x60a0d0ff);
-		
-		environment.set(new ColorAttribute(ColorAttribute.Fog, fogColor));
+				
+		atmosphereColor = planetData.atmosphereScatterColor != null ? planetData.atmosphereScatterColor : Color.BLACK;
+		if (planetData.atmosphereFogColor != null) {
+			//environment.set(MoreFloatAttribute.createFogLevel((float) planetData.fogLevel));
+			environment.set(new ColorAttribute(ColorAttribute.Fog, planetData.atmosphereFogColor));
+		}
 	
 		player = new Player(new Ship(), camera);
 		playerController = new PlayerController(player);
 		Gdx.input.setInputProcessor(new InputMultiplexer(stage, playerController));
 
 		// create planet surface
-
-		planetData = factory.createPlanetData(new Random(randomSeed));
 
 		prepareStage();
 
@@ -205,6 +209,15 @@ public class FlyPlanetScreen extends AbstractScreen {
 			}));
 		}
 
+		{
+			rootTable.row();
+			Table infoPanel = gui.table();
+			rootTable.add(infoPanel);
+			infoPanel.add("Position");
+			positionLabel = gui.label("");
+			infoPanel.add(positionLabel);
+		}
+		
 		{
 			// dummy to have the center empty
 			rootTable.row().expandY();
@@ -313,6 +326,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 		terrain.center(camera.position.x, camera.position.z);
 		terrain.render(modelBatch, environment);
 		modelBatch.end();
+		
+		positionLabel.setText(Units.toString(camera.position.x) + "," + Units.toString(camera.position.y) + "," + Units.toString(camera.position.z));
 		
 		fpsLabel.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
 		deltaMillisLabel.setText(String.valueOf((int) (Gdx.graphics.getDeltaTime() * 1000)));

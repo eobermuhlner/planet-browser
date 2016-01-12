@@ -107,10 +107,10 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	}
 
 	public Color randomColor(Random random, Color[] colors, float deltaColor, float deltaLuminance) {
-		return randomDeviation(random, colors[random.nextInt(colors.length)], deltaColor, deltaLuminance);
+		return randomColor(random, colors[random.nextInt(colors.length)], deltaColor, deltaLuminance);
 	}
 	
-	private Color randomDeviation(Random random, Color color, float deltaColor, float deltaLuminance) {
+	public Color randomColor(Random random, Color color, float deltaColor, float deltaLuminance) {
 		float randomLuminance = random.nextFloat(1 - deltaLuminance, 1 + deltaLuminance);
 		return new Color(
 			MathUtil.clamp(color.r * random.nextFloat(1 - deltaColor, 1 + deltaColor) * randomLuminance, 0.0f, 1.0f),
