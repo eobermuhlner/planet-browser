@@ -12,6 +12,8 @@ precision highp float;
 //layout(location = 0)out vec4 output1; 
 //layout(location = 1)out vec4 output2; 
 
+uniform float u_normalStep;
+
 uniform float u_heightMin;
 uniform float u_heightMax;
 uniform float u_heightFrequency;
@@ -378,7 +380,7 @@ void main() {
 	#if defined(createNormalFlag)
 		vec3 normal = vec3(0.0, 0.0, 1.0);
 		if (height > u_heightWater) {
-			float offset = 0.000001;
+			float offset = u_normalStep;
 			float heightDeltaX = calculateHeight(v_texCoords0 + vec2(offset, 0.0));
 			float heightDeltaY = calculateHeight(v_texCoords0 + vec2(0.0, offset));
 			float deltaX = height - heightDeltaX;

@@ -38,6 +38,8 @@ public class TerrestrialPlanetShader implements Shader {
 	private int u_specularTexture;
 	private int u_time;
 
+	private int u_normalStep;
+
 	private int u_heightMin;
 	private int u_heightMax;
 	private int u_heightFrequency;
@@ -99,6 +101,8 @@ public class TerrestrialPlanetShader implements Shader {
 		u_diffuseTexture = program.getUniformLocation("u_diffuseTexture");
 		u_specularTexture = program.getUniformLocation("u_specularTexture");
 		u_time = program.getUniformLocation("u_time");
+
+		u_normalStep = program.getUniformLocation("u_normalStep");
 
 		u_heightMin = program.getUniformLocation("u_heightMin");
 		u_heightMax = program.getUniformLocation("u_heightMax");
@@ -228,6 +232,9 @@ public class TerrestrialPlanetShader implements Shader {
 			program.setUniformi(u_specularTexture, textureUnit);
 		}
 
+		// additional data
+		program.setUniformf(u_normalStep, getFloatAttributeValue(renderable, MoreFloatAttribute.NormalStep, 0.0001f));
+		
 		// planet data
 		int heightFrequencyPowerOfTwo = (int) getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightFrequency, 4f);
 		float heightFrequency = MathUtil.powerOfTwo(heightFrequencyPowerOfTwo);

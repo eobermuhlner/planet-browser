@@ -79,6 +79,8 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform bones = new Uniform("u_bones");
 
 		public final static Uniform shininess = new Uniform("u_shininess", FloatAttribute.Shininess);
+		public final static Uniform bumpFactor = new Uniform("u_bumpFactor", MoreFloatAttribute.BumpFactor);
+		public final static Uniform fogLevel = new Uniform("u_fogLevel", MoreFloatAttribute.FogLevel);
 		public final static Uniform opacity = new Uniform("u_opacity", BlendingAttribute.Type);
 		public final static Uniform bumpTexture = new Uniform("u_bumpTexture", TextureAttribute.Bump);
 		public final static Uniform diffuseColor = new Uniform("u_diffuseColor", ColorAttribute.Diffuse);
@@ -204,6 +206,12 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, ((FloatAttribute)(combinedAttributes.get(FloatAttribute.Shininess))).value);
+			}
+		};
+		public final static Setter bumpFactor = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((FloatAttribute)(combinedAttributes.get(MoreFloatAttribute.BumpFactor))).value);
 			}
 		};
 		public final static Setter bumpTexture = new LocalSetter() {
@@ -450,6 +458,7 @@ public class DefaultShader extends BaseShader {
 	public final int u_bones;
 	// Material uniforms
 	public final int u_shininess;
+	public final int u_bumpFactor;
 	public final int u_opacity;
 	public final int u_bumpTexture;
 	public final int u_diffuseColor;
@@ -487,6 +496,7 @@ public class DefaultShader extends BaseShader {
 	protected final int u_spotLights0exponent = register(new Uniform("u_spotLights[0].exponent"));
 	protected final int u_spotLights1color = register(new Uniform("u_spotLights[1].color"));
 	protected final int u_fogColor = register(new Uniform("u_fogColor"));
+	protected final int u_fogLevel = register(new Uniform("u_fogLevel"));
 	protected final int u_shadowMapProjViewTrans = register(new Uniform("u_shadowMapProjViewTrans"));
 	protected final int u_shadowTexture = register(new Uniform("u_shadowTexture"));
 	protected final int u_shadowPCFOffset = register(new Uniform("u_shadowPCFOffset"));
@@ -594,6 +604,7 @@ public class DefaultShader extends BaseShader {
 			: -1;
 
 		u_shininess = register(Inputs.shininess, Setters.shininess);
+		u_bumpFactor = register(Inputs.bumpFactor, Setters.bumpFactor);
 		u_opacity = register(Inputs.opacity);
 		u_bumpTexture = register(Inputs.bumpTexture, Setters.bumpTexture);
 		u_diffuseColor = register(Inputs.diffuseColor, Setters.diffuseColor);
@@ -922,6 +933,10 @@ public class DefaultShader extends BaseShader {
 
 		if (attributes.has(ColorAttribute.Fog)) {
 			set(u_fogColor, ((ColorAttribute)attributes.get(ColorAttribute.Fog)).color);
+		}
+
+		if (attributes.has(MoreFloatAttribute.FogLevel)) {
+			set(u_fogLevel, ((FloatAttribute)attributes.get(MoreFloatAttribute.FogLevel)).value);
 		}
 
 		if (lights != null && lights.shadowMap != null) {
