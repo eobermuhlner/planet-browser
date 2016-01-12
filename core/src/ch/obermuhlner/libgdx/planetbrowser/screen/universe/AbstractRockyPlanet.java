@@ -142,7 +142,6 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 				p(3, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
 				p(20, TerrestrialHeightShaderFunctionAttribute.functionPower(random.nextFloat(1.0f, 4.0f)))
 				);
-		heightFunction = TerrestrialHeightShaderFunctionAttribute.POWER_2;
 		Color[] randomColors = randomColors(random, 6, colors, 0.01f, 0.1f);
 		for (int i = 0; i < randomColors.length; i++) {
 			randomColors[i].a = random.nextBoolean(0.1) ? random.nextFloat(0.5f, 1.0f) : random.nextFloat(0.0f, 0.3f);
@@ -270,24 +269,5 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		//frameBuffer.dispose(); // FIXME memory leak
 		
 		return texture;
-	}
-
-	@Override
-	protected AtmosphereAttribute getAtmosphereAttribute(Random random, PlanetData planetData, float atmosphereSize) {
-		if (planetData.atmosphere == null) {
-			return null;
-		}
-		
-		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);
-		float centerAlpha = random.nextFloat(0.0f, 0.3f);
-		float horizonAlpha = random.nextFloat(centerAlpha, 0.5f);
-		float refractionFactor = random.nextFloat(0.0f, 0.7f);
-		return new AtmosphereAttribute(
-				planetData.atmosphereScatterColor,
-				centerAlpha,
-				horizonAlpha,
-				planetData.atmospherePassColor,
-				refractionFactor,
-				atmosphereEnd);
 	}
 }

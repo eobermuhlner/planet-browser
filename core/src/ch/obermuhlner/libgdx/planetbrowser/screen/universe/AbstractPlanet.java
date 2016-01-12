@@ -78,11 +78,25 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	protected abstract Material createPlanetMaterial(Random random, PlanetData planetData);
 
 	protected AtmosphereAttribute getAtmosphereAttribute(Random random, PlanetData planetData, float atmosphereSize) {
-		return null;
+		if (planetData.atmosphere == null) {
+			return null;
+		}
+
+		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);
+		float centerAlpha = random.nextFloat(0.0f, 0.3f);
+		float horizonAlpha = random.nextFloat(centerAlpha, 0.5f);
+		float refractionFactor = random.nextFloat(0.1f, 0.7f);
+		return new AtmosphereAttribute(
+				planetData.atmosphereScatterColor,
+				centerAlpha,
+				horizonAlpha,
+				planetData.atmospherePassColor,
+				refractionFactor,
+				atmosphereEnd);
 	}
 	
 	protected float getAtmosphereSize(Random random, PlanetData planetData) {
-		return random.nextFloat(1.01f, 1.1f);
+		return random.nextFloat(1.01f, 1.03f);
 	}
 	
 	protected Material createAtmosphereMaterial(Random random, PlanetData planetData, float atmosphereSize) {

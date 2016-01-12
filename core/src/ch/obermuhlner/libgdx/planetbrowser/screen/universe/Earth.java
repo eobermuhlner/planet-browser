@@ -161,19 +161,4 @@ public class Earth extends AbstractPlanet {
 		texturesMap.put(TextureAttribute.Specular, textures.get(3));
 		return texturesMap;
 	}
-
-	@Override
-	protected AtmosphereAttribute getAtmosphereAttribute(Random random, PlanetData planetData, float atmosphereSize) {
-		float atmosphereEnd = MathUtil.transform(1.0f, 1.1f, 0.8f, 0.3f, atmosphereSize);
-		float centerAlpha = random.nextFloat(0.0f, 0.1f);
-		float horizonAlpha = random.nextFloat(0.1f, 0.8f);
-		float refractionFactor = random.nextFloat(0.3f, 0.7f);
-		return new AtmosphereAttribute(
-				planetData.atmosphereScatterColor,
-				centerAlpha,
-				horizonAlpha,
-				planetData.atmospherePassColor,
-				refractionFactor,
-				atmosphereEnd);
-	}
 }
