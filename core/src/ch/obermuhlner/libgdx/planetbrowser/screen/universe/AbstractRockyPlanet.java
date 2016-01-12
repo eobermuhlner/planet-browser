@@ -176,7 +176,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		if (planetData.atmosphere != null && random.nextBoolean(0.8)) {
 			craterFactor = random.nextInt(1, 2);
 		} else {
-			craterFactor = random.nextInt(5, 30);
+			craterFactor = random.nextInt(5, 10);
 		}
 
 		boolean favorHugeCraters = random.nextBoolean(0.1);
@@ -194,14 +194,14 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		int totalCraterCount = craterFactor * (hugeCraterCount + bigCraterCount + mediumCraterCount + smallCraterCount + tinyCraterCount);
 		System.out.println("Generating craterFactor=" + craterFactor + " huge=" + hugeCraterCount + " big=" + bigCraterCount + " medium=" + mediumCraterCount + " small=" + smallCraterCount + " tiny=" + tinyCraterCount + " softCount=" + softCount + " total=" + totalCraterCount);
 
-		FrameBuffer frameBuffer = renderFrameBufferNormal(material, TerrestrialPlanetShader.PROVIDER);
+		FrameBuffer frameBuffer = renderFrameBufferNormal(material, shaderProvider, textureSize, xFrom, xTo, yFrom ,yTo);
 
 		frameBuffer.begin();		
 
 		SpriteBatch spriteBatch = new SpriteBatch();
 		//spriteBatch.getProjectionMatrix().setToOrtho2D(xFrom, yFrom, xTo, yTo);
-		float textureWidth = 500;
-		float textureHeight = 500;
+		float textureWidth = textureSize;
+		float textureHeight = textureSize;
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, textureWidth, textureHeight);
 
 		spriteBatch.begin();
@@ -238,16 +238,18 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			new Tuple2<Integer, Texture>(random.nextInt(tinyCraterCount * craterFactor), craterTiny2),
 		};
 		
-		for (int i = 0; i < texturesToDraw.length; i++) {
-			int count = texturesToDraw[i].getValue1();
-			Texture texture = texturesToDraw[i].getValue2();
-			for (int j = 0; j < count; j++) {
-				float x = random.nextFloat(0, 1);
-				float y = random.nextFloat(0, 1);
-				if (x >= xFrom && x < xTo && y >= yFrom && y < yTo) {
-					float textureX = MathUtil.transform(xFrom, xTo, 0, textureWidth, x);
-					float textureY = MathUtil.transform(yFrom, yTo, 0, textureHeight, y);
-					spriteBatch.draw(texture, textureX, textureY);
+		for (int k = 0; k < 2; k++) {
+			for (int i = 0; i < texturesToDraw.length; i++) {
+				int count = texturesToDraw[i].getValue1();
+				Texture texture = texturesToDraw[i].getValue2();
+				for (int j = 0; j < count; j++) {
+					float x = random.nextFloat(0, 1);
+					float y = random.nextFloat(0, 1);
+					if (x >= xFrom && x < xTo && y >= yFrom && y < yTo) {
+						float textureX = MathUtil.transform(xFrom, xTo, 0, textureWidth, x);
+						float textureY = MathUtil.transform(yFrom, yTo, 0, textureHeight, y);
+						spriteBatch.draw(texture, textureX, textureY);
+					}
 				}
 			}
 		}

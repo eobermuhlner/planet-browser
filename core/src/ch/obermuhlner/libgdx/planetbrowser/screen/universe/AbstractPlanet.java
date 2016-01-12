@@ -27,6 +27,7 @@ import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
+import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
@@ -156,6 +157,8 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 
 	public Texture renderTextureNormal (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
 		material.set(TerrestrialPlanetFloatAttribute.createCreateNormal()); // FIXME just adding attribute is wrong, modifies the material
+		material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
+		//material.set(MoreFloatAttribute.createNormalStep(0.000001f));
 		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
 	}
 	
@@ -176,6 +179,10 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
 		if (useMultiTextureRendering()) {
 			material.set(TerrestrialPlanetFloatAttribute.createTextures(bump, diffuse, normal, specular, emissive));
+			if (normal) {
+				material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
+			}
+			
 			int textureCount = 0;
 			textureCount += bump ? 1 : 0;
 			textureCount += diffuse ? 1 : 0;
@@ -210,32 +217,7 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	private final VertexInfo vertTmp4 = new VertexInfo();
 	private Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, int textureCount) {
 		final int rectSize = 1;
-		ModelBuilder modelBuilder = new ModelBuilder();
-		modelBuilder.begin();
-		MeshPartBuilder part = modelBuilder.part("terrain", GL20.GL_TRIANGLES, (long) (Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates), material);
-
-		float x00 = rectSize;
-		float y00 = 0f;
-		float z00 = -rectSize;
-		float x10 = -rectSize;
-		float y10 = 0f;
-		float z10 = -rectSize;
-		float x11 = -rectSize;
-		float y11 = 0f;
-		float z11 = rectSize;
-		float x01 = rectSize;
-		float y01 = 0f;
-		float z01 = rectSize;
-		float normalX = 0;
-		float normalY = 1;
-		float normalZ = 0;
-		part.rect(
-				vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(xFrom, yTo),
-				vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(xTo, yTo),
-				vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(xTo, yFrom),
-				vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(xFrom, yFrom));
-
-		Model model = modelBuilder.end();
+		Model model = createTerrainMeshModel(material, xFrom, xTo, yFrom, yTo, rectSize);
 		ModelInstance instance = new ModelInstance(model);
 
 		ModelBatch modelBatch = new ModelBatch(shaderProvider == null ? UberShaderProvider.DEFAULT : shaderProvider);
@@ -275,25 +257,46 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 		return textures;
 	}
 
-	public FrameBuffer renderFrameBufferNormal (Material material, ShaderProvider shaderProvider) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateNormal()); // FIXME just adding attribute is wrong, modifies the material
-		return renderFrameBuffer(material, shaderProvider);
+	private Model createTerrainMeshModel(Material material, float xFrom, float xTo, float yFrom, float yTo,
+			final int rectSize) {
+		ModelBuilder modelBuilder = new ModelBuilder();
+		modelBuilder.begin();
+		MeshPartBuilder part = modelBuilder.part("terrain", GL20.GL_TRIANGLES, (long) (Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates), material);
+
+		float x00 = rectSize;
+		float y00 = 0f;
+		float z00 = -rectSize;
+		float x10 = -rectSize;
+		float y10 = 0f;
+		float z10 = -rectSize;
+		float x11 = -rectSize;
+		float y11 = 0f;
+		float z11 = rectSize;
+		float x01 = rectSize;
+		float y01 = 0f;
+		float z01 = rectSize;
+		float normalX = 0;
+		float normalY = 1;
+		float normalZ = 0;
+		part.rect(
+				vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(xFrom, yTo),
+				vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(xTo, yTo),
+				vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(xTo, yFrom),
+				vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(xFrom, yFrom));
+
+		Model model = modelBuilder.end();
+		return model;
 	}
 
-	public FrameBuffer renderFrameBuffer (Material material, ShaderProvider shaderProvider) {
-		final int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-		
-		final int rectSize = 1;
-		Model model;
-		ModelBuilder modelBuilder = new ModelBuilder();
-		model = modelBuilder.createRect(
-			rectSize, 0f, -rectSize,
-			-rectSize, 0f, -rectSize,
-			-rectSize, 0f, rectSize,
-			rectSize, 0f, rectSize,
-			0, 1, 0,
-			material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+	public FrameBuffer renderFrameBufferNormal (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
+		material.set(TerrestrialPlanetFloatAttribute.createCreateNormal()); // FIXME just adding attribute is wrong, modifies the material
+		material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
+		return renderFrameBuffer(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo);
+	}
 
+	public FrameBuffer renderFrameBuffer (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {		
+		final int rectSize = 1;
+		Model model = createTerrainMeshModel(material, xFrom, xTo, yFrom, yTo, rectSize);
 		ModelInstance instance = new ModelInstance(model);
 
 		ModelBatch modelBatch = new ModelBatch(shaderProvider == null ? UberShaderProvider.DEFAULT : shaderProvider);
