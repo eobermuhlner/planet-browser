@@ -122,7 +122,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		terrain = new Terrain(chunkCount, lod);
 		terrain.planetX = 0.5f;
 		terrain.planetY = 0.5f;
-		terrain.planetStep = 0.02f;
+		terrain.planetStep = 0.01f;
 		terrain.terrainX = 0f;
 		terrain.terrainY = 0f;
 		terrain.terrainStep = 80f;
