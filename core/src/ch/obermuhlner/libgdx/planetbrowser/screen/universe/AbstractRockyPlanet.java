@@ -137,9 +137,10 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		int heightFrequency = random.nextInt(3, 5);
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
-				p(2, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
-				p(3, TerrestrialHeightShaderFunctionAttribute.SMOOTH),
+				p(2, TerrestrialHeightShaderFunctionAttribute.SMOOTH),
 				p(3, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
+				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
+				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3),
 				p(20, TerrestrialHeightShaderFunctionAttribute.functionPower(random.nextFloat(1.0f, 4.0f)))
 				);
 		Color[] randomColors = randomColors(random, 6, colors, 0.01f, 0.1f);
