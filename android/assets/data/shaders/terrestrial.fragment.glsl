@@ -193,28 +193,30 @@ float pnoise1(float x, float period) {
 vec3 encode_rgb888(float value) {
 	vec3 bitShift = vec3(256.0*256.0, 256.0, 1.0);
 	vec3 bitMask = vec3(0.0, 1.0/256.0, 1.0/256.0);
-	vec3 comp = fract(value * bitShift);
+	vec3 comp = fract(clamp(value, 0.0, 1.0) * bitShift);
 	comp -= comp.xxy * bitMask;
 	return comp;
 }
 
+/*
 float decode_rgb888(vec3 vec) {
-	vec3 bitShift = vec3(1.0/256.0/256.0, 1.0/256.0, 1.0);
+	vec3 bitShift = vec3(1.0/(256.0*256.0), 1.0/256.0, 1.0);
 	return dot(vec, bitShift);
 }
 
 vec4 encode_rgba8888(float value) {
 	vec4 bitShift = vec4(256.0*256.0*256.0, 256.0*256.0, 256.0, 1.0);
 	vec4 bitMask = vec4(0.0, 1.0/256.0, 1.0/256.0, 1.0/256.0);
-	vec4 comp = fract(value * bitShift);
+	vec4 comp = fract(clamp(value, 0.0, 1.0) * bitShift);
 	comp -= comp.xxyz * bitMask;
 	return comp;
 }
 
 float decode_rgba8888(vec4 vec) {
-	vec4 bitShift = vec4(1.0/256.0/256.0/256.0, 1.0/256.0/256.0, 1.0/256.0, 1.0);
+	vec4 bitShift = vec4(1.0/(256.0*256.0*256.0), 1.0/(256.0*256.0), 1.0/256.0, 1.0);
 	return dot(vec, bitShift);
 }
+*/
 
 // based on http://theorangeduck.com/page/avoiding-shader-conditionals
 float when_not(float condition) {
@@ -318,7 +320,7 @@ float calculateHeight(vec2 P) {
 	
 	height = heightTransform(height);
 	
-	return height;
+	return max(u_heightWater, height);
 }
 
 float dummyHeight(vec2 P) {
@@ -376,8 +378,8 @@ void main() {
 	#endif
 
 	#if defined(createBumpFlag)
-		bumpColor = vec3((height - u_heightWater) / 3.0);
-		//bumpColor = encode_rgb888((height - u_heightWater) * 0.1);
+		//bumpColor = vec3((height - u_heightWater) / 3.0);
+		bumpColor = encode_rgb888((height - u_heightWater) * 0.1);
 	#endif
 
 	#if defined(createDiffuseFlag)
