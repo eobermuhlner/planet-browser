@@ -206,6 +206,11 @@ varying vec3 v_ambientLight;
 
 #endif // lightingFlag
 
+float decode_rgb888(vec3 vec) {
+	vec3 bitShift = vec3(1.0/256.0/256.0, 1.0/256.0, 1.0);
+	return dot(vec, bitShift);
+}
+
 // based on http://theorangeduck.com/page/avoiding-shader-conditionals
 float when_not(float condition) {
   return 1.0 - condition;
@@ -305,7 +310,8 @@ void main() {
 	#endif
 	
 	#ifdef bumpTextureFlag
-		float bump = texture2D(u_bumpTexture, v_texCoords0).r;
+		float bump = texture2D(u_bumpTexture, v_texCoords0).r * 3.0;
+		//float bump = decode_rgb888(texture2D(u_bumpTexture, v_texCoords0).rgb) * 10.0;
 		pos.y = pos.y + bump * 40.0;
 	#endif
 		

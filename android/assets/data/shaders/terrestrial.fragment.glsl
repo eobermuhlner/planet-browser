@@ -189,6 +189,33 @@ float pnoise1(float x, float period) {
 	return pnoise2(vec2(x, 0.0), period);
 }
 
+//based in gamedev.net topic 442138
+vec3 encode_rgb888(float value) {
+	vec3 bitShift = vec3(256.0*256.0, 256.0, 1.0);
+	vec3 bitMask = vec3(0.0, 1.0/256.0, 1.0/256.0);
+	vec3 comp = fract(value * bitShift);
+	comp -= comp.xxy * bitMask;
+	return comp;
+}
+
+float decode_rgb888(vec3 vec) {
+	vec3 bitShift = vec3(1.0/256.0/256.0, 1.0/256.0, 1.0);
+	return dot(vec, bitShift);
+}
+
+vec4 encode_rgba8888(float value) {
+	vec4 bitShift = vec4(256.0*256.0*256.0, 256.0*256.0, 256.0, 1.0);
+	vec4 bitMask = vec4(0.0, 1.0/256.0, 1.0/256.0, 1.0/256.0);
+	vec4 comp = fract(value * bitShift);
+	comp -= comp.xxyz * bitMask;
+	return comp;
+}
+
+float decode_rgba8888(vec4 vec) {
+	vec4 bitShift = vec4(1.0/256.0/256.0/256.0, 1.0/256.0/256.0, 1.0/256.0, 1.0);
+	return dot(vec, bitShift);
+}
+
 // based on http://theorangeduck.com/page/avoiding-shader-conditionals
 float when_not(float condition) {
   return 1.0 - condition;
@@ -349,7 +376,8 @@ void main() {
 	#endif
 
 	#if defined(createBumpFlag)
-		bumpColor = vec3((height - u_heightWater) * 0.5);
+		bumpColor = vec3((height - u_heightWater) / 3.0);
+		//bumpColor = encode_rgb888((height - u_heightWater) * 0.1);
 	#endif
 
 	#if defined(createDiffuseFlag)
