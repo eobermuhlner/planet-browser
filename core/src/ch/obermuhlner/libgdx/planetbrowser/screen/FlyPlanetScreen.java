@@ -256,8 +256,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 		modelBuilder.begin();
 		MeshPartBuilder part = modelBuilder.part("terrain", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates, material);
 
-		int divisionsU = bumpTexture.getWidth();
-		int divisionsV = bumpTexture.getHeight();
+		int divisionsU = bumpTexture == null ? 1 : bumpTexture.getWidth();
+		int divisionsV = bumpTexture == null ? 1 : bumpTexture.getHeight();
 
 		float normalX = 0;
 		float normalY = 1;
@@ -475,7 +475,10 @@ public class FlyPlanetScreen extends AbstractScreen {
 			addMaterialTexture(materialAttributes, TextureAttribute.Emissive, textures);
 
 			Texture bumpTexture = factory.createTextures(planetData, new Random(randomSeed), xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
+			if (bumpTexture != null) {
+				materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
+			}
+			
 			Material material = new Material(materialAttributes);
 			
 			ModelInstance modelInstance = createTerrainMesh(bumpTexture, terrainSize / 2, material, 0, 1, 0, 1);

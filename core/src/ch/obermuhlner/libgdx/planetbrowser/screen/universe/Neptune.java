@@ -49,6 +49,10 @@ public class Neptune extends AbstractGasPlanet {
 				p(random.nextDouble(10, 40), Molecule.H2O)
 				);		
 
+		planetData.atmosphereScatterColor = randomColor(random, random.next(ICE_GAS_PLANET_COLORS), 0.2f, 0.2f);
+		planetData.atmospherePassColor = randomColor(random, new Color(0xf26666ff), 0.2f, 0.2f);
+		planetData.fogLevel = random.nextDouble(0.005, 0.01);
+
 		planetData.fillStandardValues(random);
 		
 		return planetData;
