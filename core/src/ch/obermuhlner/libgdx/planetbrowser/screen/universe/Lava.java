@@ -50,8 +50,6 @@ public class Lava extends AbstractPlanet {
 		
 		planetData.atmosphereScatterColor = randomColor(random, new Color(0xb0a580ff), 0.1f, 0.1f);
 		planetData.atmospherePassColor = randomColor(random, new Color(0xf26666ff), 0.1f, 0.1f);
-		planetData.atmosphereFogColor = planetData.atmosphereScatterColor;
-		planetData.fogLevel = random.nextDouble(0.001, 0.02);
 
 		planetData.fillStandardValues(random);
 		

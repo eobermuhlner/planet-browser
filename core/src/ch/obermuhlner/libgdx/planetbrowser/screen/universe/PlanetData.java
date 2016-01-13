@@ -26,7 +26,7 @@ public class PlanetData {
 	public Color atmosphereScatterColor;
 	public Color atmospherePassColor;
 	public Color atmosphereFogColor;
-	public double fogLevel;
+	public double fogLevel = Double.NaN;
 	
 	public void fillStandardValues(Random random) {
 		if (radius == 0) {
@@ -47,6 +47,21 @@ public class PlanetData {
 		
 		if (temperature == 0) {
 			temperature = random.nextDouble(100, 280);
+		}
+		
+		if (atmosphereFogColor == null) {
+			if (atmosphereScatterColor != null) {
+				atmosphereFogColor = atmosphereScatterColor;
+				//atmosphereFogColor = randomColor(random, atmosphereScatterColor, 0.1f, 0.1f);
+			}
+		}
+		
+		if (Double.isNaN(fogLevel)) {
+			if (atmosphere == null) {
+				fogLevel = 0.0;
+			} else {
+				fogLevel = random.nextDouble(0.001, 0.02);
+			}
 		}
 		
 		// atmosphere pressures

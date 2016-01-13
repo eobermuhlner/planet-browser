@@ -80,8 +80,6 @@ public class Earth extends AbstractPlanet {
 		
 		planetData.atmosphereScatterColor = randomColor(random, new Color(0x87cefaff), 0.1f, 0.1f); // new Color(0.8f, 0.8f, 1.0f, 1.0f); 
 		planetData.atmospherePassColor = randomColor(random, new Color(0xe56666ff), 0.1f, 0.1f);
-		planetData.atmosphereFogColor = randomColor(random, new Color(0x80c0f0ff), 0.1f, 0.1f);
-		planetData.fogLevel = random.nextDouble(0.001, 0.02);
 		
 		planetData.fillStandardValues(random);
 		
