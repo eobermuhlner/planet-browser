@@ -39,6 +39,9 @@ public class Jupiter extends AbstractGasPlanet {
 				p(random.nextGaussian(0.0006), Molecule.C2H6)
 				);
 
+		planetData.atmosphereScatterColor = randomColor(random, new Color(0xb0a580ff), 0.2f, 0.2f);
+		planetData.atmospherePassColor = randomColor(random, new Color(0xf26666ff), 0.2f, 0.2f);
+		planetData.fogLevel = random.nextDouble(0.001, 0.005);
 		
 		// see: https://en.wikipedia.org/wiki/Sudarsky%27s_gas_giant_classification
 		

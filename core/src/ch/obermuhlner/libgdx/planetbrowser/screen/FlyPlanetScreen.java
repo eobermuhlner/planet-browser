@@ -103,7 +103,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 //		environment.add(light);
 				
 		atmosphereColor = planetData.atmosphereScatterColor != null ? planetData.atmosphereScatterColor : Color.BLACK;
-		if (planetData.atmosphereFogColor != null) {
+		if (planetData.atmosphereFogColor != null && planetData.fogLevel != 0.0) {
 			environment.set(MoreFloatAttribute.createFogLevel((float) planetData.fogLevel));
 			environment.set(new ColorAttribute(ColorAttribute.Fog, planetData.atmosphereFogColor));
 		}
