@@ -244,8 +244,8 @@ void main() {
 		float heightDeltaY = jupiterNoise(v_texCoords0 + vec2(0.0, offset));
 		float deltaX = height - heightDeltaX;
 		float deltaY = height - heightDeltaY;
-		vec3 tangentX = vec3(offset, 0, deltaX / 100.0);
-		vec3 tangentY = vec3(0, offset, deltaY / 100.0);
+		vec3 tangentX = vec3(offset, 0, deltaX / 200.0);
+		vec3 tangentY = vec3(0, offset, deltaY / 200.0);
 		normal = normalize(cross(tangentX, tangentY));
 
 		normalColor = clamp((normal + 1.0) / 2.0, 0.0, 1.0);
