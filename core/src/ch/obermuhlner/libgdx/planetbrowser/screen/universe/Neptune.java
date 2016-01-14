@@ -3,6 +3,7 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.Material;
 
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
@@ -58,6 +59,14 @@ public class Neptune extends AbstractGasPlanet {
 		return planetData;
 	}
 
+	@Override
+	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
+		// make sure Neptune looks different from Jupiter
+		random.nextFloat();
+		
+		return super.createPlanetMaterial(random, planetData);
+	}
+	
 	protected float getPlanetRadius() {
 		return 2.0f;
 	}
