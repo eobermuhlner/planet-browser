@@ -195,6 +195,7 @@ public class PlanetScreen extends AbstractScreen {
 	private void prepareStage() {
 		Gui gui = new Gui();
 		Table rootTable = gui.rootTable();
+		stage.addActor(rootTable);
 
 		{
 			// catalog control panel
@@ -388,8 +389,6 @@ public class PlanetScreen extends AbstractScreen {
 				tableLayout.add(" ms");
 			}
 		}
-		
-		stage.addActor(rootTable);
 	}
 
 	public static class EntryDoubleValueComparator implements Comparator<Entry<?, Double>> {
