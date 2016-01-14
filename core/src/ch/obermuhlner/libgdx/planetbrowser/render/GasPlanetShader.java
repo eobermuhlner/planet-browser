@@ -5,12 +5,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader.Provider;
 import ch.obermuhlner.libgdx.planetbrowser.util.StopWatch;
 
 public class GasPlanetShader implements Shader {
