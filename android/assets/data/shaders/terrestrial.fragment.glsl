@@ -320,7 +320,7 @@ float calculateHeight(vec2 P) {
 	
 	height = heightTransform(height);
 	
-	return max(u_heightWater, height);
+	return height;
 }
 
 float dummyHeight(vec2 P) {
@@ -378,7 +378,6 @@ void main() {
 	#endif
 
 	#if defined(createBumpFlag)
-		//bumpColor = vec3((height - u_heightWater) / 3.0);
 		bumpColor = encode_rgb888((height - u_heightWater) * 0.1);
 	#endif
 
