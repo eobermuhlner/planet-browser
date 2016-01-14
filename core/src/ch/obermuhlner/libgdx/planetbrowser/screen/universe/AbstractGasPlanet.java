@@ -27,11 +27,12 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
-		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Emissive;
+		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal;
 		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
 		Map<Long, Texture> textures = createTextures(planetData, random, 0, 1, 0, 1, textureTypes, textureSize);
 
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
 
 		return new Material(materialAttributes);
 	}
@@ -46,8 +47,10 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 		Material material = new Material(materialAttributes);
 
 		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
-		Array<Texture> textures = renderTextures(material, GasPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, false, true, false, false, false);
-		texturesMap.put(TextureAttribute.Diffuse, textures.get(0));
+		Array<Texture> textures = renderTextures(material, GasPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, true, true, true, false, false);
+		texturesMap.put(TextureAttribute.Bump, textures.get(0));
+		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
+		texturesMap.put(TextureAttribute.Normal, textures.get(2));
 		return texturesMap;
 	}
 

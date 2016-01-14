@@ -302,7 +302,7 @@ public class TerrestrialPlanetShader implements Shader {
 		return codeAttribute == null ? defaultValue : codeAttribute.code;
 	}
 	
-	private static float getFloatAttributeValue(Renderable renderable, long attributeType, float defaultValue) {
+	public static float getFloatAttributeValue(Renderable renderable, long attributeType, float defaultValue) {
 		FloatAttribute floatAttribute = (FloatAttribute) renderable.material.get(attributeType);
 		return floatAttribute == null ? defaultValue : floatAttribute.value;
 	}

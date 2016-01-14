@@ -11,11 +11,13 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader.Provider;
+import ch.obermuhlner.libgdx.planetbrowser.util.StopWatch;
 
 public class GasPlanetShader implements Shader {
 
 	public static final Provider PROVIDER = new GasPlanetShader.Provider();
 
+	private final String prefix;
 	private final String vertexProgram;
 	private final String fragmentProgram;
 
@@ -24,6 +26,8 @@ public class GasPlanetShader implements Shader {
 	private int u_projViewTrans;
 	private int u_worldTrans;
 	private int u_time;
+	private int u_normalStep;
+
 	private int u_random0;
 	private int u_random1;
 	private int u_random2;
@@ -37,26 +41,64 @@ public class GasPlanetShader implements Shader {
 	private int u_planetColor0;
 	private int u_planetColor1;
 	private int u_planetColor2;
-	
-	public GasPlanetShader (String vertexProgram, String fragmentProgram) {
+
+	public GasPlanetShader (String vertexProgram, String fragmentProgram, String prefix) {
+		this.prefix = prefix;
 		this.vertexProgram = vertexProgram;
 		this.fragmentProgram = fragmentProgram;
 	}
 	
 	private static String createPrefix(Renderable renderable) {
-		return "";
+		StringBuilder prefix = new StringBuilder();
+
+		int createTexture = (int) TerrestrialPlanetShader.getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CreateTexture, TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE);
+		int createTextureCount = 0;
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_BUMP_TEXTURE) != 0) {
+			prefix.append("#define createBumpFlag\n");
+			prefix.append("#define createBumpOutput " + createTextureCount + "\n");
+			createTextureCount++;
+		}
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE) != 0) {
+			prefix.append("#define createDiffuseFlag\n");
+			prefix.append("#define createDiffuseOutput " + createTextureCount + "\n");
+			createTextureCount++;
+		}
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_NORMAL_TEXTURE) != 0) {
+			prefix.append("#define createNormalFlag\n");
+			prefix.append("#define createNormalOutput " + createTextureCount + "\n");
+			createTextureCount++;
+		}
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_SPECULAR_TEXTURE) != 0) {
+			prefix.append("#define createSpecularFlag\n");
+			prefix.append("#define createSpecularOutput " + createTextureCount + "\n");
+			createTextureCount++;
+		}
+		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_EMISSIVE_TEXTURE) != 0) {
+			prefix.append("#define createEmissiveFlag\n");
+			prefix.append("#define createEmissiveOutput " + createTextureCount + "\n");
+			createTextureCount++;
+		}
+		if (createTextureCount > 1) {
+			prefix.append("#define multiTextureRenderingFlag\n");
+		}
+
+		return prefix.toString();
 	}
 	
 	@Override
 	public void init () {
-		program = new ShaderProgram(vertexProgram, fragmentProgram);
+		StopWatch watch = new StopWatch();
+		program = new ShaderProgram(prefix + vertexProgram, prefix + fragmentProgram);
+		System.out.println("Compiled gasplanet shader in " + watch);
 		if (!program.isCompiled()) {
-			throw new GdxRuntimeException(program.getLog());
+			throw new GdxRuntimeException(ShaderUtils.createErrorMessage(program));
 		}
 
 		u_projViewTrans = program.getUniformLocation("u_projViewTrans");
 		u_worldTrans = program.getUniformLocation("u_worldTrans");
 		u_time = program.getUniformLocation("u_time");
+		u_normalStep = program.getUniformLocation("u_normalStep");
+		
 		u_random0 = program.getUniformLocation("u_random0");
 		u_random1 = program.getUniformLocation("u_random1");
 		u_random2 = program.getUniformLocation("u_random2");
@@ -94,6 +136,8 @@ public class GasPlanetShader implements Shader {
 		// world transformation
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 		
+		program.setUniformf(u_normalStep, TerrestrialPlanetShader.getFloatAttributeValue(renderable, MoreFloatAttribute.NormalStep, 0.0001f));
+
 		// random
 		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.RandomFloatArray);
 		program.setUniformf(u_random0, floatArrayAttribute.values[0]);
@@ -148,7 +192,7 @@ public class GasPlanetShader implements Shader {
 
 		@Override
 		protected Shader createShader(Renderable renderable, String prefix) {
-			GasPlanetShader shader = new GasPlanetShader(vert, frag);
+			GasPlanetShader shader = new GasPlanetShader(vert, frag, prefix);
 			shader.init();
 			return shader;
 		}

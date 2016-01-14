@@ -9,6 +9,8 @@ precision highp float;
 #define HIGH
 #endif
 
+uniform float u_normalStep;
+
 uniform float u_time;
 uniform vec3 u_planetColor0;
 uniform vec3 u_planetColor1;
@@ -153,6 +155,14 @@ float pnoise1(float x, float period) {
 	return pnoise2(vec2(x, 0.0), period);
 }
 
+vec3 encode_rgb888(float value) {
+	vec3 bitShift = vec3(256.0*256.0, 256.0, 1.0);
+	vec3 bitMask = vec3(0.0, 1.0/256.0, 1.0/256.0);
+	vec3 comp = fract(clamp(value, 0.0, 1.0) * bitShift);
+	comp -= comp.xxy * bitMask;
+	return comp;
+}
+
 vec3 toColor(float value) {
     float r = clamp(-value, 0.0, 1.0);
     float g = clamp(value, 0.0, 1.0);
@@ -171,6 +181,9 @@ float planetNoise(vec2 P) {
 	return noise;
 }
 
+//	noise += pnoise2(P+vec2(u_random0+u_random4, u_random1+u_random6), baseFrequency * 1.0) * baseFactor / 1.0;
+
+
 float jupiterNoise(vec2 texCoords) {
 	float distEquator = abs(texCoords.t - 0.5) * 2.0;
 	float noise = planetNoise(vec2(texCoords.x+distEquator*0.6, texCoords.y));
@@ -180,54 +193,96 @@ float jupiterNoise(vec2 texCoords) {
 	disturbance += pnoise1(distPol+(u_random0 + u_random8), 3.0+(u_random3 + u_random8)*3.0) * 1.0;
 	disturbance += pnoise1(distPol+(u_random1 + u_random8), 9.0+(u_random4 + u_random8)*5.0) * 0.5;
 	disturbance += pnoise1(distPol+(u_random2 + u_random8), 20.0+(u_random5 + u_random8)*10.0) * 0.1;
-	disturbance = disturbance*disturbance*2.0;
-	float noiseFactor = (u_random6 + u_random8) * 0.3;
-	float noiseDistEquator = distEquator + noise * noiseFactor * disturbance;
+//	disturbance += pnoise1(distPol+(u_random3 + u_random8), 20.0+(u_random6 + u_random8)*20.0) * 0.05;
+//	disturbance += pnoise1(distPol+(u_random4 + u_random8), 20.0+(u_random7 + u_random8)*40.0) * 0.025;
+//	disturbance += pnoise1(distPol+(u_random5 + u_random8), 20.0+(u_random8 + u_random8)*80.0) * 0.0125;
+//	disturbance = disturbance*disturbance*2.0;
+	float noiseFactor = (u_random6 + u_random9) * 0.3;
+	float noiseDistEquator = noise * noiseFactor * disturbance;
 	return noiseDistEquator;
 }
 
-float jupiterHeight(float noise) {
-	return noise * 5.0;
-}
-
-vec3 planetColor(float distEquator) {
-	vec3 color1 = u_planetColor0; 
+vec3 planetColor(float height, float distEquator) {
+	vec3 color1 = u_planetColor0;
 	vec3 color2 = u_planetColor1; 
-	vec3 color3 = u_planetColor2; 
-
-	float v1 = pnoise1(distEquator+(u_random0 + u_random7), 2.0 + (u_random3 + u_random7)*15.0) * (u_random5 + u_random7);
-	float v2 = pnoise1(distEquator+(u_random1 + u_random7), 2.0 + (u_random4 + u_random7)*15.0) * (u_random7 + u_random7);
-
+	vec3 color3 = u_planetColor2;
+	vec3 color4 = mix(u_planetColor0, u_planetColor2, pnoise1(distEquator, 2.0+u_random9*10.0));
+	
+	float v1 = pnoise1(distEquator+u_random1, 2.0+u_random2*10.0);
+	float v2 = pnoise1(distEquator+u_random3, 2.0+u_random4*10.0);
+	float v3 = height * 10.0;
+	
 	vec3 mix1 = mix(color1, color2, v1);
-	vec3 mix2 = mix(mix1, color3, v2);
-	return mix2;
+	vec3 mix2 = mix(color3, color4, v2);
+	vec3 mix3 = mix(mix1, mix2, v3);
+	return mix3;
 }
 
 void main() {
+	float distEquator = abs(v_texCoords0.t - 0.5) * 2.0;
+	float height = jupiterNoise(v_texCoords0);
+
+	vec3 bumpColor = vec3(0.0, 0.0, 0.0);
+	vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
+	vec3 normalColor = vec3(0.5, 0.5, 1.0);
+	vec3 specularColor = vec3(0.0, 0.0, 0.0);
+	vec3 emissiveColor = vec3(0.0, 0.0, 0.0);
+
+	#if defined(createBumpFlag)
+		bumpColor = encode_rgb888(height);	
+	#endif
+	
+	#if defined(createDiffuseFlag)
+		diffuseColor = planetColor(height, distEquator);
+	#endif
+	
 	#if defined(createNormalFlag)
 		vec3 normal;
-		float height = jupiterNoise(v_texCoords0);
-		if (height > u_heightWater) {
-			float offset = 0.000001;
-			float heightDeltaX = jupiterNoise(v_texCoords0 + vec2(offset, 0.0));
-			float heightDeltaY = jupiterNoise(v_texCoords0 + vec2(0.0, offset));
-			float deltaX = height - heightDeltaX;
-			float deltaY = height - heightDeltaY;
-			vec3 tangentX = vec3(offset, 0, deltaX / 1000.0);
-			vec3 tangentY = vec3(0, offset, deltaY / 1000.0);
-			normal = normalize(cross(tangentX, tangentY));
-		} else {
-			normal = vec3(0.0, 0.0, 1.0);
-		}
-		gl_FragColor.rgb = clamp((normal + 1.0) / 2.0, 0.0, 1.0);
+
+		float offset = u_normalStep;
+		float heightDeltaX = jupiterNoise(v_texCoords0 + vec2(offset, 0.0));
+		float heightDeltaY = jupiterNoise(v_texCoords0 + vec2(0.0, offset));
+		float deltaX = height - heightDeltaX;
+		float deltaY = height - heightDeltaY;
+		vec3 tangentX = vec3(offset, 0, deltaX / 100.0);
+		vec3 tangentY = vec3(0, offset, deltaY / 100.0);
+		normal = normalize(cross(tangentX, tangentY));
+
+		normalColor = clamp((normal + 1.0) / 2.0, 0.0, 1.0);
+	#endif
+
+	#if defined(multiTextureRenderingFlag)
+		#if defined(createBumpFlag)
+			gl_FragData[createBumpOutput].rgb = bumpColor;
+		#endif
+		#if defined(createDiffuseFlag)
+			gl_FragData[createDiffuseOutput].rgb = diffuseColor;
+		#endif
+		#if defined(createNormalFlag)
+			gl_FragData[createNormalOutput].rgb = normalColor;
+		#endif
+		#if defined(createSpecularFlag)
+			gl_FragData[createSpecularOutput].rgb = specularColor;
+		#endif
+		#if defined(createEmissiveFlag)
+			gl_FragData[createEmissiveOutput].rgb = emissiveColor;
+		#endif
 	#else
-		float noise = jupiterNoise(v_texCoords0);
-		vec3 color = planetColor(noise);
-	
-		gl_FragColor.rgb = color;
-		
-		// for debugging:
-		//gl_FragColor.rgb = vec3(noise);
+		#if defined(createBumpFlag)
+			gl_FragColor.rgb = bumpColor;
+		#endif
+		#if defined(createDiffuseFlag)
+			gl_FragColor.rgb = diffuseColor;
+		#endif
+		#if defined(createNormalFlag)
+			gl_FragColor.rgb = normalColor;
+		#endif
+		#if defined(createSpecularFlag)
+			gl_FragColor.rgb = specularColor;
+		#endif
+		#if defined(createEmissiveFlag)
+			gl_FragColor.rgb = emissiveColor;
+		#endif
 	#endif
 }
 
