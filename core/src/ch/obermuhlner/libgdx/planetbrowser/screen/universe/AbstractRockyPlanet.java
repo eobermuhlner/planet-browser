@@ -129,7 +129,6 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		Color[] colors = random.next(MOON_COLORS_VARIANTS);
-		float heightFlatGround = 0.3f;
 		float heightMin = 0.1f;
 		float heightMax = 0.8f;
 		int heightFrequency = random.nextInt(3, 5);
@@ -148,7 +147,6 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		}
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors));
 		materialAttributes.add(createPlanetColorFrequenciesAttribute(random));
-		//materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightWater(heightFlatGround));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(heightFrequency));
