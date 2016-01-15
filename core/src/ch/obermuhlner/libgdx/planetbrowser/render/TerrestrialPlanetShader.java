@@ -23,8 +23,6 @@ public class TerrestrialPlanetShader implements Shader {
 
 	private static final float DEFAULT_HEIGHT_MOUNTAINS = 0.0f;
 	
-
-	private Renderable renderable;
 	private String prefix;
 	
 	private final String vertexProgram;
@@ -77,7 +75,6 @@ public class TerrestrialPlanetShader implements Shader {
 	private float time;
 
 	public TerrestrialPlanetShader (Renderable renderable, String vertexProgram, String fragmentProgram, String prefix) {
-		this.renderable = renderable;
 		this.prefix = prefix;
 
 		String code = getShaderFunctionAttributeValue(renderable, TerrestrialHeightShaderFunctionAttribute.TerrestrialHeightFunction, "");
