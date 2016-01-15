@@ -1,7 +1,5 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen;
 
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
@@ -459,14 +457,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 			float xTo = xFrom + xyStep / meshDivisions * (meshDivisions + 1);
 			float yTo = yFrom + xyStep / meshDivisions * (meshDivisions + 1);
 			
-//			Material material = factory.createMaterial(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo, textureSize);
-			long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular | TextureAttribute.Emissive;
-			Map<Long, Texture> textures = factory.createTextures(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
-			Array<Attribute> materialAttributes = new Array<Attribute>();
-			addMaterialTexture(materialAttributes, TextureAttribute.Diffuse, textures);
-			addMaterialTexture(materialAttributes, TextureAttribute.Normal, textures);
-			addMaterialTexture(materialAttributes, TextureAttribute.Specular, textures);
-			addMaterialTexture(materialAttributes, TextureAttribute.Emissive, textures);
+			Array<Attribute> materialAttributes = factory.createMaterialAttributes(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo, textureSize);
 
 			Texture bumpTexture = factory.createTextures(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
 			if (bumpTexture != null) {
@@ -477,13 +468,6 @@ public class FlyPlanetScreen extends AbstractScreen {
 			
 			ModelInstance modelInstance = createTerrainMesh(meshDivisions, terrainSize / 2, material, 0, 1, 0, 1);
 			return modelInstance;
-		}
-		
-		private void addMaterialTexture(Array<Attribute> materialAttributes, long textureType, Map<Long, Texture> textures) {
-			Texture texture = textures.get(textureType);
-			if (texture != null) {
-				materialAttributes.add(new TextureAttribute(textureType, texture));
-			}
 		}
 	}
 	
