@@ -66,10 +66,6 @@ public class PlanetScreen extends AbstractScreen {
 		new Jupiter(),
 		new Neptune(),
 		new IceMoon(),
-		//new Sun(),
-		//new TexturePlanet("earth.jpg", "earth_normals.jpg", null),
-		//new TexturePlanet("earth.jpg", null, null),
-		//new TexturePlanet(null, null, "sun.jpg"),
 	};
 	private static final Array<String> planetFactoryNames = new Array<String>();
 	private static final String RANDOM_FACTORY_NAME = "Random";
