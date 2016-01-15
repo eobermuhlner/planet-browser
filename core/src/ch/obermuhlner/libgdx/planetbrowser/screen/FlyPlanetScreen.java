@@ -133,45 +133,38 @@ public class FlyPlanetScreen extends AbstractScreen {
 		
 		switch(terrainQuality) {
 		case Best:
-			lod = new TerrainLod[5];
-			lod[0] = new TerrainLod(3, 1024, 128);
-			lod[1] = new TerrainLod(4, 256, 128);
-			lod[2] = new TerrainLod(5, 128, 64);
-			lod[3] = new TerrainLod(6, 32, 16);
-			lod[4] = new TerrainLod(Integer.MAX_VALUE, 16, 8);
+			lod = new TerrainLod[2];
+			lod[0] = new TerrainLod(4, 512, 64);
+			lod[1] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
 			return lod;
 		case VeryGood:
-			lod = new TerrainLod[5];
-			lod[0] = new TerrainLod(2, 512, 128);
-			lod[1] = new TerrainLod(3, 256, 128);
-			lod[2] = new TerrainLod(4, 128, 64);
-			lod[3] = new TerrainLod(5, 32, 16);
-			lod[4] = new TerrainLod(Integer.MAX_VALUE, 16, 8);
+			lod = new TerrainLod[2];
+			lod[0] = new TerrainLod(3, 256, 64);
+			lod[1] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
 			return lod;
 		case Good:
-			lod = new TerrainLod[3];
-			lod[0] = new TerrainLod(2, 512, 128);
-			lod[1] = new TerrainLod(3, 256, 64);
-			lod[2] = new TerrainLod(Integer.MAX_VALUE, 16, 8);
+			lod = new TerrainLod[2];
+			lod[0] = new TerrainLod(3, 256, 64);
+			lod[1] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
 			return lod;
 		case Poor:
 			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(2, 512, 128);
-			lod[1] = new TerrainLod(Integer.MAX_VALUE, 64, 64);
+			lod[0] = new TerrainLod(2, 256, 64);
+			lod[1] = new TerrainLod(Integer.MAX_VALUE, 16, 16);
 			return lod;
 		case VeryPoor:
 			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(1, 512, 64);
-			lod[1] = new TerrainLod(Integer.MAX_VALUE, 128, 32);
+			lod[0] = new TerrainLod(2, 256, 64);
+			lod[1] = new TerrainLod(Integer.MAX_VALUE, 16, 16);
 			return lod;
 		case Worst:
 			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(1, 512, 64);
-			lod[1] = new TerrainLod(Integer.MAX_VALUE, 64, 32);
+			lod[0] = new TerrainLod(1, 256, 64);
+			lod[1] = new TerrainLod(Integer.MAX_VALUE, 16, 16);
 			return lod;
 		case SimpleBest:
 			lod = new TerrainLod[1];
-			lod[0] = new TerrainLod(Integer.MAX_VALUE, 1024, 128);
+			lod[0] = new TerrainLod(Integer.MAX_VALUE, 1024, 64);
 			return lod;
 		case SimpleGood:
 			lod = new TerrainLod[1];
