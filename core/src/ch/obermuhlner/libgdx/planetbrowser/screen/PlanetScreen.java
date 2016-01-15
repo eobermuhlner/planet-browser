@@ -42,7 +42,7 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.IceMoon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Jupiter;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Lava;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Mars;
-import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
+import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Moon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Neptune;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
@@ -58,7 +58,7 @@ public class PlanetScreen extends AbstractScreen {
 	
 	private static final boolean SHOW_DEBUG_INFO = true;
 
-	private static final ModelInstanceFactory[] ALL_PLANET_FACTORIES = new ModelInstanceFactory[] {
+	private static final PlanetFactory[] ALL_PLANET_FACTORIES = new PlanetFactory[] {
 		new Earth(),
 		new Moon(),
 		new Mars(),
@@ -74,14 +74,14 @@ public class PlanetScreen extends AbstractScreen {
 	private static final Array<String> planetFactoryNames = new Array<String>();
 	private static final String RANDOM_FACTORY_NAME = "Random";
 	private static String currentPlanetFactoryName = RANDOM_FACTORY_NAME;
-	private static final Map<String, ModelInstanceFactory[]> mapPlanetFactories = new HashMap<String, ModelInstanceFactory[]>();
+	private static final Map<String, PlanetFactory[]> mapPlanetFactories = new HashMap<String, PlanetFactory[]>();
 	static {
 		planetFactoryNames.add(RANDOM_FACTORY_NAME);
 		mapPlanetFactories.put(RANDOM_FACTORY_NAME, ALL_PLANET_FACTORIES);
 		
 		for (int i = 0; i < ALL_PLANET_FACTORIES.length; i++) {
 			String name = ALL_PLANET_FACTORIES[i].getClass().getSimpleName();
-			ModelInstanceFactory[] factory = new ModelInstanceFactory[] { ALL_PLANET_FACTORIES[i] };
+			PlanetFactory[] factory = new PlanetFactory[] { ALL_PLANET_FACTORIES[i] };
 			planetFactoryNames.add(name);
 			mapPlanetFactories.put(name, factory);
 		}
@@ -124,7 +124,7 @@ public class PlanetScreen extends AbstractScreen {
 	private Table planetInfoPanel;
 	private Table shipInfoPanel;
 
-	private ModelInstanceFactory modelInstanceFactory;
+	private PlanetFactory modelInstanceFactory;
 
 	public PlanetScreen() {
 		this(1);

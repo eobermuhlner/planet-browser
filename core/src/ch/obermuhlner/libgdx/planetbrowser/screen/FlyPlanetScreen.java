@@ -36,7 +36,7 @@ import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
-import ch.obermuhlner.libgdx.planetbrowser.screen.universe.ModelInstanceFactory;
+import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
@@ -48,7 +48,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 
 	private static final boolean SHOW_DEBUG_INFO = true;
 
-	private final ModelInstanceFactory factory;
+	private final PlanetFactory factory;
 	private final long randomSeed;
 
 	private final Environment environment = new Environment();
@@ -70,7 +70,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 	private Player player;
 	private PlayerController playerController;
 	
-	public FlyPlanetScreen(ModelInstanceFactory factory, long randomSeed) {
+	public FlyPlanetScreen(PlanetFactory factory, long randomSeed) {
 		this.factory = factory;
 		this.randomSeed = randomSeed;
 	}

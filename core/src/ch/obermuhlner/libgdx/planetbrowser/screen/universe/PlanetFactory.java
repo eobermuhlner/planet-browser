@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
-public interface ModelInstanceFactory {
+public interface PlanetFactory {
 
 	PlanetData createPlanetData(Random random);
 	

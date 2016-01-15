@@ -36,7 +36,7 @@ import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
-public abstract class AbstractPlanet implements ModelInstanceFactory {
+public abstract class AbstractPlanet implements PlanetFactory {
 
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
