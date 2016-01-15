@@ -459,6 +459,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 			float xTo = xFrom + xyStep / meshDivisions * (meshDivisions + 1);
 			float yTo = yFrom + xyStep / meshDivisions * (meshDivisions + 1);
 			
+//			Material material2 = factory.createMaterial(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo);
 			long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular | TextureAttribute.Emissive;
 			Map<Long, Texture> textures = factory.createTextures(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
 			Array<Attribute> materialAttributes = new Array<Attribute>();

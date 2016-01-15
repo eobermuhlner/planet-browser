@@ -63,7 +63,7 @@ public class Lava extends AbstractPlanet {
 		
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Emissive;
 		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-		Map<Long, Texture> textures = createTextures(random, planetData, 0, 1, 0, 1, textureTypes, textureSize);
+		Map<Long, Texture> textures = createTextures(random, planetData, xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
 
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
