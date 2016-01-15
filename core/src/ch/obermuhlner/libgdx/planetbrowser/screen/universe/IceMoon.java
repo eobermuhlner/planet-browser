@@ -18,6 +18,14 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
 public class IceMoon extends AbstractPlanet {
 
+	private static final Color[] ICEMOON_COLORS = new Color[] {
+			new Color(0.6f, 0.6f, 1.0f, 0.5f),
+			new Color(0.5f, 0.5f, 0.5f, 0.2f),
+			new Color(0.8f, 0.8f, 0.8f, 0.5f),
+			new Color(0.9f, 0.9f, 0.9f, 0.5f),
+			new Color(1.0f, 1.0f, 1.0f, 0.6f),
+	};
+
 	@Override
 	public PlanetData createPlanetData(Random random) {
 		PlanetData planetData = new PlanetData();
@@ -48,17 +56,18 @@ public class IceMoon extends AbstractPlanet {
 	public Map<Long, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
-		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, new Color[] {
-				new Color(0.6f, 0.6f, 1.0f, 1.0f),
-				new Color(1.0f, 1.0f, 1.0f, 1.0f),
-				new Color(1.0f, 1.0f, 1.0f, 1.0f),
-		}));
+		Color[] colors = ICEMOON_COLORS;
+		
+		Color[] randomColors = randomColors(random, 6, colors, 0.02f, 0.1f);
 
-		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(0.8f);
+		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors));
+
+		float heightPower = random.nextFloat(0.8f, 1.5f);
+		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower);
 
 		float heightMin = 0.3f;
 		float heightMax = random.nextFloat(0.5f, 0.7f);
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(random.nextInt(1, 4)));
+		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(random.nextInt(3, 3)));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
 		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(heightFunction));
