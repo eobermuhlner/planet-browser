@@ -22,7 +22,7 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 	}
 
 	@Override
-	public Material createMaterial(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
+	public Array<Attribute> createMaterialAttributes(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal;
@@ -31,7 +31,7 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
 
-		return new Material(materialAttributes);
+		return materialAttributes;
 	}
 	
 	@Override

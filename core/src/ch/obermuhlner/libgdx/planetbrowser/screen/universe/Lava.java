@@ -57,7 +57,7 @@ public class Lava extends AbstractPlanet {
 	}
 
 	@Override
-	public Material createMaterial(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
+	public Array<Attribute> createMaterialAttributes(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Emissive;
@@ -70,7 +70,7 @@ public class Lava extends AbstractPlanet {
 		float emissive = 0.5f;
 		materialAttributes.add(new ColorAttribute(ColorAttribute.Emissive, emissive, emissive, emissive, 1.0f));
 
-		return new Material(materialAttributes);
+		return materialAttributes;
 	}
 	
 	@Override

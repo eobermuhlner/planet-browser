@@ -242,15 +242,15 @@ public class FlyPlanetScreen extends AbstractScreen {
 		}
 	}
 	
-	private ModelInstance createTerrainMesh(Texture bumpTexture, float rectSize, Material material, float uFrom, float uTo, float vFrom, float vTo) {
+	private ModelInstance createTerrainMesh(int meshDivisions, float rectSize, Material material, float uFrom, float uTo, float vFrom, float vTo) {
 		final VertexInfo vertTmp1 = new VertexInfo();
 
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
 		MeshPartBuilder part = modelBuilder.part("terrain", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates, material);
 
-		int divisionsU = bumpTexture == null ? 1 : bumpTexture.getWidth();
-		int divisionsV = bumpTexture == null ? 1 : bumpTexture.getHeight();
+		int divisionsU = meshDivisions;
+		int divisionsV = meshDivisions;
 
 		float normalX = 0;
 		float normalY = 1;
@@ -459,7 +459,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 			float xTo = xFrom + xyStep / meshDivisions * (meshDivisions + 1);
 			float yTo = yFrom + xyStep / meshDivisions * (meshDivisions + 1);
 			
-//			Material material = factory.createMaterial(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo);
+//			Material material = factory.createMaterial(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo, textureSize);
 			long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular | TextureAttribute.Emissive;
 			Map<Long, Texture> textures = factory.createTextures(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
 			Array<Attribute> materialAttributes = new Array<Attribute>();
@@ -475,7 +475,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 			
 			Material material = new Material(materialAttributes);
 			
-			ModelInstance modelInstance = createTerrainMesh(bumpTexture, terrainSize / 2, material, 0, 1, 0, 1);
+			ModelInstance modelInstance = createTerrainMesh(meshDivisions, terrainSize / 2, material, 0, 1, 0, 1);
 			return modelInstance;
 		}
 		

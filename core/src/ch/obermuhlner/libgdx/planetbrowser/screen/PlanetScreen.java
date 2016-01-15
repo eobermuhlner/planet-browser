@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -144,7 +145,8 @@ public class PlanetScreen extends AbstractScreen {
 		long startMillis = System.currentTimeMillis();
 		planetData = modelInstanceFactory.createPlanetData(new Random(randomSeed));
 		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-		Material material = modelInstanceFactory.createMaterial(new Random(randomSeed), planetData, 0, 1, 0, 1, textureSize);
+		Array<Attribute> materialAttributes = modelInstanceFactory.createMaterialAttributes(new Random(randomSeed), planetData, 0, 1, 0, 1, textureSize);
+		Material material = new Material(materialAttributes);
 		modelInstances.addAll(modelInstanceFactory.createModelInstance(new Random(randomSeed), planetData, material));
 		long endMillis = System.currentTimeMillis();
 		long deltaMillis = endMillis - startMillis;

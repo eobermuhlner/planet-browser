@@ -37,7 +37,7 @@ public class IceMoon extends AbstractPlanet {
 	}
 
 	@Override
-	public Material createMaterial(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
+	public Array<Attribute> createMaterialAttributes(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
@@ -47,7 +47,7 @@ public class IceMoon extends AbstractPlanet {
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
 	
-		return new Material(materialAttributes);
+		return materialAttributes;
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
@@ -13,7 +14,7 @@ public interface PlanetFactory {
 
 	PlanetData createPlanetData(Random random);
 	
-	Material createMaterial(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize);
+	Array<Attribute> createMaterialAttributes(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize);
 	
 	Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize);
 
