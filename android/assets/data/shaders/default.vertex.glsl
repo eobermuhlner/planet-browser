@@ -12,6 +12,10 @@
 #define cameraPositionFlag
 #endif
 
+#if defined(normalTextureFlag) || defined(atmosphereFlag)
+#define strongestLightFlag
+#endif
+
 #if defined(atmosphereFlag)
 #define normalFlag
 #define blendedFlag
@@ -323,8 +327,9 @@ void main() {
 		v_shadowMapUv.z = min(spos.z * 0.5 + 0.5, 0.998);
 	#endif //shadowMapFlag
 	
-	#if defined(specularFlag) || defined(emissiveColorFlag) 
-		vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
+	#if defined(specularFlag) || defined(emissiveColorFlag) || defined (fogFlag) || defined (atmosphereFlag)
+		vec3 viewVec = u_cameraPosition.xyz - pos.xyz;
+		vec3 normalizedViewVec = normalize(viewVec);
 	#endif
 	
 	#if defined(normalFlag)
@@ -340,15 +345,14 @@ void main() {
 	#endif // normalFlag
 
     #ifdef fogFlag
-        vec3 flen = u_cameraPosition.xyz - pos.xyz;
-        //float fog = dot(flen, flen) * u_cameraPosition.w;
-        float fog = length(flen);
+        float fog = length(viewVec);
         fog = 1.0 - exp(-fog * u_fogLevel);
         v_fog = min(fog, 1.0);
     #endif
     
-	#if defined(normalTextureFlag) || defined (atmosphereFlag)
-		vec3 strongestLightDir = vec3(0.0, 0.0, 1.0);
+	#if defined(strongestLightFlag)
+		vec3 strongestLightVec = vec3(0.0, 0.0, 1.0);
+		float strongestLuminance = 0.0;
 	#endif // normalTextureFlag
 
 	#ifdef lightingFlag
@@ -395,29 +399,27 @@ void main() {
 		#endif // specularFlag
 		
 		#ifdef emissiveColorFlag
-			float NdotL = clamp(dot(normal, viewVec), 0.0, 1.0);
+			float NdotL = clamp(dot(normal, normalizedViewVec), 0.0, 1.0);
 			v_emissiveColor = u_emissiveColor * NdotL * 0.75 + u_emissiveColor * 0.25;
 		#endif // emissiveColorFlag
-
-		float strongestLuminance = 0.0;
 					
 		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numDirectionalLights; i++) {
 				vec3 lightDir = -u_dirLights[i].direction;
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
 				vec3 value = u_dirLights[i].color * NdotL;
-				#if defined(normalTextureFlag) || defined (atmosphereFlag)
+				#if defined(strongestLightFlag)
 					#if (numDirectionalLights == 1) && (!defined(numPointLights) || numPointLights == 0)
-						strongestLightDir = normalize(lightDir);
+						strongestLightVec = normalize(lightDir);
 					#else
 						float lum = luminance(value);
-						strongestLightDir = if_then_else(when_gt(lum, strongestLuminance), normalize(lightDir), strongestLightDir);
+						strongestLightVec = if_then_else(when_gt(lum, strongestLuminance), normalize(lightDir), strongestLightVec);
 						strongestLuminance = max(lum, strongestLuminance);
 					#endif
-				#endif // normalTextureFlag
+				#endif // strongestLightFlag
 				v_lightDiffuse += value;
 				#ifdef specularFlag
-					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + normalizedViewVec)));
 					v_lightSpecular += value * pow(halfDotView, u_shininess);
 				#endif // specularFlag
 			}
@@ -431,18 +433,18 @@ void main() {
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
 				vec3 value = u_pointLights[i].color * NdotL;
 				//vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));
-				#if defined(normalTextureFlag) || defined (atmosphereFlag)
+				#if defined(strongestLightFlag)
 					#if (numPointLights == 1) && (!defined (numDirectionalLights) || numDirectionalLights == 0)
-						strongestLightDir = normalize(lightDir);
+						strongestLightVec = normalize(lightDir);
 					#else
 						float lum = luminance(value);
-						strongestLightDir = if_then_else(when_gt(lum, strongestLuminance), normalize(lightDir), strongestLightDir);
+						strongestLightVec = if_then_else(when_gt(lum, strongestLuminance), normalize(lightDir), strongestLightVec);
 						strongestLuminance = max(lum, strongestLuminance);
 					#endif
-				#endif // normalTextureFlag
+				#endif // strongestLightFlag
 				v_lightDiffuse += value;
 				#ifdef specularFlag
-					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + normalizedViewVec)));
 					v_lightSpecular += value * pow(halfDotView, u_shininess);
 				#endif // specularFlag
 			}
@@ -451,11 +453,9 @@ void main() {
 	#endif // lightingFlag
 
     #ifdef atmosphereFlag
-    	// normalized vector from vertex position to camera position
-		vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
 		// lambert factor represents angle between vertex normal and vector to camera 
-		v_lambertFactorNormalToCamera = clamp(dot(normal, viewVec), 0.0, 1.0);
-		v_lambertFactorLightToCamera = clamp(dot(strongestLightDir, viewVec), 0.0, 1.0);
+		v_lambertFactorNormalToCamera = clamp(dot(normal, normalizedViewVec), 0.0, 1.0);
+		v_lambertFactorLightToCamera = clamp(dot(strongestLightVec, normalizedViewVec), 0.0, 1.0);
 		v_opacity = 1.0; // TODO why necessary?
     #endif
 
@@ -466,6 +466,6 @@ void main() {
 		vec3 b = cross (n, t);
 		
 		// normalized vector from vertex position to light position in tangent space - passed to fragment shader
-		v_lightVecTangent = normalize (vec3(dot (strongestLightDir, t), dot (strongestLightDir, b), dot (strongestLightDir, n)));
+		v_lightVecTangent = normalize (vec3(dot (strongestLightVec, t), dot (strongestLightVec, b), dot (strongestLightVec, n)));
 	#endif // normalTextureFlag
 }
