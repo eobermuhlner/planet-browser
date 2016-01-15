@@ -1,5 +1,8 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
@@ -29,6 +32,22 @@ public class IceMoon extends AbstractPlanet {
 	@Override
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
+		
+		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal;
+		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
+		Map<Long, Texture> textures = createTextures(planetData, random, 0, 1, 0, 1, textureTypes, textureSize);
+
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
+		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
+	
+		materialAttributes.add(ColorAttribute.createSpecular(Color.WHITE));
+
+		return new Material(materialAttributes);
+	}
+	
+	@Override
+	public Map<Long, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
+		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, new Color[] {
 				new Color(0.6f, 0.6f, 1.0f, 1.0f),
@@ -48,24 +67,13 @@ public class IceMoon extends AbstractPlanet {
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
 		Material material = new Material(materialAttributes);
-
-		if (true) {
-			materialAttributes.clear();
-
-			int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-
-			Texture textureDiffuse = renderTextureDiffuse(material, TerrestrialPlanetShader.PROVIDER, textureSize, 0, 1, 0, 1);
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textureDiffuse));
 			
-			Texture textureNormal = renderTextureNormal(material, TerrestrialPlanetShader.PROVIDER, textureSize, 0, 1, 0, 1);
-			materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textureNormal));
-
-			materialAttributes.add(ColorAttribute.createSpecular(Color.WHITE));
-			
-			material = new Material(materialAttributes);
-		}
-
-		return new Material(materialAttributes);
+		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
+		// FIXME only calculate asked textures
+		Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, true, true, true, false, false);
+		texturesMap.put(TextureAttribute.Bump, textures.get(0));
+		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
+		texturesMap.put(TextureAttribute.Normal, textures.get(2));
+		return texturesMap;
 	}
-
 }
