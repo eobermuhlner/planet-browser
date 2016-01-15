@@ -13,9 +13,9 @@ public interface PlanetFactory {
 
 	PlanetData createPlanetData(Random random);
 	
-	Material createMaterial(PlanetData planetData, Random random);
+	Material createMaterial(Random random, PlanetData planetData);
 	
-	Array<ModelInstance> createModelInstance(PlanetData planetData, Random random);
+	Array<ModelInstance> createModelInstance(Random random, PlanetData planetData);
 	
-	Map<Long, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize);
+	Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize);
 }

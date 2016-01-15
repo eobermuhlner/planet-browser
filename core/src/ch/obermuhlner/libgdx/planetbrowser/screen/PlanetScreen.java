@@ -147,7 +147,7 @@ public class PlanetScreen extends AbstractScreen {
 		modelInstanceFactory = new Random(randomSeed).next(mapPlanetFactories.get(currentPlanetFactoryName));
 		long startMillis = System.currentTimeMillis();
 		planetData = modelInstanceFactory.createPlanetData(new Random(randomSeed));
-		modelInstances.addAll(modelInstanceFactory.createModelInstance(planetData, new Random(randomSeed)));
+		modelInstances.addAll(modelInstanceFactory.createModelInstance(new Random(randomSeed), planetData));
 		long endMillis = System.currentTimeMillis();
 		long deltaMillis = endMillis - startMillis;
 		

@@ -38,12 +38,12 @@ public class IceMoon extends AbstractPlanet {
 	}
 
 	@Override
-	public Material createMaterial(PlanetData planetData, Random random) {
+	public Material createMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
 		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-		Map<Long, Texture> textures = createTextures(planetData, random, 0, 1, 0, 1, textureTypes, textureSize);
+		Map<Long, Texture> textures = createTextures(random, planetData, 0, 1, 0, 1, textureTypes, textureSize);
 
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
@@ -53,7 +53,7 @@ public class IceMoon extends AbstractPlanet {
 	}
 	
 	@Override
-	public Map<Long, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
+	public Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		Color[] colors = ICEMOON_COLORS;

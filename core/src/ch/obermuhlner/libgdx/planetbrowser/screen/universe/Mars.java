@@ -91,10 +91,10 @@ public class Mars extends AbstractRockyPlanet {
 	}
 
 	@Override
-	public Material createMaterial(PlanetData planetData, Random random) {
+	public Material createMaterial(Random random, PlanetData planetData) {
 		// make sure Mars looks different from Moon
 		random.nextFloat();
 		
-		return super.createMaterial(planetData, random);
+		return super.createMaterial(random, planetData);
 	}
 }
