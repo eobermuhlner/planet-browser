@@ -47,7 +47,7 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		float size = Units.toRenderUnit(planetData.radius) * 2;
 
 		{
-			Material material = createPlanetMaterial(random, planetData);
+			Material material = createMaterial(planetData, random);
 			Model model = createSphere(size, material);
 			modelInstances.add(new ModelInstance(model));
 		}
@@ -77,7 +77,7 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return model;
 	}
 
-	protected abstract Material createPlanetMaterial(Random random, PlanetData planetData);
+	protected abstract Material createMaterial(PlanetData planetData, Random random);
 
 	protected Map<Long, Texture> createTextures(Material material, ShaderProvider shaderProvider, long textureTypes, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
 		boolean bump = (textureTypes & TextureAttribute.Bump) != 0; 

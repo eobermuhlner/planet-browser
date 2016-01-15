@@ -27,7 +27,7 @@ public class Sun extends AbstractPlanet {
 	}
 
 	@Override
-	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
+	protected Material createMaterial(PlanetData planetData, Random random) {
 		return new Material(
 				new ColorAttribute(ColorAttribute.Diffuse, Color.RED),
 				new ColorAttribute(ColorAttribute.Emissive, Color.YELLOW),

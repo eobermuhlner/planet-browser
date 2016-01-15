@@ -60,11 +60,11 @@ public class Neptune extends AbstractGasPlanet {
 	}
 
 	@Override
-	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
+	protected Material createMaterial(PlanetData planetData, Random random) {
 		// make sure Neptune looks different from Jupiter
 		random.nextFloat();
 		
-		return super.createPlanetMaterial(random, planetData);
+		return super.createMaterial(planetData, random);
 	}
 	
 	protected float getPlanetRadius() {
