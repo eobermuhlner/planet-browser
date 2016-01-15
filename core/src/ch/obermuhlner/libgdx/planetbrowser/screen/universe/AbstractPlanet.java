@@ -210,10 +210,6 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
 	}
 
-	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
-		return renderTextures(material, shaderProvider, textureSize, 0, 1, 0, 1, bump, diffuse, normal, specular, emissive);
-	}
-	
 	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
 		if (useMultiTextureRendering()) {
 			material.set(TerrestrialPlanetFloatAttribute.createTextures(bump, diffuse, normal, specular, emissive));
