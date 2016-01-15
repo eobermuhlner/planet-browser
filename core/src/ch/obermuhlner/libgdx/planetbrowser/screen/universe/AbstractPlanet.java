@@ -186,29 +186,28 @@ public abstract class AbstractPlanet implements PlanetFactory {
 	}
 	
 	public Texture renderTextureBump (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateBump()); // FIXME just adding attribute is wrong, modifies the material
+		material.set(TerrestrialPlanetFloatAttribute.createCreateBump());
 		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
 	}
 
 	public Texture renderTextureDiffuse (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateDiffuse()); // FIXME just adding attribute is wrong, modifies the material
+		material.set(TerrestrialPlanetFloatAttribute.createCreateDiffuse());
 		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
 	}
 
 	public Texture renderTextureNormal (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateNormal()); // FIXME just adding attribute is wrong, modifies the material
+		material.set(TerrestrialPlanetFloatAttribute.createCreateNormal());
 		material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
-		//material.set(MoreFloatAttribute.createNormalStep(0.000001f));
 		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
 	}
 	
 	public Texture renderTextureSpecular (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular()); // FIXME just adding attribute is wrong, modifies the material
+		material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular());
 		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
 	}
 	
 	public Texture renderTextureEmissive (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateEmissive()); // FIXME just adding attribute is wrong, modifies the material
+		material.set(TerrestrialPlanetFloatAttribute.createCreateEmissive());
 		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
 	}
 
