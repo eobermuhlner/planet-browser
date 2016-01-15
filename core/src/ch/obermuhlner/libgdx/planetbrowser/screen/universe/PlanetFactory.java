@@ -13,7 +13,7 @@ public interface PlanetFactory {
 
 	PlanetData createPlanetData(Random random);
 	
-	Material createMaterial(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo);
+	Material createMaterial(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize);
 	
 	Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize);
 
