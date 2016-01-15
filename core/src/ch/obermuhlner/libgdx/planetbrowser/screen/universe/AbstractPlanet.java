@@ -41,6 +41,30 @@ public abstract class AbstractPlanet implements PlanetFactory {
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
 	@Override
+	public Array<Attribute> createMaterialAttributes(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
+		Array<Attribute> materialAttributes = new Array<Attribute>();
+		
+		long textureTypes = getTextureTypes(planetData);
+		Map<Long, Texture> textures = createTextures(random, planetData, xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
+
+		addTexture(materialAttributes, textureTypes, TextureAttribute.Bump, textures);
+		addTexture(materialAttributes, textureTypes, TextureAttribute.Diffuse, textures);
+		addTexture(materialAttributes, textureTypes, TextureAttribute.Normal, textures);
+		addTexture(materialAttributes, textureTypes, TextureAttribute.Specular, textures);
+		addTexture(materialAttributes, textureTypes, TextureAttribute.Emissive, textures);
+		
+		return materialAttributes;
+	}
+
+	private void addTexture(Array<Attribute> materialAttributes, long textureTypes, long textureType, Map<Long, Texture> textures) {
+		if ((textureTypes & textureType) != 0) {
+			materialAttributes.add(new TextureAttribute(textureType, textures.get(textureType)));
+		}
+	}
+
+	protected abstract long getTextureTypes(PlanetData planetData);
+	
+	@Override
 	public Array<ModelInstance> createModelInstance(Random random, PlanetData planetData, Material material) {
 		Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 

@@ -110,17 +110,8 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 	};
 
 	@Override
-	public Array<Attribute> createMaterialAttributes(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
-		Array<Attribute> materialAttributes = new Array<Attribute>();
-		
-		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
-		Map<Long, Texture> textures = createTextures(random, planetData, xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
-
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, textures.get(TextureAttribute.Specular)));
-
-		return materialAttributes;
+	protected long getTextureTypes(PlanetData planetData) {
+		return TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
 	}
 	
 	@Override

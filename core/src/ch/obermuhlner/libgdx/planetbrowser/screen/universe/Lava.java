@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
@@ -57,20 +56,8 @@ public class Lava extends AbstractPlanet {
 	}
 
 	@Override
-	public Array<Attribute> createMaterialAttributes(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
-		Array<Attribute> materialAttributes = new Array<Attribute>();
-		
-		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Emissive;
-		Map<Long, Texture> textures = createTextures(random, planetData, xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
-
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, textures.get(TextureAttribute.Diffuse)));
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Normal, textures.get(TextureAttribute.Normal)));
-		materialAttributes.add(new TextureAttribute(TextureAttribute.Emissive, textures.get(TextureAttribute.Emissive)));
-
-		float emissive = 0.5f;
-		materialAttributes.add(new ColorAttribute(ColorAttribute.Emissive, emissive, emissive, emissive, 1.0f));
-
-		return materialAttributes;
+	protected long getTextureTypes(PlanetData planetData) {
+		return TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Emissive;
 	}
 	
 	@Override
