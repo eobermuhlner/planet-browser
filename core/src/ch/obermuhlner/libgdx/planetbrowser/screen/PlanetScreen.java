@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
@@ -24,7 +25,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -42,10 +42,10 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.IceMoon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Jupiter;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Lava;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Mars;
-import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetFactory;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Moon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Neptune;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
+import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetFactory;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
 import ch.obermuhlner.libgdx.planetbrowser.ui.SimpleHtml;
@@ -147,7 +147,8 @@ public class PlanetScreen extends AbstractScreen {
 		modelInstanceFactory = new Random(randomSeed).next(mapPlanetFactories.get(currentPlanetFactoryName));
 		long startMillis = System.currentTimeMillis();
 		planetData = modelInstanceFactory.createPlanetData(new Random(randomSeed));
-		modelInstances.addAll(modelInstanceFactory.createModelInstance(new Random(randomSeed), planetData));
+		Material material = modelInstanceFactory.createMaterial(new Random(randomSeed), planetData);
+		modelInstances.addAll(modelInstanceFactory.createModelInstance(new Random(randomSeed), planetData, material));
 		long endMillis = System.currentTimeMillis();
 		long deltaMillis = endMillis - startMillis;
 		
@@ -527,10 +528,10 @@ public class PlanetScreen extends AbstractScreen {
 		camera.rotateAround(target, Vector3.Y, delta * autoRotateAngle);
 		camera.update();
 
-		for (int i = 0; i < modelInstances.size; i++) {
-			ModelInstance modelInstance = modelInstances.get(i);
+//		for (int i = 0; i < modelInstances.size; i++) {
+//			ModelInstance modelInstance = modelInstances.get(i);
 //			modelInstance.transform.rotate(Vector3.Y, delta * -10);
-		}
+//		}
 		
 		cameraInputController.update();
 		stage.act(delta);

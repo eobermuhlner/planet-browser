@@ -41,22 +41,21 @@ public abstract class AbstractPlanet implements PlanetFactory {
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
 	@Override
-	public Array<ModelInstance> createModelInstance(Random random, PlanetData planetData) {
+	public Array<ModelInstance> createModelInstance(Random random, PlanetData planetData, Material material) {
 		Array<ModelInstance> modelInstances = new Array<ModelInstance>();
 
 		float size = Units.toRenderUnit(planetData.radius) * 2;
 
 		{
-			Material material = createMaterial(random, planetData);
 			Model model = createSphere(size, material);
 			modelInstances.add(new ModelInstance(model));
 		}
 		
 		{
 			float atmosphereSize = getAtmosphereSize(random, planetData);
-			Material material = createAtmosphereMaterial(random, planetData, atmosphereSize);
-			if (material != null) {
-				Model model = createSphere(size * atmosphereSize, material);
+			Material atmosphereMaterial = createAtmosphereMaterial(random, planetData, atmosphereSize);
+			if (atmosphereMaterial != null) {
+				Model model = createSphere(size * atmosphereSize, atmosphereMaterial);
 				modelInstances.add(new ModelInstance(model));
 			}
 		}
