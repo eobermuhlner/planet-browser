@@ -2,7 +2,6 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.Color;
@@ -16,7 +15,6 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
-import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
@@ -115,7 +113,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
-		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Emissive;
+		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
 		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
 		Map<Long, Texture> textures = createTextures(planetData, random, 0, 1, 0, 1, textureTypes, textureSize);
 
@@ -158,15 +156,14 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 
 		Material material = new Material(materialAttributes);
 
-		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
-		// FIXME only calculate asked textures
-		Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, true, true, false, true, false);
-		texturesMap.put(TextureAttribute.Bump, textures.get(0));
-		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
-		texturesMap.put(TextureAttribute.Specular, textures.get(2));
-
-		Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo);
-		texturesMap.put(TextureAttribute.Normal, textureNormal);
+		boolean normal = (textureTypes & TextureAttribute.Normal) != 0;
+		textureTypes &= ~TextureAttribute.Normal;
+		Map<Long, Texture> texturesMap = createTextures(material, TerrestrialPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);
+		
+		if (normal) {
+			Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo);
+			texturesMap.put(TextureAttribute.Normal, textureNormal);
+		}
 
 		return texturesMap;
 	}
@@ -254,12 +251,12 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			}
 		}
 		
-		for (int i = 0; i < softCount; i++) {
-			Texture texture = soft1;
-			float x = random.nextFloat(0, 1);
-			float y = random.nextFloat(0, 1);
-			//FIXME spriteBatch.draw(texture, x, y);
-		}
+//		for (int i = 0; i < softCount; i++) {
+//			Texture texture = soft1;
+//			float x = random.nextFloat(0, 1);
+//			float y = random.nextFloat(0, 1);
+//			spriteBatch.draw(texture, x, y);
+//		}
 
 		spriteBatch.end();
 

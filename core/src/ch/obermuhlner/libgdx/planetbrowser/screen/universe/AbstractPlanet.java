@@ -2,6 +2,7 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
@@ -23,8 +25,8 @@ import com.badlogic.gdx.utils.Array;
 import ch.obermuhlner.libgdx.graphics.glutils.MultiTextureFrameBuffer;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
-import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
+import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
@@ -76,6 +78,38 @@ public abstract class AbstractPlanet implements ModelInstanceFactory {
 	}
 
 	protected abstract Material createPlanetMaterial(Random random, PlanetData planetData);
+
+	protected Map<Long, Texture> createTextures(Material material, ShaderProvider shaderProvider, long textureTypes, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
+		boolean bump = (textureTypes & TextureAttribute.Bump) != 0; 
+		boolean diffuse = (textureTypes & TextureAttribute.Diffuse) != 0; 
+		boolean normal = (textureTypes & TextureAttribute.Normal) != 0; 
+		boolean specular = (textureTypes & TextureAttribute.Specular) != 0; 
+		boolean emissive = (textureTypes & TextureAttribute.Emissive) != 0; 
+		
+		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
+		Array<Texture> textures = renderTextures(
+				material, shaderProvider, textureSize,
+				xFrom, xTo, yFrom, yTo,
+				bump, diffuse, normal, specular, emissive);
+
+		int index = 0;
+		if (bump) {
+			texturesMap.put(TextureAttribute.Bump, textures.get(index++));
+		}
+		if (diffuse) {
+			texturesMap.put(TextureAttribute.Diffuse, textures.get(index++));
+		}
+		if (normal) {
+			texturesMap.put(TextureAttribute.Normal, textures.get(index++));
+		}
+		if (specular) {
+			texturesMap.put(TextureAttribute.Specular, textures.get(index++));
+		}
+		if (emissive) {
+			texturesMap.put(TextureAttribute.Emissive, textures.get(index++));
+		}
+		return texturesMap;
+	}
 
 	protected AtmosphereAttribute getAtmosphereAttribute(Random random, PlanetData planetData, float atmosphereSize) {
 		if (planetData.atmosphere == null) {

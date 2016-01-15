@@ -2,7 +2,6 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.Color;
@@ -113,13 +112,6 @@ public class Lava extends AbstractPlanet {
 
 		Material material = new Material(materialAttributes);
 
-		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
-		// FIXME only calculate asked textures
-		Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, true, true, true, false, true);
-		texturesMap.put(TextureAttribute.Bump, textures.get(0));
-		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
-		texturesMap.put(TextureAttribute.Normal, textures.get(2));
-		texturesMap.put(TextureAttribute.Emissive, textures.get(3));
-		return texturesMap;
+		return createTextures(material, TerrestrialPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);
 	}
 }

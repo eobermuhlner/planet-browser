@@ -2,7 +2,6 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.Color;
@@ -12,9 +11,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
-import ch.obermuhlner.libgdx.planetbrowser.Config;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
-import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
@@ -150,13 +147,6 @@ public class Earth extends AbstractPlanet {
 
 		Material material = new Material(materialAttributes);
 
-		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
-		// FIXME only calculate asked textures
-		Array<Texture> textures = renderTextures(material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, true, true, true, true, false);
-		texturesMap.put(TextureAttribute.Bump, textures.get(0));
-		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
-		texturesMap.put(TextureAttribute.Normal, textures.get(2));
-		texturesMap.put(TextureAttribute.Specular, textures.get(3));
-		return texturesMap;
+		return createTextures(material, TerrestrialPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);
 	}
 }

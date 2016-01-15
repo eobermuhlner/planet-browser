@@ -1,6 +1,5 @@
 package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.Color;
@@ -46,12 +45,7 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 
 		Material material = new Material(materialAttributes);
 
-		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
-		Array<Texture> textures = renderTextures(material, GasPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo, true, true, true, false, false);
-		texturesMap.put(TextureAttribute.Bump, textures.get(0));
-		texturesMap.put(TextureAttribute.Diffuse, textures.get(1));
-		texturesMap.put(TextureAttribute.Normal, textures.get(2));
-		return texturesMap;
+		return createTextures(material, GasPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);
 	}
 
 }
