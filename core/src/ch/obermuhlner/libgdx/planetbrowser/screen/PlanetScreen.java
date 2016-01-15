@@ -38,6 +38,7 @@ import com.badlogic.gdx.utils.Array;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Earth;
+import ch.obermuhlner.libgdx.planetbrowser.screen.universe.IceMoon;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Jupiter;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Lava;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Mars;
@@ -64,7 +65,7 @@ public class PlanetScreen extends AbstractScreen {
 		new Lava(),
 		new Jupiter(),
 		new Neptune(),
-		//new IceMoon(),
+		new IceMoon(),
 		//new Sun(),
 		//new TexturePlanet("earth.jpg", "earth_normals.jpg", null),
 		//new TexturePlanet("earth.jpg", null, null),
@@ -170,7 +171,7 @@ public class PlanetScreen extends AbstractScreen {
 //		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight, ambientLight, ambientLight, 1f));
 
 		PointLight light = new PointLight();
-		light.set(Color.WHITE, 10f * sunUnit, 0f * sunUnit, -30f * sunUnit, 1.0f);
+		light.set(Color.WHITE, 10f * sunUnit, 0f * sunUnit, -5f * sunUnit, 1.0f);
 		environment.add(light);
 		
 		cameraInputController = new CameraInputController(camera);
