@@ -64,12 +64,6 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return modelInstances;
 	}
 	
-	@Override
-	public Map<Long, Texture> createTextures(PlanetData planetData, Random random, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
-		// FIXME implement createTexture()
-		return null;
-	}
-	
 	private Model createSphere(float size, Material material) {
 		long attributes = Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates;
 		int divisions = PlanetBrowser.INSTANCE.options.getSphereDivisions();

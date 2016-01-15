@@ -23,18 +23,6 @@ public class PlanetBrowser extends Game {
 		
 		{
 			TextureParameter textureParameter = new TextureParameter();
-			textureParameter.genMipMaps = true;
-			textureParameter.minFilter = TextureFilter.MipMapLinearLinear;
-			textureParameter.magFilter = TextureFilter.MipMapLinearLinear;
-			for (String textureName : new String[] {
-					"earth.jpg", "earth_normals.jpg"
-			}) {
-				assetManager.load(getTexturePath(textureName), Texture.class, textureParameter);
-			}
-		}
-
-		{
-			TextureParameter textureParameter = new TextureParameter();
 			textureParameter.minFilter = TextureFilter.Linear;
 			textureParameter.magFilter = TextureFilter.Linear;
 			for (String textureName : new String[] {
