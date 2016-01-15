@@ -405,21 +405,21 @@ void main() {
 					
 		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numDirectionalLights; i++) {
-				vec3 lightDir = -u_dirLights[i].direction;
-				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+				vec3 lightVec = -u_dirLights[i].direction;
+				float NdotL = clamp(dot(normal, lightVec), 0.0, 1.0);
 				vec3 value = u_dirLights[i].color * NdotL;
 				#if defined(strongestLightFlag)
 					#if (numDirectionalLights == 1) && (!defined(numPointLights) || numPointLights == 0)
-						strongestLightVec = normalize(lightDir);
+						strongestLightVec = normalize(lightVec);
 					#else
 						float lum = luminance(value);
-						strongestLightVec = if_then_else(when_gt(lum, strongestLuminance), normalize(lightDir), strongestLightVec);
+						strongestLightVec = if_then_else(when_gt(lum, strongestLuminance), normalize(lightVec), strongestLightVec);
 						strongestLuminance = max(lum, strongestLuminance);
 					#endif
 				#endif // strongestLightFlag
 				v_lightDiffuse += value;
 				#ifdef specularFlag
-					float halfDotView = max(0.0, dot(normal, normalize(lightDir + normalizedViewVec)));
+					float halfDotView = max(0.0, dot(normal, normalize(lightVec + normalizedViewVec)));
 					v_lightSpecular += value * pow(halfDotView, u_shininess);
 				#endif // specularFlag
 			}
@@ -427,24 +427,24 @@ void main() {
 
 		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numPointLights; i++) {
-				vec3 lightDir = u_pointLights[i].position - pos.xyz;
-				float dist2 = dot(lightDir, lightDir);
-				lightDir *= inversesqrt(dist2);
-				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+				vec3 lightVec = u_pointLights[i].position - pos.xyz;
+				float dist2 = dot(lightVec, lightVec);
+				lightVec *= inversesqrt(dist2);
+				float NdotL = clamp(dot(normal, lightVec), 0.0, 1.0);
 				vec3 value = u_pointLights[i].color * NdotL;
 				//vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));
 				#if defined(strongestLightFlag)
 					#if (numPointLights == 1) && (!defined (numDirectionalLights) || numDirectionalLights == 0)
-						strongestLightVec = normalize(lightDir);
+						strongestLightVec = normalize(lightVec);
 					#else
 						float lum = luminance(value);
-						strongestLightVec = if_then_else(when_gt(lum, strongestLuminance), normalize(lightDir), strongestLightVec);
+						strongestLightVec = if_then_else(when_gt(lum, strongestLuminance), normalize(lightVec), strongestLightVec);
 						strongestLuminance = max(lum, strongestLuminance);
 					#endif
 				#endif // strongestLightFlag
 				v_lightDiffuse += value;
 				#ifdef specularFlag
-					float halfDotView = max(0.0, dot(normal, normalize(lightDir + normalizedViewVec)));
+					float halfDotView = max(0.0, dot(normal, normalize(lightVec + normalizedViewVec)));
 					v_lightSpecular += value * pow(halfDotView, u_shininess);
 				#endif // specularFlag
 			}
@@ -466,6 +466,6 @@ void main() {
 		vec3 b = cross (n, t);
 		
 		// normalized vector from vertex position to light position in tangent space - passed to fragment shader
-		v_lightVecTangent = normalize (vec3(dot (strongestLightVec, t), dot (strongestLightVec, b), dot (strongestLightVec, n)));
+		v_lightVecTangent = normalize(vec3(dot(strongestLightVec, t), dot(strongestLightVec, b), dot(strongestLightVec, n)));
 	#endif // normalTextureFlag
 }
