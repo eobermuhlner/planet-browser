@@ -46,7 +46,7 @@ public class TexturePlanet extends AbstractPlanet {
 	}
 
 	@Override
-	protected Material createMaterial(PlanetData planetData, Random random) {
+	public Material createMaterial(PlanetData planetData, Random random) {
 		Array<Attribute> attributes = new Array<Attribute>();
 		
 		if (diffuseTextureName != null) {

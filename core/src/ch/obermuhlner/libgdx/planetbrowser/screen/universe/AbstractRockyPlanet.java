@@ -110,7 +110,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 	};
 
 	@Override
-	protected Material createMaterial(PlanetData planetData, Random random) {
+	public Material createMaterial(PlanetData planetData, Random random) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;

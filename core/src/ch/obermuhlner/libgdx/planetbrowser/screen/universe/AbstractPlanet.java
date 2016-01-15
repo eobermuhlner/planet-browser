@@ -77,8 +77,6 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return model;
 	}
 
-	protected abstract Material createMaterial(PlanetData planetData, Random random);
-
 	protected Map<Long, Texture> createTextures(Material material, ShaderProvider shaderProvider, long textureTypes, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
 		boolean bump = (textureTypes & TextureAttribute.Bump) != 0; 
 		boolean diffuse = (textureTypes & TextureAttribute.Diffuse) != 0; 

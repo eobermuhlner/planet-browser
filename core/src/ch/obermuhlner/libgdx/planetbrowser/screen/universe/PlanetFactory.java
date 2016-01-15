@@ -13,7 +13,7 @@ public interface PlanetFactory {
 
 	PlanetData createPlanetData(Random random);
 	
-	//Material createMaterial(PlanetData planetData, Random random);
+	Material createMaterial(PlanetData planetData, Random random);
 	
 	Array<ModelInstance> createModelInstance(PlanetData planetData, Random random);
 	
