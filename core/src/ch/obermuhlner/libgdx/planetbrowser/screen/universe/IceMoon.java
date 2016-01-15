@@ -26,6 +26,8 @@ public class IceMoon extends AbstractPlanet {
 		
 		planetData.temperature = random.nextDouble(20, 100);
 		
+		planetData.fillStandardValues(random);
+
 		return planetData;
 	}
 
