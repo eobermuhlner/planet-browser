@@ -122,19 +122,19 @@ public class OptionsScreen extends AbstractStageScreen {
 		case Best:
 			return 11;
 		case VeryGood:
-			return 9;
+			return 11;
 		case Good:
-			return 7;
+			return 9;
 		case Poor:
-			return 5;
+			return 9;
 		case VeryPoor:
-			return 5;
-		case Worst:
-			return 3;
-		case SimpleBest:
 			return 7;
-		case SimpleGood:
+		case Worst:
 			return 5;
+		case SimpleBest:
+			return 11;
+		case SimpleGood:
+			return 9;
 		case SimplePoor:
 			return 5;
 		default:
