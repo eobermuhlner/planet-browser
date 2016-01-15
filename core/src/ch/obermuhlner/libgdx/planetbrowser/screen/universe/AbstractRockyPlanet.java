@@ -250,12 +250,16 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 			}
 		}
 		
-//		for (int i = 0; i < softCount; i++) {
-//			Texture texture = soft1;
-//			float x = random.nextFloat(0, 1);
-//			float y = random.nextFloat(0, 1);
-//			spriteBatch.draw(texture, x, y);
-//		}
+		for (int i = 0; i < softCount; i++) {
+			Texture texture = soft1;
+			float x = random.nextFloat(0, 1);
+			float y = random.nextFloat(0, 1);
+			if (x >= xFrom && x < xTo && y >= yFrom && y < yTo) {
+				float textureX = MathUtil.transform(xFrom, xTo, 0, textureWidth, x);
+				float textureY = MathUtil.transform(yFrom, yTo, 0, textureHeight, y);
+				spriteBatch.draw(texture, textureX, textureY);
+			}
+		}
 
 		spriteBatch.end();
 
