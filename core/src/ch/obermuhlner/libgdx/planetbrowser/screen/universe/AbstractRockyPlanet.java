@@ -143,6 +143,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 				);
 		Color[] randomColors = randomColors(random, 6, colors, 0.01f, 0.1f);
 		for (int i = 0; i < randomColors.length; i++) {
+			// specular color encoded in alpha (grayscale only)
 			randomColors[i].a = random.nextBoolean(0.1) ? random.nextFloat(0.5f, 1.0f) : random.nextFloat(0.0f, 0.3f);
 		}
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors));
