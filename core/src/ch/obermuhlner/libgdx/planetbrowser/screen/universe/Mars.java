@@ -2,6 +2,8 @@ package ch.obermuhlner.libgdx.planetbrowser.screen.universe;
 
 import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
+import com.badlogic.gdx.graphics.g3d.Material;
+
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
@@ -86,5 +88,13 @@ public class Mars extends AbstractRockyPlanet {
 		planetData.fillStandardValues(random);
 		
 		return planetData;
+	}
+
+	@Override
+	protected Material createPlanetMaterial(Random random, PlanetData planetData) {
+		// make sure Mars looks different from Moon
+		random.nextFloat();
+		
+		return super.createPlanetMaterial(random, planetData);
 	}
 }
