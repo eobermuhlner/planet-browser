@@ -1,7 +1,7 @@
 package ch.obermuhlner.libgdx.planetbrowser.control;
 
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.utils.IntIntMap;
 
 public class PlayerController extends InputAdapter {
