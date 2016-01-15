@@ -84,7 +84,7 @@ public class Earth extends AbstractPlanet {
 	}
 
 	@Override
-	public Material createMaterial(Random random, PlanetData planetData) {
+	public Material createMaterial(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
 		long textureTypes = TextureAttribute.Diffuse | TextureAttribute.Normal | TextureAttribute.Specular;
