@@ -454,12 +454,15 @@ public class FlyPlanetScreen extends AbstractScreen {
 		}
 		
 		private ModelInstance createTerrainSurface(float xFrom, float yFrom, float xyStep, int textureSize, int meshDivisions, float terrainSize) {
-			float xTo = xFrom + xyStep / meshDivisions * (meshDivisions + 1);
-			float yTo = yFrom + xyStep / meshDivisions * (meshDivisions + 1);
+			float xToTextures = xFrom + xyStep;
+			float yToTextures = yFrom + xyStep;
 			
-			Array<Attribute> materialAttributes = factory.createMaterialAttributes(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo, textureSize);
+			Array<Attribute> materialAttributes = factory.createMaterialAttributes(new Random(randomSeed), planetData, xFrom, xToTextures, yFrom, yToTextures, textureSize);
 
-			Texture bumpTexture = factory.createTextures(new Random(randomSeed), planetData, xFrom, xTo, yFrom, yTo, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
+			float xToBump = xFrom + xyStep / meshDivisions * (meshDivisions + 1);
+			float yToBump = yFrom + xyStep / meshDivisions * (meshDivisions + 1);
+
+			Texture bumpTexture = factory.createTextures(new Random(randomSeed), planetData, xFrom, xToBump, yFrom, yToBump, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
 			if (bumpTexture != null) {
 				materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
 			}
