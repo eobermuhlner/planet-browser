@@ -353,10 +353,10 @@ float craterSimpleFlat(float distance) {
 }
 
 float craterComplex(float distance) {
-	float centralRadius = 0.1; 
-	float flatRadius = 0.3; 
-    float rimRadius = 0.7;
-    float centralMountain = smoothstep(0.1, distance/2.0, distance);
+	float centralRadius = 0.2; 
+	float flatRadius = 0.2; 
+    float rimRadius = 0.8;
+    float centralMountain = 0.01;
     float centralToFlat = mix(
     	centralMountain,
     	flatInnerRim(distance / rimRadius, flatRadius),
@@ -377,8 +377,8 @@ vec2 calculateCraterDistanceAndRadius(vec2 pos, float grid, vec2 random1, vec2 r
     vec2 floorBigPos = floor(bigPos);
 
    	vec2 fractPos = fract(bigPos);
-   	float minRadius = 0.2;
-   	float maxRadius = 0.3;
+   	float minRadius = 0.1;
+   	float maxRadius = 0.2;
     float radius = rand(floorBigPos + random1 + random2) * (maxRadius - minRadius) + minRadius;
     float randomDeltaX = (rand(floorBigPos + random1) - 0.5) * (1.0 - radius);
     float randomDeltaY = (rand(floorBigPos + random2) - 0.5) * (1.0 - radius);
@@ -425,7 +425,7 @@ float calculateHeight(vec2 P) {
 	
 	height = heightTransform(height);
 
-	float baseGrid = 10.0;
+	float baseGrid = 5.0;
 	float craterHeightRange = range * 8.0 / baseGrid;
 	height = addCraterComplex(height, craterHeightRange / 1.0, P, baseGrid * 1.0, vec2(u_random9+u_random0, u_random8+u_random0), vec2(u_random8+u_random9, u_random7+u_random9));
 	height = addCraterComplex(height, craterHeightRange / 2.0, P, baseGrid * 2.0, vec2(u_random9+u_random1, u_random8+u_random1), vec2(u_random8+u_random8, u_random7+u_random8));
