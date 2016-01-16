@@ -128,7 +128,9 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 				p(3, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
 				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
 				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3),
-				p(20, TerrestrialHeightShaderFunctionAttribute.functionPower(random.nextFloat(1.0f, 4.0f)))
+				p(5, TerrestrialHeightShaderFunctionAttribute.POWER_2),
+				p(5, TerrestrialHeightShaderFunctionAttribute.POWER_3),
+				p(5, TerrestrialHeightShaderFunctionAttribute.functionPower(1.5f))
 				);
 		Color[] randomColors = randomColors(random, 6, colors, 0.01f, 0.1f);
 		for (int i = 0; i < randomColors.length; i++) {

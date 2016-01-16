@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
@@ -68,15 +69,17 @@ public class Lava extends AbstractPlanet {
 				Units.celsiusToKelvin(500), Units.celsiusToKelvin(1200),
 				-1.0, 1.0,
 				planetData.temperature);
-		float heightPower = MathUtil.pow(10, temperatureAsPower);
+		float heightPower = MathUtils.floor(MathUtil.pow(10, temperatureAsPower) * 10f) * 0.1f;
 		float heightFlatGround = random.nextFloat(0.0f, 0.5f);
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
 				p(1, TerrestrialHeightShaderFunctionAttribute.SMOOTH),
 				p(1, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
+				p(2, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
+				p(2, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3),
+				p(2, TerrestrialHeightShaderFunctionAttribute.functionPower(1.5f)),
 				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
 				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3),
-				p(5, TerrestrialHeightShaderFunctionAttribute.functionPower(random.nextFloat(1.0f, 4.0f))),
 				p(10, TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower))
 				);
 

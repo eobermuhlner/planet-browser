@@ -51,8 +51,7 @@ public class IceMoon extends AbstractPlanet {
 
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors));
 
-		float heightPower = random.nextFloat(0.8f, 1.5f);
-		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower);
+		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(1.2f);
 
 		float heightMin = 0.3f;
 		float heightMax = random.nextFloat(0.5f, 0.7f);
