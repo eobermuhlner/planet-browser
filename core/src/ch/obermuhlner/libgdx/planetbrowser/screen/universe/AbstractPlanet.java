@@ -346,39 +346,6 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return model;
 	}
 
-	public FrameBuffer renderFrameBufferNormal (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateNormal()); // FIXME just adding attribute is wrong, modifies the material
-		material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
-		return renderFrameBuffer(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo);
-	}
-
-	public FrameBuffer renderFrameBuffer (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {		
-		final int rectSize = 1;
-		Model model = createTerrainMeshModel(material, xFrom, xTo, yFrom, yTo, rectSize);
-		ModelInstance instance = new ModelInstance(model);
-
-		ModelBatch modelBatch = new ModelBatch(shaderProvider == null ? UberShaderProvider.DEFAULT : shaderProvider);
-
-		FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, textureSize, textureSize, false);
-		frameBuffer.begin();
-
-		OrthographicCamera camera = new OrthographicCamera(rectSize*2, rectSize*2);
-		camera.position.set(0, 1, 0);
-		camera.lookAt(0, 0, 0);
-		camera.update();
-
-		modelBatch.begin(camera);
-		modelBatch.render(instance);
-		modelBatch.end();
-
-		frameBuffer.end();
-		
-		//model.dispose(); //FIXME memory leak
-		//modelBatch.dispose(); //FIXME memory leak
-				
-		return frameBuffer;
-	}
-
 	private boolean useMultiTextureRendering() {
 		return Gdx.graphics.isGL30Available() && PlanetBrowser.INSTANCE.options.getUseMultiTextureRendering();
 	}
