@@ -208,32 +208,6 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return new FloatArrayAttribute(FloatArrayAttribute.PlanetColorFrequencies, floatArray);
 	}
 	
-	public Texture renderTextureBump (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateBump());
-		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
-	}
-
-	public Texture renderTextureDiffuse (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateDiffuse());
-		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
-	}
-
-	public Texture renderTextureNormal (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateNormal());
-		material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
-		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
-	}
-	
-	public Texture renderTextureSpecular (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular());
-		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
-	}
-	
-	public Texture renderTextureEmissive (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
-		material.set(TerrestrialPlanetFloatAttribute.createCreateEmissive());
-		return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0);
-	}
-
 	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
 		if (useMultiTextureRendering()) {
 			material.set(TerrestrialPlanetFloatAttribute.createTextures(bump, diffuse, normal, specular, emissive));
@@ -251,24 +225,30 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		} else {
 			Array<Texture> textures = new Array<Texture>();
 			if (bump) {
-				textures.add(renderTextureBump(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo));
+				material.set(TerrestrialPlanetFloatAttribute.createCreateBump());
+				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (diffuse) {
-				textures.add(renderTextureDiffuse(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo));
+				material.set(TerrestrialPlanetFloatAttribute.createCreateDiffuse());
+				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (normal) {
-				textures.add(renderTextureNormal(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo));
+				material.set(TerrestrialPlanetFloatAttribute.createCreateNormal());
+				material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
+				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (specular) {
-				textures.add(renderTextureSpecular(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo));
+				material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular());
+				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (emissive) {
-				textures.add(renderTextureEmissive(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo));
+				material.set(TerrestrialPlanetFloatAttribute.createCreateEmissive());
+				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			return textures;
 		}
 	}
-	
+
 	private final VertexInfo vertTmp1 = new VertexInfo();
 	private final VertexInfo vertTmp2 = new VertexInfo();
 	private final VertexInfo vertTmp3 = new VertexInfo();
