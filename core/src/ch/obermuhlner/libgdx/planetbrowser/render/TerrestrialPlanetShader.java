@@ -187,7 +187,7 @@ public class TerrestrialPlanetShader implements Shader {
 
 		// add hash of height function so they can be distinguished
 		String code = getShaderFunctionAttributeValue(renderable, TerrestrialHeightShaderFunctionAttribute.TerrestrialHeightFunction, "");
-		prefix.append("#define heighFunctionHash " + code.hashCode() + "\n");
+		prefix.append("// " + code + "\n");
 		
 		return prefix.toString();
 	}
