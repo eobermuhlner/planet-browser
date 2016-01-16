@@ -45,6 +45,7 @@ varying vec2 v_texCoords0;
 
 #ifdef bumpTextureFlag
 uniform sampler2D u_bumpTexture;
+uniform float u_bumpFactor;
 #endif
 
 #ifdef normalTextureFlag
@@ -316,7 +317,7 @@ void main() {
 	#ifdef bumpTextureFlag
 		//float bump = texture2D(u_bumpTexture, v_texCoords0).r * 3.0;
 		float bump = decode_rgb888(texture2D(u_bumpTexture, v_texCoords0).rgb) * 10.0;
-		pos.y = pos.y + bump * 40.0;
+		pos.y = pos.y + bump * u_bumpFactor;
 	#endif
 		
 	gl_Position = u_projViewTrans * pos;

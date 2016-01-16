@@ -124,6 +124,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		terrain.terrainX = 0f;
 		terrain.terrainY = 0f;
 		terrain.terrainStep = 80f;
+		terrain.bumpFactor = 80f;
 	}
 	
 	private TerrainLod[] toLod(TerrainQuality terrainQuality) {
@@ -338,6 +339,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		private float terrainY;
 		private float terrainStep;
 
+		public float bumpFactor;
 		
 		private TerrainChunk[] terrain;
 		private TerrainChunk[] terrainCopy;
@@ -465,6 +467,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 			Texture bumpTexture = factory.createTextures(new Random(randomSeed), planetData, xFrom, xToBump, yFrom, yToBump, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
 			if (bumpTexture != null) {
 				materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
+				materialAttributes.add(MoreFloatAttribute.createBumpFactor(bumpFactor));
 			}
 			
 			Material material = new Material(materialAttributes);
