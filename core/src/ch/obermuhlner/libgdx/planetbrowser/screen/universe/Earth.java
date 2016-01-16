@@ -15,6 +15,7 @@ import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
@@ -89,7 +90,7 @@ public class Earth extends AbstractPlanet {
 	}
 
 	@Override
-	public Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
+	public Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize, DisposableContainer disposables) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		boolean hot = planetData.temperature > Units.celsiusToKelvin(30);
@@ -137,6 +138,6 @@ public class Earth extends AbstractPlanet {
 
 		Material material = new Material(materialAttributes);
 
-		return createTextures(material, TerrestrialPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);
+		return createTextures(disposables, material, TerrestrialPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);
 	}
 }

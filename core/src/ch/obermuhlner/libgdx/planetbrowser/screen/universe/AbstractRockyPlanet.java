@@ -6,22 +6,17 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
 
-import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
-import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
+import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
-import ch.obermuhlner.libgdx.planetbrowser.util.Tuple2;
 
 public abstract class AbstractRockyPlanet extends AbstractPlanet {
 
@@ -115,7 +110,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 	}
 	
 	@Override
-	public Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize) {
+	public Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize, DisposableContainer disposables) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		Color[] colors = random.next(MOON_COLORS_VARIANTS);
@@ -147,6 +142,6 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 
 		Material material = new Material(materialAttributes);
 
-		return createTextures(material, TerrestrialPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);
+		return createTextures(disposables, material, TerrestrialPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);
 	}
 }

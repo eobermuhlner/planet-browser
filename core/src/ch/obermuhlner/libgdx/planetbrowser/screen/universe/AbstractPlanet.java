@@ -32,6 +32,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
+import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -41,11 +42,11 @@ public abstract class AbstractPlanet implements PlanetFactory {
 	protected ModelBuilder modelBuilder = new ModelBuilder();
 
 	@Override
-	public Array<Attribute> createMaterialAttributes(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
+	public Array<Attribute> createMaterialAttributes(Random random, PlanetData planetData, DisposableContainer disposables, float xFrom, float xTo, float yFrom, float yTo, int textureSize) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		
 		long textureTypes = getTextureTypes(planetData);
-		Map<Long, Texture> textures = createTextures(random, planetData, xFrom, xTo, yFrom, yTo, textureTypes, textureSize);
+		Map<Long, Texture> textures = createTextures(random, planetData, xFrom, xTo, yFrom, yTo, textureTypes, textureSize, disposables);
 
 		addTexture(materialAttributes, textureTypes, TextureAttribute.Bump, textures);
 		addTexture(materialAttributes, textureTypes, TextureAttribute.Diffuse, textures);
@@ -94,7 +95,7 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return model;
 	}
 
-	protected Map<Long, Texture> createTextures(Material material, ShaderProvider shaderProvider, long textureTypes, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
+	protected Map<Long, Texture> createTextures(DisposableContainer disposables, Material material, ShaderProvider shaderProvider, long textureTypes, int textureSize, float xFrom, float xTo, float yFrom, float yTo) {
 		boolean bump = (textureTypes & TextureAttribute.Bump) != 0; 
 		boolean diffuse = (textureTypes & TextureAttribute.Diffuse) != 0; 
 		boolean normal = (textureTypes & TextureAttribute.Normal) != 0; 
@@ -103,9 +104,9 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		
 		Map<Long, Texture> texturesMap = new HashMap<Long, Texture>();
 		Array<Texture> textures = renderTextures(
-				material, shaderProvider, textureSize,
-				xFrom, xTo, yFrom, yTo,
-				bump, diffuse, normal, specular, emissive);
+				disposables, material, shaderProvider,
+				textureSize, xFrom, xTo, yFrom,
+				yTo, bump, diffuse, normal, specular, emissive);
 
 		int index = 0;
 		if (bump) {
@@ -208,7 +209,7 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return new FloatArrayAttribute(FloatArrayAttribute.PlanetColorFrequencies, floatArray);
 	}
 	
-	public Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
+	public Array<Texture> renderTextures (DisposableContainer disposables, Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
 		if (useMultiTextureRendering()) {
 			material.set(TerrestrialPlanetFloatAttribute.createTextures(bump, diffuse, normal, specular, emissive));
 			if (normal) {
@@ -221,29 +222,29 @@ public abstract class AbstractPlanet implements PlanetFactory {
 			textureCount += normal ? 1 : 0;
 			textureCount += specular ? 1 : 0;
 			textureCount += emissive ? 1 : 0;
-			return renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, textureCount);
+			return renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, textureCount);
 		} else {
 			Array<Texture> textures = new Array<Texture>();
 			if (bump) {
 				material.set(TerrestrialPlanetFloatAttribute.createCreateBump());
-				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
+				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (diffuse) {
 				material.set(TerrestrialPlanetFloatAttribute.createCreateDiffuse());
-				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
+				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (normal) {
 				material.set(TerrestrialPlanetFloatAttribute.createCreateNormal());
 				material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
-				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
+				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (specular) {
 				material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular());
-				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
+				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (emissive) {
 				material.set(TerrestrialPlanetFloatAttribute.createCreateEmissive());
-				textures.add(renderTextures(material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
+				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			return textures;
 		}
@@ -253,7 +254,7 @@ public abstract class AbstractPlanet implements PlanetFactory {
 	private final VertexInfo vertTmp2 = new VertexInfo();
 	private final VertexInfo vertTmp3 = new VertexInfo();
 	private final VertexInfo vertTmp4 = new VertexInfo();
-	private Array<Texture> renderTextures (Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, int textureCount) {
+	private Array<Texture> renderTextures (DisposableContainer disposables, Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, int textureCount) {
 		final int rectSize = 1;
 		Model model = createTerrainMeshModel(material, xFrom, xTo, yFrom, yTo, rectSize);
 		ModelInstance instance = new ModelInstance(model);
@@ -290,7 +291,13 @@ public abstract class AbstractPlanet implements PlanetFactory {
 
 		model.dispose();
 		modelBatch.dispose();
-		//frameBuffer.dispose(); // FIXME memory leak
+		
+		if (multiTextureFrameBuffer != null) {
+			disposables.add(multiTextureFrameBuffer);
+		}
+		if (frameBuffer != null) {
+			disposables.add(frameBuffer);
+		}
 		
 		return textures;
 	}

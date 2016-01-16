@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
 import ch.obermuhlner.libgdx.planetbrowser.Options.TerrainQuality;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
@@ -38,6 +39,7 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetData;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetFactory;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
+import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.StopWatch;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -296,6 +298,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 	public void hide() {
 		super.hide();
 		stage.dispose();
+		modelBatch.dispose();
+		terrain.dispose();
 	}
 	
 	@Override
@@ -327,10 +331,10 @@ public class FlyPlanetScreen extends AbstractScreen {
 		stage.draw();
 	}
 
-	private class Terrain {
+	private class Terrain implements Disposable {
 		private final int chunkCount;
 		private TerrainLod lod[];
-		
+				
 		private float planetX;
 		private float planetY;
 		private float planetStep;
@@ -387,6 +391,16 @@ public class FlyPlanetScreen extends AbstractScreen {
 			for (int i = 0; i < terrain.length; i++) {
 				int chunkX = i % chunkCount;
 				int chunkY = i / chunkCount;
+
+				int targetChunkX = chunkX - moveX;
+				int targetChunkY = chunkY - moveY;
+				if (targetChunkX >= 0 && targetChunkX < chunkCount && targetChunkY >= 0 && targetChunkY < chunkCount) {
+					// do nothing (actual copying is done below with source chunk)
+				} else {
+					if (terrainCopy[i] != null) {
+						terrainCopy[i].dispose();
+					}
+				}
 				
 				int sourceChunkX = chunkX + moveX;
 				int sourceChunkY = chunkY + moveY;
@@ -424,7 +438,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 						createTimeText.append(" ");
 					}
 					StopWatch stopWatch = new StopWatch();
-					terrain[i].surface[lodIndex] = createTerrainSurface(chunkX, chunkY, lod[lodIndex]);
+					terrain[i].surface[lodIndex] = createTerrainSurface(terrain[i].disposables, chunkX, chunkY, lod[lodIndex]);
 					createTimeText.append((int) stopWatch.getElapsedMilliseconds());
 				}
 				
@@ -445,26 +459,34 @@ public class FlyPlanetScreen extends AbstractScreen {
 			}
 		}
 
-		private ModelInstance createTerrainSurface(int chunkX, int chunkY, TerrainLod lod) {
+		@Override
+		public void dispose() {
+			for (int i = 0; i < terrain.length; i++) {
+				if (terrain[i] != null) {
+					terrain[i].dispose();
+				}
+			}
+		}
+		private ModelInstance createTerrainSurface(DisposableContainer disposables, int chunkX, int chunkY, TerrainLod lod) {
 			float xFrom = planetX - planetStep * chunkX;
 			float yFrom = planetY + planetStep * chunkY;
 			return createTerrainSurface(
-					xFrom, yFrom, planetStep, 
+					disposables, xFrom, yFrom, 
+					planetStep, 
 					lod.textureSize, 
-					lod.meshDivisions, 
-					terrainStep);
+					lod.meshDivisions, terrainStep);
 		}
 		
-		private ModelInstance createTerrainSurface(float xFrom, float yFrom, float xyStep, int textureSize, int meshDivisions, float terrainSize) {
+		private ModelInstance createTerrainSurface(DisposableContainer disposables, float xFrom, float yFrom, float xyStep, int textureSize, int meshDivisions, float terrainSize) {
 			float xToTextures = xFrom + xyStep;
 			float yToTextures = yFrom + xyStep;
 			
-			Array<Attribute> materialAttributes = factory.createMaterialAttributes(new Random(randomSeed), planetData, xFrom, xToTextures, yFrom, yToTextures, textureSize);
+			Array<Attribute> materialAttributes = factory.createMaterialAttributes(new Random(randomSeed), planetData, disposables, xFrom, xToTextures, yFrom, yToTextures, textureSize);
 
 			float xToBump = xFrom + xyStep / meshDivisions * (meshDivisions + 1);
 			float yToBump = yFrom + xyStep / meshDivisions * (meshDivisions + 1);
 
-			Texture bumpTexture = factory.createTextures(new Random(randomSeed), planetData, xFrom, xToBump, yFrom, yToBump, TextureAttribute.Bump, meshDivisions).get(TextureAttribute.Bump);
+			Texture bumpTexture = factory.createTextures(new Random(randomSeed), planetData, xFrom, xToBump, yFrom, yToBump, TextureAttribute.Bump, meshDivisions, disposables).get(TextureAttribute.Bump);
 			if (bumpTexture != null) {
 				materialAttributes.add(new TextureAttribute(TextureAttribute.Bump, bumpTexture));
 				materialAttributes.add(MoreFloatAttribute.createBumpFactor(bumpFactor));
@@ -489,7 +511,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 		}
 	}
 	
-	private static class TerrainChunk {
+	private static class TerrainChunk implements Disposable {
+		DisposableContainer disposables = new DisposableContainer();
 		ModelInstance surface[];
 		
 		public TerrainChunk(int lodLevels) {
@@ -508,6 +531,11 @@ public class FlyPlanetScreen extends AbstractScreen {
 			}
 
 			return null;
+		}
+
+		@Override
+		public void dispose() {
+			disposables.dispose();
 		}
 	}
 }

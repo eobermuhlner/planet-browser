@@ -50,6 +50,7 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetFactory;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
 import ch.obermuhlner.libgdx.planetbrowser.ui.SimpleHtml;
+import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -85,6 +86,8 @@ public class PlanetScreen extends AbstractScreen {
 	}
 
 	private final long randomSeed;
+
+	private final DisposableContainer disposables = new DisposableContainer();
 	
 	public final Environment environment = new Environment();
 	private ModelBatch modelBatch;
@@ -145,7 +148,7 @@ public class PlanetScreen extends AbstractScreen {
 		long startMillis = System.currentTimeMillis();
 		planetData = modelInstanceFactory.createPlanetData(new Random(randomSeed));
 		int textureSize = PlanetBrowser.INSTANCE.options.getGeneratedTexturesSize();
-		Array<Attribute> materialAttributes = modelInstanceFactory.createMaterialAttributes(new Random(randomSeed), planetData, 0, 1, 0, 1, textureSize);
+		Array<Attribute> materialAttributes = modelInstanceFactory.createMaterialAttributes(new Random(randomSeed), planetData, disposables, 0, 1, 0, 1, textureSize);
 		Material material = new Material(materialAttributes);
 		modelInstances.addAll(modelInstanceFactory.createModelInstance(new Random(randomSeed), planetData, material));
 		long endMillis = System.currentTimeMillis();
@@ -509,7 +512,9 @@ public class PlanetScreen extends AbstractScreen {
 	public void hide() {
 		super.hide();
 		
-		stage.dispose();
+		disposables.dispose();
+		modelBatch.dispose();
+		stage.dispose();		
 	}
 	
 	@Override
@@ -566,5 +571,10 @@ public class PlanetScreen extends AbstractScreen {
 		}
 		
 		stage.draw();
+		
+		if (false) {
+			System.out.println("Automatic switch to: " + (randomSeed + 1));
+			PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed + 1));
+		}
 	}
 }
