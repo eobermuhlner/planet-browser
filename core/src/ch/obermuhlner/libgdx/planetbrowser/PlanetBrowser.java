@@ -34,12 +34,6 @@ public class PlanetBrowser extends Game {
 				"terrestrial_highlife_diffuse_map.png", "terrestrial_highlife_specular_map.png", 
 				"terrestrial_spotlife_diffuse_map.png", "terrestrial_spotlife_specular_map.png", 
 				"terrestrial_waterlife_diffuse_map.png", "terrestrial_waterlife_specular_map.png",
-				"normals_crater_huge1.png",
-				"normals_crater_big1.png", "normals_crater_big2.png",
-				"normals_crater_medium1.png", "normals_crater_medium2.png", "normals_crater_medium3.png",
-				"normals_crater_small1.png", "normals_crater_small2.png", "normals_crater_small3.png", "normals_crater_small4.png", "normals_crater_small5.png",
-				"normals_crater_tiny1.png", "normals_crater_tiny2.png",
-				"normals_soft1.png",
 				}) {
 				assetManager.load(getTexturePath(textureName), Texture.class);
 			}
