@@ -145,14 +145,14 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 
 		Material material = new Material(materialAttributes);
 
-		boolean normal = (textureTypes & TextureAttribute.Normal) != 0;
-		textureTypes &= ~TextureAttribute.Normal;
+//		boolean normal = (textureTypes & TextureAttribute.Normal) != 0;
+//		textureTypes &= ~TextureAttribute.Normal;
 		Map<Long, Texture> texturesMap = createTextures(material, TerrestrialPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);
 		
-		if (normal) {
-			Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo);
-			texturesMap.put(TextureAttribute.Normal, textureNormal);
-		}
+//		if (normal) {
+//			Texture textureNormal = renderTextureNormalsCraters(random, planetData, material, TerrestrialPlanetShader.PROVIDER, textureSize, xFrom, xTo, yFrom, yTo);
+//			texturesMap.put(TextureAttribute.Normal, textureNormal);
+//		}
 
 		return texturesMap;
 	}

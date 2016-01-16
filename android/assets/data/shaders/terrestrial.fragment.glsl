@@ -301,8 +301,63 @@ float heightTransform(float h) {
 	return h;
 }
 
+float transform(float fromMin, float fromMax, float toMin, float toMax, float value) {
+	return (value - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
+}
+
+
+float rand(vec2 x){
+    return fract(sin(dot(x.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float crater1(float distance) {
+	return smoothstep(0.3, 0.31, distance);
+}
+
+float innerRim(float rimHeight, float x) {
+    return x * x * rimHeight * 4.0 - rimHeight * 3.0;
+}
+
+float outerRim(float rimHeight, float x) {
+    float v = 1.0 + x * 10.0;
+    v = 1.0 / v / v;
+    return rimHeight * v;
+}
+
+float crater2(float distance) {
+    float result;
+    float rimRadius = 0.7;
+    float rimHeight = 1.0;
+    if (distance < rimRadius) {
+        result = innerRim(rimHeight, distance / rimRadius);
+    } else {
+        result = outerRim(rimHeight, distance - rimRadius);
+    }
+	return result;
+}
+
+float addCrater(float height, float craterHeight, vec2 pos, float grid, vec2 random1, vec2 random2) {
+
+    vec2 bigPos = pos * grid;
+    vec2 floorBigPos = floor(bigPos);
+
+   	vec2 fractPos = fract(bigPos);
+    float radius = rand(floorBigPos + random1) * 0.4 + 0.2;
+    float randomDeltaX = (rand(floorBigPos + random1) - 0.5) * (1.0 - radius);
+    float randomDeltaY = (rand(floorBigPos + random2) - 0.5) * (1.0 - radius);
+	vec2 randomDeltaPos = vec2(randomDeltaX, randomDeltaY);
+    fractPos += randomDeltaPos;
+    
+	float distance = length(fractPos - 0.5);
+	float crater = crater2(distance / radius * 2.0);
+
+	height += crater * craterHeight * radius;
+	return height;
+}
+
 float calculateHeight(vec2 P) {
-	vec2 r1 = vec2(u_random0+u_random1, u_random1+u_random0);
+	vec2 r1 = vec2(u_random0+u_random1, u_random8+u_random0);
+	vec2 r2 = vec2(u_random0+u_random2, u_random8+u_random1);
 
 	float baseHeight = u_heightMin + (u_heightMax - u_heightMin) / 2.0; 
 	float base = u_heightFrequency;
@@ -319,12 +374,22 @@ float calculateHeight(vec2 P) {
 	#endif
 	
 	height = heightTransform(height);
-	
-	return height;
-}
 
-float dummyHeight(vec2 P) {
-	return sin(P.x * 100.0) * 0.5 + 0.5;
+	float baseGrid = 30.0;
+	float craterHeightRange = range * 10.0 / baseGrid;
+	height = addCrater(height, craterHeightRange / 1.0, P, baseGrid * 1.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 2.0, P, baseGrid * 2.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 4.0, P, baseGrid * 4.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 8.0, P, baseGrid * 8.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 16.0, P, baseGrid * 16.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 32.0, P, baseGrid * 32.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 64.0, P, baseGrid * 64.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 128.0, P, baseGrid * 128.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 256.0, P, baseGrid * 256.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 512.0, P, baseGrid * 512.0, r1, r2);
+	height = addCrater(height, craterHeightRange / 1024.0, P, baseGrid * 1024.0, r1, r2);
+
+	return height;
 }
 
 #ifdef planetColorsFlag
