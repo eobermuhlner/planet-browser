@@ -85,7 +85,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.near = 0.1f;
+		camera.near = 1f;
 		camera.far = 600f;
 		camera.position.set(20, 100, 20);
 		camera.lookAt(0, 100, 0);
