@@ -60,6 +60,9 @@ public class IceMoon extends AbstractPlanet {
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
 		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(heightFunction));
+		if (random.nextBoolean(0.7)) {
+			materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
+		}
 		
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 

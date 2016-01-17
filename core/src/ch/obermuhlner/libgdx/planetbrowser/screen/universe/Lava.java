@@ -81,9 +81,10 @@ public class Lava extends AbstractPlanet {
 				p(2, TerrestrialHeightShaderFunctionAttribute.functionPower(1.5f)),
 				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
 				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3),
+				p(5, TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(0.7f)), // I really like this one with its broad channels of lava
 				p(10, TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower))
 				);
-
+		
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, new Color[] {
 				new Color(0xff0000ff), // red
 				new Color(0xee2200ff), // red-orange
@@ -96,6 +97,9 @@ public class Lava extends AbstractPlanet {
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(random.nextInt(2, 4)));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightWater(heightFlatGround));
 		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(heightFunction));
+		if (random.nextBoolean(0.6)) {
+			materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
+		}
 		
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 

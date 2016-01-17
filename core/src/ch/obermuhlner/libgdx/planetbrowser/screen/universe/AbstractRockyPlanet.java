@@ -138,6 +138,15 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(heightFrequency));
 		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(heightFunction));
+		if (planetData.atmosphere != null) {
+			if (random.nextBoolean(0.4)) {
+				materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
+			}
+		} else {
+			if (random.nextBoolean(0.8)) {
+				materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
+			}
+		}
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
 		Material material = new Material(materialAttributes);

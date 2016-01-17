@@ -131,6 +131,9 @@ public class Earth extends AbstractPlanet {
 //		if (heightFrequency < random.nextInt(1, 3)) {
 //			materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMountains(random.nextFloat(0.8f, 1.0f)));
 //		}
+		if (random.nextBoolean(0.2)) {
+			materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
+		}
 		materialAttributes.add(TerrestrialPlanetFloatAttribute.createIceLevel(iceLevel));
 		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2));
 

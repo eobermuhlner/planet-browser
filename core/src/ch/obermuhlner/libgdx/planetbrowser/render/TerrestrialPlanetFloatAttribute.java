@@ -28,6 +28,9 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 	public static final String HeightMountainsAlias = "heightMountains";
 	public static final long HeightMountains = register(HeightMountainsAlias);
 
+	public static final String CraterBaseGridAlias = "craterBaseGrid";
+	public static final long CraterBaseGrid = register(CraterBaseGridAlias);
+
 	public static final String CreateTextureAlias = "createTexture";
 	public static final long CreateTexture = register(CreateTextureAlias);
 
@@ -67,6 +70,10 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 
 	public static TerrestrialPlanetFloatAttribute createHeightMountains (float value) {
 		return new TerrestrialPlanetFloatAttribute(HeightMountains, value);
+	}
+
+	public static TerrestrialPlanetFloatAttribute createCraterBaseGrid (float value) {
+		return new TerrestrialPlanetFloatAttribute(CraterBaseGrid, value);
 	}
 
 	public static TerrestrialPlanetFloatAttribute createCreateBump () {

@@ -20,8 +20,8 @@ public class TerrestrialPlanetShader implements Shader {
 	public static final Provider PROVIDER = new TerrestrialPlanetShader.Provider();
 
 	private static final float DEFAULT_COLOR_NOISE = 0.0f;
-
 	private static final float DEFAULT_HEIGHT_MOUNTAINS = 0.0f;
+	private static final float DEFAULT_CRATER_BASE_GRID = 0.0f;
 	
 	private String prefix;
 	
@@ -43,6 +43,7 @@ public class TerrestrialPlanetShader implements Shader {
 	private int u_heightFrequency;
 	private int u_heightWater;
 	private int u_heightMountains;
+	private int u_craterBaseGrid;
 	private int u_iceLevel;
 	private int u_colorNoise;
 	private int u_colorFrequency;
@@ -106,6 +107,7 @@ public class TerrestrialPlanetShader implements Shader {
 		u_heightFrequency = program.getUniformLocation("u_heightFrequency");
 		u_heightWater = program.getUniformLocation("u_heightWater");
 		u_heightMountains = program.getUniformLocation("u_heightMountains");
+		u_craterBaseGrid = program.getUniformLocation("u_craterBaseGrid");
 		u_iceLevel = program.getUniformLocation("u_iceLevel");
 		u_colorNoise = program.getUniformLocation("u_colorNoise");
 		u_colorFrequency = program.getUniformLocation("u_colorFrequency");
@@ -137,11 +139,14 @@ public class TerrestrialPlanetShader implements Shader {
 	private static String createPrefix(Renderable renderable) {
 		StringBuilder prefix = new StringBuilder();
 		
-		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.ColorNoise, DEFAULT_COLOR_NOISE) != 0.0f) {
+		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.ColorNoise, DEFAULT_COLOR_NOISE) != DEFAULT_COLOR_NOISE) {
 			prefix.append("#define colorNoiseFlag\n");
 		}
-		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightMountains, DEFAULT_HEIGHT_MOUNTAINS) != 0.0f) {
+		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightMountains, DEFAULT_HEIGHT_MOUNTAINS) != DEFAULT_HEIGHT_MOUNTAINS) {
 			prefix.append("#define mountainsFlag\n");
+		}
+		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CraterBaseGrid, DEFAULT_CRATER_BASE_GRID) != DEFAULT_CRATER_BASE_GRID) {
+			prefix.append("#define cratersFlag\n");
 		}
 		
 		int createTexture = (int) getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CreateTexture, TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE);
@@ -242,6 +247,7 @@ public class TerrestrialPlanetShader implements Shader {
 		program.setUniformf(u_heightFrequency, heightFrequency);
 		program.setUniformf(u_heightWater, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightWater, 0.0f));
 		program.setUniformf(u_heightMountains, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightMountains, DEFAULT_HEIGHT_MOUNTAINS));
+		program.setUniformf(u_craterBaseGrid, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CraterBaseGrid, DEFAULT_CRATER_BASE_GRID));
 		program.setUniformf(u_iceLevel, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.IceLevel, 0.0f));
 		program.setUniformf(u_colorNoise, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.ColorNoise, DEFAULT_COLOR_NOISE));
 		program.setUniformf(u_colorFrequency, colorFrequency);
