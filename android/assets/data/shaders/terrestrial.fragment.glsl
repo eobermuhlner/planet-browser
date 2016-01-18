@@ -357,40 +357,50 @@ float craterComplexSteps(float distance) {
 }
 
 float craterComplexSteps_NEW(float distance, vec2 craterPos, float craterAngle) {
+	float rimRadius = 0.7 + rand(craterPos + u_random3 + u_random0) * 0.2;
+	float stepSmooth = 0.04 + rand(craterPos + u_random3 + u_random1) * 0.05;
+	float stepDelta = 0.06 + rand(craterPos + u_random3 + u_random2) * 0.02;
+	float stepCount = 4.0;
+	float step = rimRadius - stepDelta * stepCount;
+	float stepNoiseFactor = 0.09;
 	float centralMountain = mix(
-		0.6,
-		0.0,
+		rand(craterPos + u_random3 + u_random0) * 0.5 + 0.1,
+		-0.2,
 		smoothstep(0.0, 0.1, distance));
-	float noise1 = pnoise2(craterPos + craterAngle + u_random1, 2.0 * M_PI * 0.3) * 0.05;
+	float noise1 = pnoise2(craterPos + craterAngle + u_random1, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step1 = mix(
 		centralMountain,
-		0.2,
-		smoothstep(0.66, 0.70, distance + noise1));
-	float noise2 = pnoise2(craterPos + craterAngle + u_random2, 2.0 * M_PI * 0.3) * 0.05;
+		0.0,
+		smoothstep(step, step + stepSmooth, distance + noise1));
+	step += stepDelta;
+	float noise2 = pnoise2(craterPos + craterAngle + u_random2, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step2 = mix(
 		step1,
-		0.4,
-		smoothstep(0.70, 0.74, distance + noise2));
-	float noise3 = pnoise2(craterPos + craterAngle + u_random3, 2.0 * M_PI * 0.3) * 0.05;
+		0.25,
+		smoothstep(step, step + stepSmooth, distance + noise2));
+	step += stepDelta;
+	float noise3 = pnoise2(craterPos + craterAngle + u_random3, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step3 = mix(
 		step2,
-		0.6,
-		smoothstep(0.74, 0.78, distance + noise3));
-	float noise4 = pnoise2(craterPos + craterAngle + u_random3, 2.0 * M_PI * 0.3) * 0.05;
+		0.5,
+		smoothstep(step, step + stepSmooth, distance + noise3));
+	float noise4 = pnoise2(craterPos + craterAngle + u_random3, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step4 = mix(
 		step3,
-		0.8,
-		smoothstep(0.82, 0.86, distance + noise4));
-	float noise5 = pnoise2(craterPos + craterAngle + u_random4, 2.0 * M_PI * 0.3) * 0.05;
+		0.7,
+		smoothstep(step, step + stepSmooth, distance + noise4));
+	step += stepDelta;
+	float noise5 = pnoise2(craterPos + craterAngle + u_random4, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step5 = mix(
 		step4,
 		1.0,
-		smoothstep(0.86, 0.90, distance + noise5));
-	float noiseOuter = pnoise2(craterPos + craterAngle + u_random5, 2.0 * M_PI * 0.3) * 0.05;
+		smoothstep(step, step + stepSmooth, distance + noise5));
+	step += stepDelta;
+	float noiseOuter = pnoise2(craterPos + craterAngle + u_random5, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float fadeOut = mix(
 		step5, 
 		0.0,
-		smoothstep(0.9, 1.0, distance + noiseOuter));
+		smoothstep(rimRadius - noiseOuter, 1.0, distance));
 	return fadeOut;
 }
 
