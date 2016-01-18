@@ -71,6 +71,8 @@ uniform float u_planetColorFrequency2;
 uniform float u_planetColorFrequency3;
 #endif
 
+#define M_PI 3.1415926535897932384626433832795
+
 //
 // GLSL textureless classic 2D noise "cnoise",
 // with an RSL-style periodic variant "pnoise".
@@ -354,6 +356,44 @@ float craterComplexSteps(float distance) {
 	return fadeOut;
 }
 
+float craterComplexSteps_NEW(float distance, vec2 craterPos, float craterAngle) {
+	float centralMountain = mix(
+		0.6,
+		0.0,
+		smoothstep(0.0, 0.1, distance));
+	float noise1 = pnoise2(craterPos + craterAngle + u_random1, 2.0 * M_PI * 0.3) * 0.05;
+	float step1 = mix(
+		centralMountain,
+		0.2,
+		smoothstep(0.66, 0.70, distance + noise1));
+	float noise2 = pnoise2(craterPos + craterAngle + u_random2, 2.0 * M_PI * 0.3) * 0.05;
+	float step2 = mix(
+		step1,
+		0.4,
+		smoothstep(0.70, 0.74, distance + noise2));
+	float noise3 = pnoise2(craterPos + craterAngle + u_random3, 2.0 * M_PI * 0.3) * 0.05;
+	float step3 = mix(
+		step2,
+		0.6,
+		smoothstep(0.74, 0.78, distance + noise3));
+	float noise4 = pnoise2(craterPos + craterAngle + u_random3, 2.0 * M_PI * 0.3) * 0.05;
+	float step4 = mix(
+		step3,
+		0.8,
+		smoothstep(0.82, 0.86, distance + noise4));
+	float noise5 = pnoise2(craterPos + craterAngle + u_random4, 2.0 * M_PI * 0.3) * 0.05;
+	float step5 = mix(
+		step4,
+		1.0,
+		smoothstep(0.86, 0.90, distance + noise5));
+	float noiseOuter = pnoise2(craterPos + craterAngle + u_random5, 2.0 * M_PI * 0.3) * 0.05;
+	float fadeOut = mix(
+		step5, 
+		0.0,
+		smoothstep(0.9, 1.0, distance + noiseOuter));
+	return fadeOut;
+}
+
 float craterComplexFlat(float distance) {
 	float centralRadius = 0.2; 
 	float flatRadius = 0.2; 
@@ -420,10 +460,42 @@ vec3 calculateCraterDistanceRadiusHeight(vec2 pos, float grid, vec2 random1, vec
 	return vec3(relativeDistance, radius, relativeHeight);
 }
 
-float addCraterComplexSteps(float height, float craterHeight, vec2 pos, float grid, vec2 random1, vec2 random2) {
-	vec3 distanceAndRadiusAndHeight = calculateCraterDistanceRadiusHeight(pos, grid, random1, random2);
-	float crater = craterComplexSteps(distanceAndRadiusAndHeight.x);
-	return height + crater * craterHeight * distanceAndRadiusAndHeight.y * (0.3 + distanceAndRadiusAndHeight.z * 0.4);
+vec3 calculateCrater(vec2 pos, float grid, vec2 random1, vec2 random2, 
+		out vec2 craterPos, out float craterDistance, out float craterRadius, out float craterHeight, out float craterAngleSin) {
+    vec2 bigPos = pos * grid;
+    vec2 floorBigPos = floor(bigPos);
+
+   	vec2 fractPos = bigPos - floorBigPos;
+   	float minRadius = 0.1;
+   	float maxRadius = 0.5;
+    float radius = rand(floorBigPos + random1 + random2) * (maxRadius - minRadius) + minRadius;
+    float randomDeltaX = (rand(floorBigPos + random1) - 0.5) * (1.0 - radius);
+    float randomDeltaY = (rand(floorBigPos + random2) - 0.5) * (1.0 - radius);
+	vec2 randomDeltaPos = vec2(randomDeltaX, randomDeltaY);
+    fractPos += randomDeltaPos;
+    
+	float distance = length(fractPos - 0.5);
+	float relativeDistance = distance / radius * 2.0;
+	float relativeHeight = rand(floorBigPos + random2);
+	
+	craterPos = floorBigPos;
+	craterRadius = radius;
+	craterDistance = relativeDistance;
+	craterHeight = relativeHeight;
+	craterAngleSin = (fractPos.y - 0.5) / distance;
+	return vec3(relativeDistance, radius, relativeHeight);
+}
+
+float addCraterComplexSteps(float height, float craterBaseHeight, vec2 pos, float grid, vec2 random1, vec2 random2) {
+	vec2 craterPos;
+	float craterDistance;
+	float craterRadius;
+	float craterHeight;
+	float craterAngleSin;
+	vec3 distanceAndRadiusAndHeight = calculateCrater(pos, grid, random1, random2, 
+		craterPos, craterDistance, craterRadius, craterHeight, craterAngleSin);
+	float crater = craterComplexSteps_NEW(craterDistance, craterPos, asin(craterAngleSin));
+	return height + crater * craterBaseHeight * craterRadius * (0.3 + craterHeight * 0.4);
 }
 
 float addCraterComplexFlat(float height, float craterHeight, vec2 pos, float grid, vec2 random1, vec2 random2) {
@@ -478,8 +550,6 @@ float calculateHeight(vec2 P) {
 		height = addCraterSimpleRound(height, craterHeightRange / 80.0, P, u_craterBaseGrid * 80.0, vec2(u_random9+u_random8, u_random8+u_random8), vec2(u_random8+u_random1, u_random7+u_random1));
 		height = addCraterSimpleRound(height, craterHeightRange / 160.0, P, u_craterBaseGrid * 160.0, vec2(u_random9+u_random9, u_random8+u_random9), vec2(u_random8+u_random0, u_random7+u_random0));
 		height = addCraterSimpleRound(height, craterHeightRange / 320.0, P, u_craterBaseGrid * 320.0, vec2(u_random0+u_random1, u_random9+u_random0), vec2(u_random7+u_random9, u_random6+u_random9));
-		/*
-		*/
 	#endif
 	
 	return height;
