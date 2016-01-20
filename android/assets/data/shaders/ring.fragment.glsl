@@ -162,18 +162,18 @@ float pnoise1(float x, float period) {
 float cnoise1(float x) {
 	return cnoise(vec2(x, 0.0));
 }
-
  
 void main() {
-	float dx = v_texCoords0.x - 0.5;
-	float dy = v_texCoords0.y - 0.5;
-	float radiusSquare = dx*dx + dy*dy;
-	float radius = sqrt(radiusSquare);
+	vec2 delta = v_texCoords0 - 0.5;
+	float radius = length(delta);
+
+	float innerRadius = 0.2 + u_random1 * 0.2;
+	float outerRadius = 0.3 + u_random2 * 0.09;
 	float a = 0.0;
-	a = a + pnoise2(vec2(radius, u_random1), 2.0 + u_random2 * 5.0);
-	a = a + pnoise2(vec2(radius, u_random3), 40.0 + u_random4 * 20.0);
+	a += pnoise2(vec2(radius, u_random1), 2.0 + u_random2 * 5.0) * (u_random3 * 0.6 + 0.4);
+	a += pnoise2(vec2(radius, u_random4), 40.0 + u_random5 * 20.0) * (u_random6 * 0.6 + 0.4);
 	a = a * 0.8 + 0.2;
-	a = a * (smoothstep(0.30, 0.31, radius) - smoothstep(0.49, 0.50, radius));
+	a = a * (smoothstep(innerRadius, innerRadius + 0.1, radius) - smoothstep(outerRadius, outerRadius + 0.1, radius));
 	
 	gl_FragColor.rgb = u_diffuseColor.rgb;
 	gl_FragColor.a = u_opacity * a;
