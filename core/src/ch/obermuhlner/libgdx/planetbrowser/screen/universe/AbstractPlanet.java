@@ -35,6 +35,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.RingFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
+import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
@@ -109,11 +110,12 @@ public abstract class AbstractPlanet implements PlanetFactory {
 
 		float radius = Units.toRenderUnit(planetData.radius) * random.nextFloat(2.0f, 3.0f);
 		float alpha = 0.8f;
+		Color color = ColorUtil.randomColor(random, Color.WHITE, 0.1f, 0.8f);
 
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		materialAttributes.add(RingFloatAttribute.createRing(0.1f));
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
-		materialAttributes.add(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE));
+		materialAttributes.add(new ColorAttribute(ColorAttribute.Diffuse, color));
 		materialAttributes.add(new BlendingAttribute(alpha));
 		Material material = new Material(materialAttributes);
 		
