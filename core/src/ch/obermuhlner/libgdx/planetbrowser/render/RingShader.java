@@ -3,7 +3,6 @@ package ch.obermuhlner.libgdx.planetbrowser.render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -86,7 +85,7 @@ public class RingShader implements Shader {
 	@Override
 	public void begin (Camera camera, RenderContext context) {
 		context.setDepthTest(GL20.GL_LEQUAL);
-		context.setCullFace(GL20.GL_BACK);
+		context.setCullFace(GL20.GL_NONE);
 		
 		context.setBlending(true, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 

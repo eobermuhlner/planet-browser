@@ -121,20 +121,13 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		
 		Model model;
 		modelBuilder.begin();
-		modelBuilder.part("rect-up", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates, material)
+		modelBuilder.part("ring", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates, material)
 		.rect(
 			radius, 0f, -radius,
 			-radius, 0f, -radius,
 			-radius, 0f, radius,	
 			radius, 0f, radius,
 			0f, 1f, 0f);
-		modelBuilder.part("rect-down", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates, material)
-		.rect(
-			radius, 0f, radius,
-			-radius, 0f, radius,
-			-radius, 0f, -radius,
-			radius, 0f, -radius,
-			0f, -1f, 0f);
 		model = modelBuilder.end();
 		
 		return model;
