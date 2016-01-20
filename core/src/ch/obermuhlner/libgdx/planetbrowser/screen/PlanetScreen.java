@@ -164,8 +164,8 @@ public class PlanetScreen extends AbstractScreen {
 		float sunUnit = Units.toRenderUnit(1000 * Units.EARTH_RADIUS);
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.near = 0.001f;
-		camera.far = 400f;
+		camera.near = 0.1f;
+		camera.far = 200f;
 		camera.position.set(planetUnit, 0.5f * planetUnit, planetUnit);
 		camera.lookAt(0, 0, 0);
 		camera.update(true);

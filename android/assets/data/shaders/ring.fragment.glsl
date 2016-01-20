@@ -1,8 +1,5 @@
 //
-// Fragment shader for emissive texture depending on vertex normal and direction to camera.
-// 
-// The goal of this shader is to render a textured object independent of any lightsource.
-// This is also called self-illumination. 
+// Fragment shader for planetary ring .
 //
 
 #ifdef GL_ES 
@@ -17,6 +14,18 @@ precision mediump float;
 #endif
 
 uniform float u_time;
+
+uniform float u_random0;
+uniform float u_random1;
+uniform float u_random2;
+uniform float u_random3;
+uniform float u_random4;
+uniform float u_random5;
+uniform float u_random6;
+uniform float u_random7;
+uniform float u_random8;
+uniform float u_random9;
+
 uniform mat4 u_worldTrans;
 uniform float u_opacity;
  
@@ -156,18 +165,13 @@ float cnoise1(float x) {
 
  
 void main() {
-	float r1 = 0.74;
-	float r2 = 0.12;
-	float r3 = 0.36;
-	float r4 = 0.08;
-
 	float dx = v_texCoords0.x - 0.5;
 	float dy = v_texCoords0.y - 0.5;
 	float radiusSquare = dx*dx + dy*dy;
 	float radius = sqrt(radiusSquare);
 	float a = 0.0;
-	a = a + pnoise2(vec2(radius, r1), 2.0 + r2 * 5.0);
-	a = a + pnoise2(vec2(radius, r3), 40.0 + r4 * 20.0);
+	a = a + pnoise2(vec2(radius, u_random1), 2.0 + u_random2 * 5.0);
+	a = a + pnoise2(vec2(radius, u_random3), 40.0 + u_random4 * 20.0);
 	a = a * 0.8 + 0.2;
 	a = a * (smoothstep(0.30, 0.31, radius) - smoothstep(0.49, 0.50, radius));
 	

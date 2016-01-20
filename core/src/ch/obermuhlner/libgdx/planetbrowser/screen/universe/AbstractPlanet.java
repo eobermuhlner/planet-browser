@@ -17,6 +17,8 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -30,6 +32,7 @@ import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
+import ch.obermuhlner.libgdx.planetbrowser.render.RingFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
@@ -71,11 +74,13 @@ public abstract class AbstractPlanet implements PlanetFactory {
 
 		float size = Units.toRenderUnit(planetData.radius) * 2;
 
+		// create planet sphere
 		{
 			Model model = createSphere(size, material);
 			modelInstances.add(new ModelInstance(model));
 		}
 		
+		// create atmosphere
 		{
 			float atmosphereSize = getAtmosphereSize(random, planetData);
 			Material atmosphereMaterial = createAtmosphereMaterial(random, planetData, atmosphereSize);
@@ -85,9 +90,54 @@ public abstract class AbstractPlanet implements PlanetFactory {
 			}
 		}
 		
+		// create ring
+		{
+			Model model = createRing(random, planetData);
+			if (model != null) {
+				modelInstances.add(new ModelInstance(model));
+			}
+		}
+		
 		return modelInstances;
 	}
 	
+	private Model createRing(Random random, PlanetData planetData) {
+		double probability = MathUtil.transform(0.5 * Units.EARTH_MASS, 2.0 * Units.JUPITER_MASS, 0.0, 0.8, planetData.mass);
+		if (!random.nextBoolean(probability)) {
+			return null;
+		}
+
+		float radius = Units.toRenderUnit(planetData.radius) * random.nextFloat(2.0f, 3.0f);
+		float alpha = 0.8f;
+
+		Array<Attribute> materialAttributes = new Array<Attribute>();
+		materialAttributes.add(RingFloatAttribute.createRing(0.1f));
+		materialAttributes.add(createRandomFloatArrayAttribute(random));
+		materialAttributes.add(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE));
+		materialAttributes.add(new BlendingAttribute(alpha));
+		Material material = new Material(materialAttributes);
+		
+		Model model;
+		modelBuilder.begin();
+		modelBuilder.part("rect-up", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates, material)
+		.rect(
+			radius, 0f, -radius,
+			-radius, 0f, -radius,
+			-radius, 0f, radius,	
+			radius, 0f, radius,
+			0f, 1f, 0f);
+		modelBuilder.part("rect-down", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates, material)
+		.rect(
+			radius, 0f, radius,
+			-radius, 0f, radius,
+			-radius, 0f, -radius,
+			radius, 0f, -radius,
+			0f, -1f, 0f);
+		model = modelBuilder.end();
+		
+		return model;
+	}
+
 	private Model createSphere(float size, Material material) {
 		long attributes = Usage.Position | Usage.Normal | Usage.Tangent | Usage.TextureCoordinates;
 		int divisions = PlanetBrowser.INSTANCE.options.getSphereDivisions();
