@@ -5,6 +5,7 @@ import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
@@ -84,8 +85,8 @@ public class Mars extends AbstractRockyPlanet {
 					);
 		}
 		
-		planetData.atmosphereScatterColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f);
-		planetData.atmospherePassColor = randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f);
+		planetData.atmosphereScatterColor = ColorUtil.randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f);
+		planetData.atmospherePassColor = ColorUtil.randomColor(random, ATMOSPHERE_COLORS, 0.2f, 0.2f);
 
 		planetData.fillStandardValues(random);
 		

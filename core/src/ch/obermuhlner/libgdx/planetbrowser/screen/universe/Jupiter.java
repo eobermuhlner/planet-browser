@@ -4,6 +4,7 @@ import static ch.obermuhlner.libgdx.planetbrowser.util.Random.p;
 
 import com.badlogic.gdx.graphics.Color;
 
+import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -39,8 +40,8 @@ public class Jupiter extends AbstractGasPlanet {
 				p(random.nextGaussian(0.0006), Molecule.C2H6)
 				);
 
-		planetData.atmosphereScatterColor = randomColor(random, random.next(GAS_PLANET_COLORS), 0.2f, 0.2f);
-		planetData.atmospherePassColor = randomColor(random, new Color(0xf26666ff), 0.2f, 0.2f);
+		planetData.atmosphereScatterColor = ColorUtil.randomColor(random, random.next(GAS_PLANET_COLORS), 0.2f, 0.2f);
+		planetData.atmospherePassColor = ColorUtil.randomColor(random, new Color(0xf26666ff), 0.2f, 0.2f);
 		planetData.fogLevel = random.nextDouble(0.005, 0.01);
 		//planetData.fogLevel = 0.0;
 		

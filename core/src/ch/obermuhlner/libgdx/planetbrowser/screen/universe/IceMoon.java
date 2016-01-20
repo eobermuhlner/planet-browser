@@ -13,6 +13,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
@@ -48,7 +49,7 @@ public class IceMoon extends AbstractPlanet {
 
 		Color[] colors = ICEMOON_COLORS;
 		
-		Color[] randomColors = randomColors(random, 6, colors, 0.02f, 0.1f);
+		Color[] randomColors = ColorUtil.randomColors(random, 6, colors, 0.02f, 0.1f);
 
 		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors));
 

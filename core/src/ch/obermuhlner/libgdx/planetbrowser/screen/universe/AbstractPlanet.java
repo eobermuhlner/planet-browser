@@ -213,27 +213,6 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return material;
 	}
 
-	public Color[] randomColors(Random random, int colorCount, Color[] colors, float deltaColor, float deltaLuminance) {
-		Color[] result = new Color[colorCount];
-		for (int i = 0; i < result.length; i++) {
-			result[i] = randomColor(random, colors, deltaColor, deltaLuminance);
-		}
-		return result;
-	}
-
-	public Color randomColor(Random random, Color[] colors, float deltaColor, float deltaLuminance) {
-		return randomColor(random, colors[random.nextInt(colors.length)], deltaColor, deltaLuminance);
-	}
-	
-	public Color randomColor(Random random, Color color, float deltaColor, float deltaLuminance) {
-		float randomLuminance = random.nextFloat(1 - deltaLuminance, 1 + deltaLuminance);
-		return new Color(
-			MathUtil.clamp(color.r * random.nextFloat(1 - deltaColor, 1 + deltaColor) * randomLuminance, 0.0f, 1.0f),
-			MathUtil.clamp(color.g * random.nextFloat(1 - deltaColor, 1 + deltaColor) * randomLuminance, 0.0f, 1.0f),
-			MathUtil.clamp(color.b * random.nextFloat(1 - deltaColor, 1 + deltaColor) * randomLuminance, 0.0f, 1.0f),
-			1.0f);
-	}
-
 	public FloatArrayAttribute createRandomFloatArrayAttribute(Random random) {
 		float floatArray[] = new float[10];
 		for (int i = 0; i < floatArray.length; i++) {

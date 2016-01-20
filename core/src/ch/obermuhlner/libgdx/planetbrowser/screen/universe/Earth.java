@@ -15,6 +15,7 @@ import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
@@ -76,8 +77,8 @@ public class Earth extends AbstractPlanet {
 				p(100, Molecule.H2O)
 		);
 		
-		planetData.atmosphereScatterColor = randomColor(random, new Color(0x87cefaff), 0.1f, 0.1f); // new Color(0.8f, 0.8f, 1.0f, 1.0f); 
-		planetData.atmospherePassColor = randomColor(random, new Color(0xe56666ff), 0.1f, 0.1f);
+		planetData.atmosphereScatterColor = ColorUtil.randomColor(random, new Color(0x87cefaff), 0.1f, 0.1f); // new Color(0.8f, 0.8f, 1.0f, 1.0f); 
+		planetData.atmospherePassColor = ColorUtil.randomColor(random, new Color(0xe56666ff), 0.1f, 0.1f);
 		
 		planetData.fillStandardValues(random);
 		

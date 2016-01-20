@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.GasPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
@@ -31,7 +32,7 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 	public Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize, DisposableContainer disposables) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
-		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors(random, 3, colors, 0.1f, 0.02f)));
+		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, ColorUtil.randomColors(random, 3, colors, 0.1f, 0.02f)));
 		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
 		Material material = new Material(materialAttributes);

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
@@ -52,8 +53,8 @@ public class Neptune extends AbstractGasPlanet {
 				p(random.nextDouble(10, 40), Molecule.H2O)
 				);		
 
-		planetData.atmosphereScatterColor = randomColor(random, random.next(ICE_GAS_PLANET_COLORS), 0.2f, 0.2f);
-		planetData.atmospherePassColor = randomColor(random, new Color(0xf26666ff), 0.2f, 0.2f);
+		planetData.atmosphereScatterColor = ColorUtil.randomColor(random, random.next(ICE_GAS_PLANET_COLORS), 0.2f, 0.2f);
+		planetData.atmospherePassColor = ColorUtil.randomColor(random, new Color(0xf26666ff), 0.2f, 0.2f);
 		planetData.fogLevel = random.nextDouble(0.005, 0.01);
 
 		planetData.fillStandardValues(random);

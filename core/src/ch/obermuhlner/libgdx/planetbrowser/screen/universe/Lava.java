@@ -16,6 +16,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
@@ -47,8 +48,8 @@ public class Lava extends AbstractPlanet {
 				);
 
 		
-		planetData.atmosphereScatterColor = randomColor(random, new Color(0xb0a580ff), 0.1f, 0.1f);
-		planetData.atmospherePassColor = randomColor(random, new Color(0xf26666ff), 0.1f, 0.1f);
+		planetData.atmosphereScatterColor = ColorUtil.randomColor(random, new Color(0xb0a580ff), 0.1f, 0.1f);
+		planetData.atmospherePassColor = ColorUtil.randomColor(random, new Color(0xf26666ff), 0.1f, 0.1f);
 
 		planetData.fogLevel = random.nextDouble(0.001, 0.01);
 

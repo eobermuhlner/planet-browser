@@ -15,6 +15,7 @@ import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 
@@ -127,7 +128,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 				p(5, TerrestrialHeightShaderFunctionAttribute.POWER_3),
 				p(5, TerrestrialHeightShaderFunctionAttribute.functionPower(1.5f))
 				);
-		Color[] randomColors = randomColors(random, 6, colors, 0.01f, 0.1f);
+		Color[] randomColors = ColorUtil.randomColors(random, 6, colors, 0.01f, 0.1f);
 		for (int i = 0; i < randomColors.length; i++) {
 			// specular color encoded in alpha (grayscale only)
 			randomColors[i].a = random.nextBoolean(0.1) ? random.nextFloat(0.5f, 1.0f) : random.nextFloat(0.0f, 0.3f);
