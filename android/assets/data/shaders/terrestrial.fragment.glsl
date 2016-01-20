@@ -346,30 +346,30 @@ float craterComplexSteps(float distance, vec2 craterPos, float craterAngle, vec2
 		0.1 + craterNoise * 0.6,
 		0.0,
 		smoothstep(0.0, centralRadius, distance));
-	float noise1 = pnoise2(craterPos + craterAngle + random + u_random1, 2.0 *+ M_PI * 0.3) * stepNoiseFactor;
+	float noise1 = pnoise2(craterPos + craterAngle + random + u_random1, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step1 = mix(
 		centralToFlat,
 		0.2 + craterNoise * 0.1,
 		smoothstep(step, step + stepSmooth, distance + noise1));
 	step += stepDelta;
-	float noise2 = pnoise2(craterPos + craterAngle + random  + u_random2, 2.0 * M_PI * 0.3) * stepNoiseFactor;
+	float noise2 = pnoise2(craterPos + craterAngle + random + u_random2, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step2 = mix(
 		step1,
 		0.4 + craterNoise * 0.1,
 		smoothstep(step, step + stepSmooth, distance + noise2));
 	step += stepDelta;
-	float noise3 = pnoise2(craterPos + craterAngle + random  + u_random3, 2.0 * M_PI * 0.3) * stepNoiseFactor;
+	float noise3 = pnoise2(craterPos + craterAngle + random + u_random3, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step3 = mix(
 		step2,
 		0.6 + craterNoise * 0.1,
 		smoothstep(step, step + stepSmooth, distance + noise3));
-	float noise4 = pnoise2(craterPos + craterAngle + random  + u_random3, 2.0 * M_PI * 0.3) * stepNoiseFactor;
+	float noise4 = pnoise2(craterPos + craterAngle + random + u_random3, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step4 = mix(
 		step3,
 		0.8 + craterNoise * 0.1,
 		smoothstep(step, step + stepSmooth, distance + noise4));
 	step += stepDelta;
-	float noise5 = pnoise2(craterPos + craterAngle + random  + u_random4, 2.0 * M_PI * 0.3) * stepNoiseFactor;
+	float noise5 = pnoise2(craterPos + craterAngle + random + u_random4, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step5 = mix(
 		step4,
 		1.0 + craterNoise * 0.1,
@@ -377,7 +377,6 @@ float craterComplexSteps(float distance, vec2 craterPos, float craterAngle, vec2
 	step += stepDelta;
 	float fadeOut = mix(
 		step5 - craterDepth, 
-		//craterNoise, 
 		0.0,
 		smoothstep(rimRadius, 1.0, distance));
 	return fadeOut;
