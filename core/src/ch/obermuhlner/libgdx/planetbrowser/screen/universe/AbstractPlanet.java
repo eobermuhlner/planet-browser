@@ -108,9 +108,9 @@ public abstract class AbstractPlanet implements PlanetFactory {
 			return null;
 		}
 
-		float radius = Units.toRenderUnit(planetData.radius) * random.nextFloat(2.0f, 3.0f);
+		float radius = Units.toRenderUnit(planetData.radius) * random.nextFloat(2.0f, 4.0f);
 		float alpha = random.nextFloat(0.4f, 0.9f);
-		Color color = ColorUtil.randomColor(random, Color.WHITE, 0.1f, 0.8f);
+		Color color = ColorUtil.randomColor(random, Color.WHITE, 0.1f, 0.5f);
 
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 		materialAttributes.add(RingFloatAttribute.createRing(0.1f));
