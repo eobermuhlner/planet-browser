@@ -17,8 +17,6 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -32,7 +30,7 @@ import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.RingFloatAttribute;
+import ch.obermuhlner.libgdx.planetbrowser.render.RingAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
@@ -112,12 +110,11 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		float alpha = random.nextFloat(0.4f, 0.9f);
 		Color color = ColorUtil.randomColor(random, Color.WHITE, 0.1f, 0.5f);
 
-		Array<Attribute> materialAttributes = new Array<Attribute>();
-		materialAttributes.add(RingFloatAttribute.createRing(0.1f));
-		materialAttributes.add(createRandomFloatArrayAttribute(random));
-		materialAttributes.add(new ColorAttribute(ColorAttribute.Diffuse, color));
-		materialAttributes.add(new BlendingAttribute(alpha));
-		Material material = new Material(materialAttributes);
+		RingAttribute ringAttribute = RingAttribute.createRing(random);
+		ringAttribute.color = color;
+		ringAttribute.opacity = alpha;
+		
+		Material material = new Material(ringAttribute);
 		
 		Model model;
 		modelBuilder.begin();

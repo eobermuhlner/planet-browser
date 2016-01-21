@@ -11,7 +11,7 @@ public class PlanetUberShaderProvider extends UberShaderProvider  {
 
 	@Override
 	protected Shader createShader(Renderable renderable) {
-		if (renderable.material.get(RingFloatAttribute.Ring) != null) {
+		if (renderable.material.get(RingAttribute.Ring) != null) {
 			return RingShader.PROVIDER.getShader(renderable);
 		}
 		if (renderable.material.get(SunFloatAttribute.SunNoise) != null) {

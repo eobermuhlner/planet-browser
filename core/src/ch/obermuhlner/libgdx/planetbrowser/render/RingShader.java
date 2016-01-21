@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -26,7 +24,6 @@ public class RingShader implements Shader {
 	private int u_projViewTrans;
 	private int u_worldTrans;
 	private int u_time;
-	private int u_normalStep;
 
 	private int u_random0;
 	private int u_random1;
@@ -57,7 +54,7 @@ public class RingShader implements Shader {
 	public void init () {
 		StopWatch watch = new StopWatch();
 		program = new ShaderProgram(prefix + vertexProgram, prefix + fragmentProgram);
-		System.out.println("Compiled gasplanet shader in " + watch);
+		System.out.println("Compiled ring shader in " + watch);
 		if (!program.isCompiled()) {
 			throw new GdxRuntimeException(ShaderUtils.createErrorMessage(program));
 		}
@@ -65,7 +62,6 @@ public class RingShader implements Shader {
 		u_projViewTrans = program.getUniformLocation("u_projViewTrans");
 		u_worldTrans = program.getUniformLocation("u_worldTrans");
 		u_time = program.getUniformLocation("u_time");
-		u_normalStep = program.getUniformLocation("u_normalStep");
 		
 		u_random0 = program.getUniformLocation("u_random0");
 		u_random1 = program.getUniformLocation("u_random1");
@@ -104,35 +100,26 @@ public class RingShader implements Shader {
 	public void render (Renderable renderable) {
 		// world transformation
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
-		
-		program.setUniformf(u_normalStep, TerrestrialPlanetShader.getFloatAttributeValue(renderable, MoreFloatAttribute.NormalStep, 0.0001f));
+
+		RingAttribute ringAttribute = (RingAttribute)renderable.material.get(RingAttribute.Ring);
 
 		// random
-		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.RandomFloatArray);
-		program.setUniformf(u_random0, floatArrayAttribute.values[0]);
-		program.setUniformf(u_random1, floatArrayAttribute.values[1]);
-		program.setUniformf(u_random2, floatArrayAttribute.values[2]);
-		program.setUniformf(u_random3, floatArrayAttribute.values[3]);
-		program.setUniformf(u_random4, floatArrayAttribute.values[4]);
-		program.setUniformf(u_random5, floatArrayAttribute.values[5]);
-		program.setUniformf(u_random6, floatArrayAttribute.values[6]);
-		program.setUniformf(u_random7, floatArrayAttribute.values[7]);
-		program.setUniformf(u_random8, floatArrayAttribute.values[8]);
-		program.setUniformf(u_random9, floatArrayAttribute.values[9]);
+		program.setUniformf(u_random0, ringAttribute.randomValues[0]);
+		program.setUniformf(u_random1, ringAttribute.randomValues[1]);
+		program.setUniformf(u_random2, ringAttribute.randomValues[2]);
+		program.setUniformf(u_random3, ringAttribute.randomValues[3]);
+		program.setUniformf(u_random4, ringAttribute.randomValues[4]);
+		program.setUniformf(u_random5, ringAttribute.randomValues[5]);
+		program.setUniformf(u_random6, ringAttribute.randomValues[6]);
+		program.setUniformf(u_random7, ringAttribute.randomValues[7]);
+		program.setUniformf(u_random8, ringAttribute.randomValues[8]);
+		program.setUniformf(u_random9, ringAttribute.randomValues[9]);
 
 		// color
-		ColorAttribute colorDiffuseAttribute = (ColorAttribute) renderable.material.get(ColorAttribute.Diffuse);
-		if (colorDiffuseAttribute != null) {
-			program.setUniformf(u_diffuseColor, colorDiffuseAttribute.color);			
-		}
+		program.setUniformf(u_diffuseColor, ringAttribute.color);			
 
 		// opacity
-		float opacity = 0.5f;
-		BlendingAttribute blendingAttribute = (BlendingAttribute) renderable.material.get(BlendingAttribute.Type);
-		if (blendingAttribute != null) {
-			opacity = blendingAttribute.opacity;
-		}
-		program.setUniformf(u_opacity, opacity);
+		program.setUniformf(u_opacity, ringAttribute.opacity);			
 
 		// mesh
 		renderable.meshPart.render(program);
