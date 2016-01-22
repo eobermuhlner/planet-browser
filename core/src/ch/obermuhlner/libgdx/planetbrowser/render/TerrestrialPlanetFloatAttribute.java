@@ -31,15 +31,6 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 	public static final String CraterBaseGridAlias = "craterBaseGrid";
 	public static final long CraterBaseGrid = register(CraterBaseGridAlias);
 
-	public static final String CreateTextureAlias = "createTexture";
-	public static final long CreateTexture = register(CreateTextureAlias);
-
-	public static final int CREATE_BUMP_TEXTURE = 1;
-	public static final int CREATE_DIFFUSE_TEXTURE = 2;
-	public static final int CREATE_NORMAL_TEXTURE = 4;
-	public static final int CREATE_SPECULAR_TEXTURE = 8;
-	public static final int CREATE_EMISSIVE_TEXTURE = 16;
-	
 	public static TerrestrialPlanetFloatAttribute createHeightMin (float value) {
 		return new TerrestrialPlanetFloatAttribute(HeightMin, value);
 	}
@@ -74,47 +65,6 @@ public class TerrestrialPlanetFloatAttribute extends FloatAttribute {
 
 	public static TerrestrialPlanetFloatAttribute createCraterBaseGrid (float value) {
 		return new TerrestrialPlanetFloatAttribute(CraterBaseGrid, value);
-	}
-
-	public static TerrestrialPlanetFloatAttribute createCreateBump () {
-		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_BUMP_TEXTURE);
-	}
-
-	public static TerrestrialPlanetFloatAttribute createCreateDiffuse () {
-		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_DIFFUSE_TEXTURE);
-	}
-
-	public static TerrestrialPlanetFloatAttribute createCreateNormal () {
-		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_NORMAL_TEXTURE);
-	}
-	
-	public static TerrestrialPlanetFloatAttribute createCreateSpecular () {
-		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_SPECULAR_TEXTURE);
-	}
-
-	public static TerrestrialPlanetFloatAttribute createCreateEmissive () {
-		return new TerrestrialPlanetFloatAttribute(CreateTexture, CREATE_EMISSIVE_TEXTURE);
-	}
-
-	public static TerrestrialPlanetFloatAttribute createTextures(boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
-		int value = 0;
-		if (bump) {
-			value |= CREATE_BUMP_TEXTURE;
-		}
-		if (diffuse) {
-			value |= CREATE_DIFFUSE_TEXTURE;
-		}
-		if (normal) {
-			value |= CREATE_NORMAL_TEXTURE;
-		}
-		if (specular) {
-			value |= CREATE_SPECULAR_TEXTURE;
-		}
-		if (emissive) {
-			value |= CREATE_EMISSIVE_TEXTURE;
-		}
-		
-		return new TerrestrialPlanetFloatAttribute(CreateTexture, value);
 	}
 
 	private TerrestrialPlanetFloatAttribute(long type, float value) {

@@ -28,10 +28,10 @@ import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
+import ch.obermuhlner.libgdx.planetbrowser.render.CreateTextureAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.RingAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
@@ -232,7 +232,7 @@ public abstract class AbstractPlanet implements PlanetFactory {
 	
 	public Array<Texture> renderTextures (DisposableContainer disposables, Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {
 		if (useMultiTextureRendering()) {
-			material.set(TerrestrialPlanetFloatAttribute.createTextures(bump, diffuse, normal, specular, emissive));
+			material.set(CreateTextureAttribute.createTextures(bump, diffuse, normal, specular, emissive));
 			if (normal) {
 				material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
 			}
@@ -247,24 +247,24 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		} else {
 			Array<Texture> textures = new Array<Texture>();
 			if (bump) {
-				material.set(TerrestrialPlanetFloatAttribute.createCreateBump());
+				material.set(CreateTextureAttribute.createCreateBump());
 				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (diffuse) {
-				material.set(TerrestrialPlanetFloatAttribute.createCreateDiffuse());
+				material.set(CreateTextureAttribute.createCreateDiffuse());
 				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (normal) {
-				material.set(TerrestrialPlanetFloatAttribute.createCreateNormal());
+				material.set(CreateTextureAttribute.createCreateNormal());
 				material.set(MoreFloatAttribute.createNormalStep(1f / textureSize * Math.max(Math.abs(xTo-xFrom), Math.abs(yTo-yFrom))));
 				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (specular) {
-				material.set(TerrestrialPlanetFloatAttribute.createCreateSpecular());
+				material.set(CreateTextureAttribute.createCreateSpecular());
 				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			if (emissive) {
-				material.set(TerrestrialPlanetFloatAttribute.createCreateEmissive());
+				material.set(CreateTextureAttribute.createCreateEmissive());
 				textures.add(renderTextures(disposables, material, shaderProvider, textureSize, xFrom, xTo, yFrom, yTo, 1).get(0));
 			}
 			return textures;

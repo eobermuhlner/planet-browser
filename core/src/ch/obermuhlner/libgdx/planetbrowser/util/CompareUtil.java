@@ -33,4 +33,20 @@ public class CompareUtil {
 		}
 		return 0;
 	}
+
+	public static int compare(Color[] array, Color[] other) {
+		if (array == other) {
+			return 0;
+		}
+		if (other.length != array.length) {
+			return other.length - array.length;
+		}
+		for (int i = 0; i < array.length; i++) {
+			int cmp = compare(array[i], other[i]);
+			if (cmp != 0) {
+				return cmp;
+			}
+		}
+		return 0;
+	}
 }

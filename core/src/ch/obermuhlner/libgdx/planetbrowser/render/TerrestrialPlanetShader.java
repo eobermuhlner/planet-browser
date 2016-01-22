@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -149,29 +150,31 @@ public class TerrestrialPlanetShader implements Shader {
 			prefix.append("#define cratersFlag\n");
 		}
 		
-		int createTexture = (int) getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CreateTexture, TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE);
+		IntAttribute createTextureAttribute = (IntAttribute) renderable.material.get(CreateTextureAttribute.CreateTexture);
+		int createTexture = createTextureAttribute.value;
+
 		int createTextureCount = 0;
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_BUMP_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_BUMP_TEXTURE) != 0) {
 			prefix.append("#define createBumpFlag\n");
 			prefix.append("#define createBumpOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_DIFFUSE_TEXTURE) != 0) {
 			prefix.append("#define createDiffuseFlag\n");
 			prefix.append("#define createDiffuseOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_NORMAL_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_NORMAL_TEXTURE) != 0) {
 			prefix.append("#define createNormalFlag\n");
 			prefix.append("#define createNormalOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_SPECULAR_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_SPECULAR_TEXTURE) != 0) {
 			prefix.append("#define createSpecularFlag\n");
 			prefix.append("#define createSpecularOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_EMISSIVE_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_EMISSIVE_TEXTURE) != 0) {
 			prefix.append("#define createEmissiveFlag\n");
 			prefix.append("#define createEmissiveOutput " + createTextureCount + "\n");
 			createTextureCount++;

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -36,6 +37,7 @@ public class GasPlanetShader implements Shader {
 	private int u_random7;
 	private int u_random8;
 	private int u_random9;
+	
 	private int u_planetColor0;
 	private int u_planetColor1;
 	private int u_planetColor2;
@@ -49,29 +51,31 @@ public class GasPlanetShader implements Shader {
 	private static String createPrefix(Renderable renderable) {
 		StringBuilder prefix = new StringBuilder();
 
-		int createTexture = (int) TerrestrialPlanetShader.getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CreateTexture, TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE);
+		IntAttribute createTextureAttribute = (IntAttribute) renderable.material.get(CreateTextureAttribute.CreateTexture);
+		int createTexture = (int) createTextureAttribute.value;
+
 		int createTextureCount = 0;
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_BUMP_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_BUMP_TEXTURE) != 0) {
 			prefix.append("#define createBumpFlag\n");
 			prefix.append("#define createBumpOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_DIFFUSE_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_DIFFUSE_TEXTURE) != 0) {
 			prefix.append("#define createDiffuseFlag\n");
 			prefix.append("#define createDiffuseOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_NORMAL_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_NORMAL_TEXTURE) != 0) {
 			prefix.append("#define createNormalFlag\n");
 			prefix.append("#define createNormalOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_SPECULAR_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_SPECULAR_TEXTURE) != 0) {
 			prefix.append("#define createSpecularFlag\n");
 			prefix.append("#define createSpecularOutput " + createTextureCount + "\n");
 			createTextureCount++;
 		}
-		if ((createTexture & TerrestrialPlanetFloatAttribute.CREATE_EMISSIVE_TEXTURE) != 0) {
+		if ((createTexture & CreateTextureAttribute.CREATE_EMISSIVE_TEXTURE) != 0) {
 			prefix.append("#define createEmissiveFlag\n");
 			prefix.append("#define createEmissiveOutput " + createTextureCount + "\n");
 			createTextureCount++;
@@ -95,6 +99,7 @@ public class GasPlanetShader implements Shader {
 		u_projViewTrans = program.getUniformLocation("u_projViewTrans");
 		u_worldTrans = program.getUniformLocation("u_worldTrans");
 		u_time = program.getUniformLocation("u_time");
+		
 		u_normalStep = program.getUniformLocation("u_normalStep");
 		
 		u_random0 = program.getUniformLocation("u_random0");
@@ -136,26 +141,24 @@ public class GasPlanetShader implements Shader {
 		
 		program.setUniformf(u_normalStep, TerrestrialPlanetShader.getFloatAttributeValue(renderable, MoreFloatAttribute.NormalStep, 0.0001f));
 
+		GasPlanetAttribute gasPlanetAttribute = (GasPlanetAttribute) renderable.material.get(GasPlanetAttribute.GasPlanet);
+		
 		// random
-		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.RandomFloatArray);
-		program.setUniformf(u_random0, floatArrayAttribute.values[0]);
-		program.setUniformf(u_random1, floatArrayAttribute.values[1]);
-		program.setUniformf(u_random2, floatArrayAttribute.values[2]);
-		program.setUniformf(u_random3, floatArrayAttribute.values[3]);
-		program.setUniformf(u_random4, floatArrayAttribute.values[4]);
-		program.setUniformf(u_random5, floatArrayAttribute.values[5]);
-		program.setUniformf(u_random6, floatArrayAttribute.values[6]);
-		program.setUniformf(u_random7, floatArrayAttribute.values[7]);
-		program.setUniformf(u_random8, floatArrayAttribute.values[8]);
-		program.setUniformf(u_random9, floatArrayAttribute.values[9]);
+		program.setUniformf(u_random0, gasPlanetAttribute.randomValues[0]);
+		program.setUniformf(u_random1, gasPlanetAttribute.randomValues[1]);
+		program.setUniformf(u_random2, gasPlanetAttribute.randomValues[2]);
+		program.setUniformf(u_random3, gasPlanetAttribute.randomValues[3]);
+		program.setUniformf(u_random4, gasPlanetAttribute.randomValues[4]);
+		program.setUniformf(u_random5, gasPlanetAttribute.randomValues[5]);
+		program.setUniformf(u_random6, gasPlanetAttribute.randomValues[6]);
+		program.setUniformf(u_random7, gasPlanetAttribute.randomValues[7]);
+		program.setUniformf(u_random8, gasPlanetAttribute.randomValues[8]);
+		program.setUniformf(u_random9, gasPlanetAttribute.randomValues[9]);
 
 		// color array
-		ColorArrayAttribute colorArrayAttribute = (ColorArrayAttribute) renderable.material.get(ColorArrayAttribute.PlanetColors);
-		if (colorArrayAttribute != null) {
-			program.setUniformf(u_planetColor0, colorArrayAttribute.colors[0].r, colorArrayAttribute.colors[0].g, colorArrayAttribute.colors[0].b);			
-			program.setUniformf(u_planetColor1, colorArrayAttribute.colors[1].r, colorArrayAttribute.colors[1].g, colorArrayAttribute.colors[1].b);			
-			program.setUniformf(u_planetColor2, colorArrayAttribute.colors[2].r, colorArrayAttribute.colors[2].g, colorArrayAttribute.colors[2].b);			
-		}
+		program.setUniformf(u_planetColor0, gasPlanetAttribute.planetColors[0].r, gasPlanetAttribute.planetColors[0].g, gasPlanetAttribute.planetColors[0].b);			
+		program.setUniformf(u_planetColor1, gasPlanetAttribute.planetColors[1].r, gasPlanetAttribute.planetColors[1].g, gasPlanetAttribute.planetColors[1].b);			
+		program.setUniformf(u_planetColor2, gasPlanetAttribute.planetColors[2].r, gasPlanetAttribute.planetColors[2].g, gasPlanetAttribute.planetColors[2].b);			
 		
 		// mesh
 		renderable.meshPart.render(program);
