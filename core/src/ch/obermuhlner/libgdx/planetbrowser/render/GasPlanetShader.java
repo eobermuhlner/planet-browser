@@ -156,9 +156,9 @@ public class GasPlanetShader implements Shader {
 		program.setUniformf(u_random9, gasPlanetAttribute.randomValues[9]);
 
 		// color array
-		program.setUniformf(u_planetColor0, gasPlanetAttribute.planetColors[0].r, gasPlanetAttribute.planetColors[0].g, gasPlanetAttribute.planetColors[0].b);			
-		program.setUniformf(u_planetColor1, gasPlanetAttribute.planetColors[1].r, gasPlanetAttribute.planetColors[1].g, gasPlanetAttribute.planetColors[1].b);			
-		program.setUniformf(u_planetColor2, gasPlanetAttribute.planetColors[2].r, gasPlanetAttribute.planetColors[2].g, gasPlanetAttribute.planetColors[2].b);			
+		program.setUniformf(u_planetColor0, gasPlanetAttribute.planetColors[0]);			
+		program.setUniformf(u_planetColor1, gasPlanetAttribute.planetColors[1]);			
+		program.setUniformf(u_planetColor2, gasPlanetAttribute.planetColors[2]);			
 		
 		// mesh
 		renderable.meshPart.render(program);

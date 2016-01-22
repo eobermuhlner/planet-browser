@@ -12,9 +12,6 @@ precision highp float;
 uniform float u_normalStep;
 
 uniform float u_time;
-uniform vec3 u_planetColor0;
-uniform vec3 u_planetColor1;
-uniform vec3 u_planetColor2;
 
 uniform float u_random0;
 uniform float u_random1;
@@ -26,6 +23,10 @@ uniform float u_random6;
 uniform float u_random7;
 uniform float u_random8;
 uniform float u_random9;
+
+uniform vec4 u_planetColor0;
+uniform vec4 u_planetColor1;
+uniform vec4 u_planetColor2;
 
 varying vec2 v_texCoords0;
 
@@ -203,10 +204,10 @@ float jupiterNoise(vec2 texCoords) {
 }
 
 vec3 planetColor(float height, float distEquator) {
-	vec3 color1 = u_planetColor0;
-	vec3 color2 = u_planetColor1; 
-	vec3 color3 = u_planetColor2;
-	vec3 color4 = mix(u_planetColor0, u_planetColor2, pnoise1(distEquator, 2.0+u_random9*10.0));
+	vec3 color1 = u_planetColor0.rgb;
+	vec3 color2 = u_planetColor1.rgb;
+	vec3 color3 = u_planetColor2.rgb;
+	vec3 color4 = mix(u_planetColor0, u_planetColor2, pnoise1(distEquator, 2.0+u_random9*10.0)).rgb;
 	
 	float v1 = pnoise1(distEquator+u_random1, 2.0+u_random2*10.0);
 	float v2 = pnoise1(distEquator+u_random3, 2.0+u_random4*10.0);
