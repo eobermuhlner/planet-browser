@@ -38,6 +38,7 @@ public class RingAttribute extends AbstractRandomAttribute {
 	public Attribute copy() {
 		RingAttribute copy = new RingAttribute(type, randomValues);
 		copy.color = color;
+		copy.opacity = opacity;
 		return copy;
 	}
 
