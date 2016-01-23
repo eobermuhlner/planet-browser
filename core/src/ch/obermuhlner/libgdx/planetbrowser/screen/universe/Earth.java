@@ -12,8 +12,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
@@ -125,20 +124,19 @@ public class Earth extends AbstractPlanet {
 //		System.out.println("heightFrequency=" + heightFrequency);
 //		System.out.println();
 		
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightWater(0.45f)); // depends on texture
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(heightFrequency));
-//		if (heightFrequency < random.nextInt(1, 3)) {
-//			materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMountains(random.nextFloat(0.8f, 1.0f)));
-//		}
-		if (random.nextBoolean(0.2)) {
-			materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
-		}
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createIceLevel(iceLevel));
-		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2));
+		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
+		terrestrialAttribute.heightWater = 0.45f;
+		terrestrialAttribute.heightMin = heightMin;
+		terrestrialAttribute.heightMax = heightMax;
+		terrestrialAttribute.heightFrequency = heightFrequency;
+		terrestrialAttribute.iceLevel = iceLevel;
+		terrestrialAttribute.heightFunction = TerrestrialAttribute.CONTINENT_POWER_2;
 
-		materialAttributes.add(createRandomFloatArrayAttribute(random));
+		materialAttributes.add(terrestrialAttribute);
+
+		if (random.nextBoolean(0.2)) {
+			terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
+		}
 
 		Material material = new Material(materialAttributes);
 

@@ -11,9 +11,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
-import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
@@ -120,35 +118,40 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		int heightFrequency = random.nextInt(3, 5);
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
-				p(2, TerrestrialHeightShaderFunctionAttribute.SMOOTH),
-				p(3, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
-				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
-				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3),
-				p(5, TerrestrialHeightShaderFunctionAttribute.POWER_2),
-				p(5, TerrestrialHeightShaderFunctionAttribute.POWER_3),
-				p(5, TerrestrialHeightShaderFunctionAttribute.functionPower(1.5f))
+				p(2, TerrestrialAttribute.SMOOTH),
+				p(3, TerrestrialAttribute.SMOOTH + TerrestrialAttribute.POWER_2),
+				p(5, TerrestrialAttribute.CONTINENT_POWER_2),
+				p(5, TerrestrialAttribute.CONTINENT_POWER_3),
+				p(5, TerrestrialAttribute.POWER_2),
+				p(5, TerrestrialAttribute.POWER_3),
+				p(5, TerrestrialAttribute.functionPower(1.5f))
 				);
 		Color[] randomColors = ColorUtil.randomColors(random, 6, colors, 0.01f, 0.1f);
 		for (int i = 0; i < randomColors.length; i++) {
 			// specular color encoded in alpha (grayscale only)
 			randomColors[i].a = random.nextBoolean(0.1) ? random.nextFloat(0.5f, 1.0f) : random.nextFloat(0.0f, 0.3f);
 		}
-		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors));
-		materialAttributes.add(createPlanetColorFrequenciesAttribute(random));
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(heightFrequency));
-		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(heightFunction));
+		
+		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
+		//terrestrialAttribute.heightWater = 0.45f;
+		terrestrialAttribute.heightMin = heightMin;
+		terrestrialAttribute.heightMax = heightMax;
+		terrestrialAttribute.heightFrequency = heightFrequency;
+		terrestrialAttribute.heightFunction = heightFunction;
+		terrestrialAttribute.planetColors = randomColors;
+		terrestrialAttribute.planetColorFrequencies = createPlanetColorFrequencies(random);
+		
 		if (planetData.atmosphere != null) {
 			if (random.nextBoolean(0.4)) {
-				materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
+				terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
 			}
 		} else {
 			if (random.nextBoolean(0.8)) {
-				materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
+				terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
 			}
 		}
-		materialAttributes.add(createRandomFloatArrayAttribute(random));
+
+		materialAttributes.add(terrestrialAttribute);
 
 		Material material = new Material(materialAttributes);
 

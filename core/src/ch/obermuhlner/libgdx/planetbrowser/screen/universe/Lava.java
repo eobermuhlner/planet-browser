@@ -12,9 +12,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
-import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
@@ -75,35 +73,39 @@ public class Lava extends AbstractPlanet {
 		float heightFlatGround = random.nextFloat(0.0f, 0.5f);
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
-				p(1, TerrestrialHeightShaderFunctionAttribute.SMOOTH),
-				p(1, TerrestrialHeightShaderFunctionAttribute.SMOOTH + TerrestrialHeightShaderFunctionAttribute.POWER_2),
-				p(2, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
-				p(2, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3),
-				p(2, TerrestrialHeightShaderFunctionAttribute.functionPower(1.5f)),
-				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_2),
-				p(5, TerrestrialHeightShaderFunctionAttribute.CONTINENT_POWER_3),
-				p(5, TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(0.7f)), // I really like this one with its broad channels of lava
-				p(10, TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(heightPower))
+				p(1, TerrestrialAttribute.SMOOTH),
+				p(1, TerrestrialAttribute.SMOOTH + TerrestrialAttribute.POWER_2),
+				p(2, TerrestrialAttribute.CONTINENT_POWER_2),
+				p(2, TerrestrialAttribute.CONTINENT_POWER_3),
+				p(2, TerrestrialAttribute.functionPower(1.5f)),
+				p(5, TerrestrialAttribute.CONTINENT_POWER_2),
+				p(5, TerrestrialAttribute.CONTINENT_POWER_3),
+				p(5, TerrestrialAttribute.functionPowerMid0(0.7f)), // I really like this one with its broad channels of lava
+				p(10, TerrestrialAttribute.functionPowerMid0(heightPower))
 				);
 		
-		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, new Color[] {
+		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
+		terrestrialAttribute.heightMin = 0.0f;
+		terrestrialAttribute.heightMax = 1.0f;
+		terrestrialAttribute.heightWater = heightFlatGround;
+		terrestrialAttribute.heightFrequency = random.nextInt(2, 4);
+		terrestrialAttribute.heightFunction = heightFunction;
+		terrestrialAttribute.planetColors = new Color[] {
 				new Color(0xff0000ff), // red
 				new Color(0xee2200ff), // red-orange
 				new Color(0xff5500ff), // orange
 				new Color(0.30f, 0.30f, 0.30f, 1.0f),
 				new Color(0.20f, 0.20f, 0.20f, 1.0f),
 				new Color(0.15f, 0.15f, 0.15f, 1.0f),
-		}));
+		};
+		terrestrialAttribute.planetColorFrequencies = createPlanetColorFrequencies(random);
 
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(random.nextInt(2, 4)));
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightWater(heightFlatGround));
-		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(heightFunction));
 		if (random.nextBoolean(0.6)) {
-			materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
+			terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
 		}
-		
-		materialAttributes.add(createRandomFloatArrayAttribute(random));
 
+		materialAttributes.add(terrestrialAttribute);
+		
 		Material material = new Material(materialAttributes);
 
 		return createTextures(disposables, material, TerrestrialPlanetShader.PROVIDER, textureTypes, textureSize, xFrom, xTo, yFrom, yTo);

@@ -9,9 +9,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
-import ch.obermuhlner.libgdx.planetbrowser.render.ColorArrayAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialHeightShaderFunctionAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetFloatAttribute;
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
@@ -51,21 +49,24 @@ public class IceMoon extends AbstractPlanet {
 		
 		Color[] randomColors = ColorUtil.randomColors(random, 6, colors, 0.02f, 0.1f);
 
-		materialAttributes.add(new ColorArrayAttribute(ColorArrayAttribute.PlanetColors, randomColors));
-
-		String heightFunction = TerrestrialHeightShaderFunctionAttribute.functionPowerMid0(1.2f);
+		String heightFunction = TerrestrialAttribute.functionPowerMid0(1.2f);
 
 		float heightMin = 0.3f;
 		float heightMax = random.nextFloat(0.5f, 0.7f);
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightFrequency(random.nextInt(3, 3)));
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMin(heightMin));
-		materialAttributes.add(TerrestrialPlanetFloatAttribute.createHeightMax(heightMax));
-		materialAttributes.add(new TerrestrialHeightShaderFunctionAttribute(heightFunction));
+
+		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
+		terrestrialAttribute.heightMin = heightMin;
+		terrestrialAttribute.heightMax = heightMax;
+		terrestrialAttribute.heightFrequency = 3;
+		terrestrialAttribute.heightFunction = heightFunction;
+		terrestrialAttribute.planetColors = randomColors;
+		//terrestrialAttribute.planetColorFrequencies = createPlanetColorFrequencies(random);
+
 		if (random.nextBoolean(0.7)) {
-			materialAttributes.add(TerrestrialPlanetFloatAttribute.createCraterBaseGrid((float) random.nextInt(5, 15)));
+			terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
 		}
-		
-		materialAttributes.add(createRandomFloatArrayAttribute(random));
+
+		materialAttributes.add(terrestrialAttribute);
 
 		Material material = new Material(materialAttributes);
 		

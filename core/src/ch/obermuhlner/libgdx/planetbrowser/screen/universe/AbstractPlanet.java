@@ -29,7 +29,6 @@ import ch.obermuhlner.libgdx.planetbrowser.model.MeshPartBuilder.VertexInfo;
 import ch.obermuhlner.libgdx.planetbrowser.model.ModelBuilder;
 import ch.obermuhlner.libgdx.planetbrowser.render.AtmosphereAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.CreateTextureAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.FloatArrayAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.MoreFloatAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.RingAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.UberShaderProvider;
@@ -205,29 +204,20 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		return material;
 	}
 
-	public FloatArrayAttribute createRandomFloatArrayAttribute(Random random) {
-		float floatArray[] = new float[10];
-		for (int i = 0; i < floatArray.length; i++) {
-			floatArray[i] = random.nextFloat();
-		}
-		
-		return new FloatArrayAttribute(FloatArrayAttribute.RandomFloatArray, floatArray);
-	}
-
-	public FloatArrayAttribute createPlanetColorFrequenciesAttribute(Random random) {
-		float floatArray[] = new float[4];
-		for (int i = 0; i < floatArray.length; i++) {
+	public int[] createPlanetColorFrequencies(Random random) {
+		int intArray[] = new int[4];
+		for (int i = 0; i < intArray.length; i++) {
 			@SuppressWarnings("unchecked")
-			float powerOfTwo = random.nextProbability(
-					p(5, 2f),
-					p(10, 4f),
-					p(10, 8f),
-					p(4, 16f),
-					p(2, 32f));
-			floatArray[i] = powerOfTwo;
+			int powerOfTwo = random.nextProbability(
+					p(5, 2),
+					p(10, 4),
+					p(10, 8),
+					p(4, 16),
+					p(2, 32));
+			intArray[i] = powerOfTwo;
 		}
 		
-		return new FloatArrayAttribute(FloatArrayAttribute.PlanetColorFrequencies, floatArray);
+		return intArray;
 	}
 	
 	public Array<Texture> renderTextures (DisposableContainer disposables, Material material, ShaderProvider shaderProvider, int textureSize, float xFrom, float xTo, float yFrom, float yTo, boolean bump, boolean diffuse, boolean normal, boolean specular, boolean emissive) {

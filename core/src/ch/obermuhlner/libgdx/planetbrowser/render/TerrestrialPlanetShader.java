@@ -20,10 +20,6 @@ public class TerrestrialPlanetShader implements Shader {
 
 	public static final Provider PROVIDER = new TerrestrialPlanetShader.Provider();
 
-	private static final float DEFAULT_COLOR_NOISE = 0.0f;
-	private static final float DEFAULT_HEIGHT_MOUNTAINS = 0.0f;
-	private static final float DEFAULT_CRATER_BASE_GRID = 0.0f;
-	
 	private String prefix;
 	
 	private final String vertexProgram;
@@ -43,11 +39,8 @@ public class TerrestrialPlanetShader implements Shader {
 	private int u_heightMax;
 	private int u_heightFrequency;
 	private int u_heightWater;
-	private int u_heightMountains;
 	private int u_craterBaseGrid;
 	private int u_iceLevel;
-	private int u_colorNoise;
-	private int u_colorFrequency;
 	
 	private int u_random0;
 	private int u_random1;
@@ -79,8 +72,8 @@ public class TerrestrialPlanetShader implements Shader {
 	public TerrestrialPlanetShader (Renderable renderable, String vertexProgram, String fragmentProgram, String prefix) {
 		this.prefix = prefix;
 
-		String code = getShaderFunctionAttributeValue(renderable, TerrestrialHeightShaderFunctionAttribute.TerrestrialHeightFunction, "");
-		fragmentProgram = fragmentProgram.replace("$HEIGHT_FUNCTION", code);
+		TerrestrialAttribute terrestrialAttribute = (TerrestrialAttribute) renderable.material.get(TerrestrialAttribute.Terrestrial);
+		fragmentProgram = fragmentProgram.replace("$HEIGHT_FUNCTION", terrestrialAttribute.heightFunction);
 
 		this.vertexProgram = vertexProgram;
 		this.fragmentProgram = fragmentProgram;
@@ -107,11 +100,8 @@ public class TerrestrialPlanetShader implements Shader {
 		u_heightMax = program.getUniformLocation("u_heightMax");
 		u_heightFrequency = program.getUniformLocation("u_heightFrequency");
 		u_heightWater = program.getUniformLocation("u_heightWater");
-		u_heightMountains = program.getUniformLocation("u_heightMountains");
 		u_craterBaseGrid = program.getUniformLocation("u_craterBaseGrid");
 		u_iceLevel = program.getUniformLocation("u_iceLevel");
-		u_colorNoise = program.getUniformLocation("u_colorNoise");
-		u_colorFrequency = program.getUniformLocation("u_colorFrequency");
 		
 		u_planetColor0 = program.getUniformLocation("u_planetColor0");
 		u_planetColor1 = program.getUniformLocation("u_planetColor1");
@@ -140,16 +130,16 @@ public class TerrestrialPlanetShader implements Shader {
 	private static String createPrefix(Renderable renderable) {
 		StringBuilder prefix = new StringBuilder();
 		
-		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.ColorNoise, DEFAULT_COLOR_NOISE) != DEFAULT_COLOR_NOISE) {
-			prefix.append("#define colorNoiseFlag\n");
+		TerrestrialAttribute terrestrialAttribute = (TerrestrialAttribute) renderable.material.get(TerrestrialAttribute.Terrestrial);
+		
+		if (terrestrialAttribute.planetColors != null) {
+			prefix.append("#define planetColorsFlag\n");
 		}
-		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightMountains, DEFAULT_HEIGHT_MOUNTAINS) != DEFAULT_HEIGHT_MOUNTAINS) {
-			prefix.append("#define mountainsFlag\n");
-		}
-		if (getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CraterBaseGrid, DEFAULT_CRATER_BASE_GRID) != DEFAULT_CRATER_BASE_GRID) {
+
+		if (terrestrialAttribute.craterBaseGrid != 0.0f) {
 			prefix.append("#define cratersFlag\n");
 		}
-		
+
 		IntAttribute createTextureAttribute = (IntAttribute) renderable.material.get(CreateTextureAttribute.CreateTexture);
 		int createTexture = createTextureAttribute.value;
 
@@ -183,9 +173,6 @@ public class TerrestrialPlanetShader implements Shader {
 			prefix.append("#define multiTextureRenderingFlag\n");
 		}
 		
-		if (renderable.material.get(ColorArrayAttribute.PlanetColors) != null) {
-			prefix.append("#define planetColorsFlag\n");
-		}
 		if (renderable.material.get(TextureAttribute.Diffuse) != null) {
 			prefix.append("#define diffuseTextureFlag\n");			
 		}
@@ -193,9 +180,8 @@ public class TerrestrialPlanetShader implements Shader {
 			prefix.append("#define specularTextureFlag\n");			
 		}
 
-		// add hash of height function so they can be distinguished
-		String code = getShaderFunctionAttributeValue(renderable, TerrestrialHeightShaderFunctionAttribute.TerrestrialHeightFunction, "");
-		prefix.append("// " + code + "\n");
+		// add comment of height function so they can be distinguished in the prefix
+		prefix.append("// " + terrestrialAttribute.heightFunction + "\n");
 		
 		return prefix.toString();
 	}
@@ -223,6 +209,8 @@ public class TerrestrialPlanetShader implements Shader {
 		// world transformation
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 		
+		TerrestrialAttribute terrestrialAttribute = (TerrestrialAttribute) renderable.material.get(TerrestrialAttribute.Terrestrial);
+
 		// diffuse texture
 		TextureAttribute diffuseTextureAttribute = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
 		if (diffuseTextureAttribute != null) {
@@ -241,60 +229,53 @@ public class TerrestrialPlanetShader implements Shader {
 		program.setUniformf(u_normalStep, getFloatAttributeValue(renderable, MoreFloatAttribute.NormalStep, 0.0001f));
 		
 		// planet data
-		int heightFrequencyPowerOfTwo = (int) getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightFrequency, 4f);
+		int heightFrequencyPowerOfTwo = terrestrialAttribute.heightFrequency;
 		float heightFrequency = MathUtil.powerOfTwo(heightFrequencyPowerOfTwo);
-		int colorFrequencyPowerOfTwo = (int) getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.ColorFrequency, 16f);
-		float colorFrequency = MathUtil.powerOfTwo(colorFrequencyPowerOfTwo);
-		program.setUniformf(u_heightMin, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightMin, 0.0f));
-		program.setUniformf(u_heightMax, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightMax, 1.0f));
+		program.setUniformf(u_heightMin, terrestrialAttribute.heightMin);
+		program.setUniformf(u_heightMax, terrestrialAttribute.heightMax);
 		program.setUniformf(u_heightFrequency, heightFrequency);
-		program.setUniformf(u_heightWater, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightWater, 0.0f));
-		program.setUniformf(u_heightMountains, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.HeightMountains, DEFAULT_HEIGHT_MOUNTAINS));
-		program.setUniformf(u_craterBaseGrid, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.CraterBaseGrid, DEFAULT_CRATER_BASE_GRID));
-		program.setUniformf(u_iceLevel, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.IceLevel, 0.0f));
-		program.setUniformf(u_colorNoise, getFloatAttributeValue(renderable, TerrestrialPlanetFloatAttribute.ColorNoise, DEFAULT_COLOR_NOISE));
-		program.setUniformf(u_colorFrequency, colorFrequency);
+		program.setUniformf(u_heightWater, terrestrialAttribute.heightWater);
+		program.setUniformf(u_iceLevel, terrestrialAttribute.iceLevel);
+		
+		program.setUniformf(u_craterBaseGrid, terrestrialAttribute.craterBaseGrid);
 		
 		// planet color array
-		ColorArrayAttribute colorArrayAttribute = (ColorArrayAttribute) renderable.material.get(ColorArrayAttribute.PlanetColors);
-		if (colorArrayAttribute != null) {
+		if (terrestrialAttribute.planetColors != null) {
 			int index = 0;
-			program.setUniformf(u_planetColor0, colorArrayAttribute.colors[index]);
-			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor1, colorArrayAttribute.colors[index]);			
-			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor2, colorArrayAttribute.colors[index]);			
-			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor3, colorArrayAttribute.colors[index]);			
-			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor4, colorArrayAttribute.colors[index]);			
-			index = (index+1) % colorArrayAttribute.colors.length;
-			program.setUniformf(u_planetColor5, colorArrayAttribute.colors[index]);			
+			program.setUniformf(u_planetColor0, terrestrialAttribute.planetColors[index]);
+			index = (index+1) % terrestrialAttribute.planetColors.length;
+			program.setUniformf(u_planetColor1, terrestrialAttribute.planetColors[index]);			
+			index = (index+1) % terrestrialAttribute.planetColors.length;
+			program.setUniformf(u_planetColor2, terrestrialAttribute.planetColors[index]);			
+			index = (index+1) % terrestrialAttribute.planetColors.length;
+			program.setUniformf(u_planetColor3, terrestrialAttribute.planetColors[index]);			
+			index = (index+1) % terrestrialAttribute.planetColors.length;
+			program.setUniformf(u_planetColor4, terrestrialAttribute.planetColors[index]);			
+			index = (index+1) % terrestrialAttribute.planetColors.length;
+			program.setUniformf(u_planetColor5, terrestrialAttribute.planetColors[index]);			
 		}
 		
 		// planet color frequency
-		FloatArrayAttribute planetColorFrequenciesAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.PlanetColorFrequencies);
-		float planetColorFrequency0 = planetColorFrequenciesAttribute == null ? 8 : planetColorFrequenciesAttribute.values[0];
-		float planetColorFrequency1 = planetColorFrequenciesAttribute == null ? 4 : planetColorFrequenciesAttribute.values[1];
-		float planetColorFrequency2 = planetColorFrequenciesAttribute == null ? 8 : planetColorFrequenciesAttribute.values[2];
-		float planetColorFrequency3 = planetColorFrequenciesAttribute == null ? 4 : planetColorFrequenciesAttribute.values[3];
+		float planetColorFrequency0 = terrestrialAttribute.planetColorFrequencies == null ? 8 : terrestrialAttribute.planetColorFrequencies[0];
+		float planetColorFrequency1 = terrestrialAttribute.planetColorFrequencies == null ? 4 : terrestrialAttribute.planetColorFrequencies[1];
+		float planetColorFrequency2 = terrestrialAttribute.planetColorFrequencies == null ? 8 : terrestrialAttribute.planetColorFrequencies[2];
+		float planetColorFrequency3 = terrestrialAttribute.planetColorFrequencies == null ? 4 : terrestrialAttribute.planetColorFrequencies[3];
 		program.setUniformf(u_planetColorFrequency0, planetColorFrequency0);
 		program.setUniformf(u_planetColorFrequency1, planetColorFrequency1);
 		program.setUniformf(u_planetColorFrequency2, planetColorFrequency2);
 		program.setUniformf(u_planetColorFrequency3, planetColorFrequency3);
 
 		// random
-		FloatArrayAttribute floatArrayAttribute = (FloatArrayAttribute)renderable.material.get(FloatArrayAttribute.RandomFloatArray);
-		program.setUniformf(u_random0, floatArrayAttribute.values[0]);
-		program.setUniformf(u_random1, floatArrayAttribute.values[1]);
-		program.setUniformf(u_random2, floatArrayAttribute.values[2]);
-		program.setUniformf(u_random3, floatArrayAttribute.values[3]);
-		program.setUniformf(u_random4, floatArrayAttribute.values[4]);
-		program.setUniformf(u_random5, floatArrayAttribute.values[5]);
-		program.setUniformf(u_random6, floatArrayAttribute.values[6]);
-		program.setUniformf(u_random7, floatArrayAttribute.values[7]);
-		program.setUniformf(u_random8, floatArrayAttribute.values[8]);
-		program.setUniformf(u_random9, floatArrayAttribute.values[9]);
+		program.setUniformf(u_random0, terrestrialAttribute.randomValues[0]);
+		program.setUniformf(u_random1, terrestrialAttribute.randomValues[1]);
+		program.setUniformf(u_random2, terrestrialAttribute.randomValues[2]);
+		program.setUniformf(u_random3, terrestrialAttribute.randomValues[3]);
+		program.setUniformf(u_random4, terrestrialAttribute.randomValues[4]);
+		program.setUniformf(u_random5, terrestrialAttribute.randomValues[5]);
+		program.setUniformf(u_random6, terrestrialAttribute.randomValues[6]);
+		program.setUniformf(u_random7, terrestrialAttribute.randomValues[7]);
+		program.setUniformf(u_random8, terrestrialAttribute.randomValues[8]);
+		program.setUniformf(u_random9, terrestrialAttribute.randomValues[9]);
 
 		// time
 		program.setUniformf(u_time, time += Gdx.graphics.getDeltaTime());
@@ -303,11 +284,6 @@ public class TerrestrialPlanetShader implements Shader {
 		renderable.meshPart.render(program);
 	}
 
-	private static String getShaderFunctionAttributeValue(Renderable renderable, long attributeType, String defaultValue) {
-		ShaderFunctionAttribute codeAttribute = (ShaderFunctionAttribute) renderable.material.get(attributeType);
-		return codeAttribute == null ? defaultValue : codeAttribute.code;
-	}
-	
 	public static float getFloatAttributeValue(Renderable renderable, long attributeType, float defaultValue) {
 		FloatAttribute floatAttribute = (FloatAttribute) renderable.material.get(attributeType);
 		return floatAttribute == null ? defaultValue : floatAttribute.value;

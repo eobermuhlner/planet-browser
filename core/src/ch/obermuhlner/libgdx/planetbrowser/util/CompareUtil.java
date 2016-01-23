@@ -5,17 +5,42 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class CompareUtil {
 
-	public static int compare(Color value, Color other) {
-		return value.toIntBits() - other.toIntBits();
-	}
-	
 	public static int compare(float value, float other) {
 		return MathUtils.isEqual(value, other) ? 0 : value < other ? -1 : 1;
 	}
 	
+    public static int compare(int value, int other) {
+        return (value < other) ? -1 : ((value == other) ? 0 : 1);
+    }
+
     public static int compare(long value, long other) {
         return (value < other) ? -1 : ((value == other) ? 0 : 1);
     }
+
+	public static int compare(Color value, Color other) {
+		return value.toIntBits() - other.toIntBits();
+	}
+	
+	public static int compare(String value, String other) {
+		return value.compareTo(other);
+	}
+
+	public static int compare(int[] array, int[] other) {
+		if (array == other) {
+			return 0;
+		}
+		if (other.length != array.length) {
+			return other.length - array.length;
+		}
+		for (int i = 0; i < array.length; i++) {
+			int thisValue = array[i];
+			int otherValue = other[i];
+			if (thisValue != otherValue) {
+				return thisValue < otherValue ? -1 : 1;
+			}
+		}
+		return 0;
+	}
 
 	public static int compare(float[] array, float[] other) {
 		if (array == other) {
@@ -49,4 +74,5 @@ public class CompareUtil {
 		}
 		return 0;
 	}
+
 }
