@@ -87,7 +87,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 10f;
 		camera.far = 3000f;
-		camera.position.set(0, 400, 0);
+		camera.position.set(0, 800, 0);
 		camera.lookAt(1000, 200, 1000);
 		camera.update(true);
 		
