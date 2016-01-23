@@ -198,7 +198,7 @@ float jupiterNoise(vec2 texCoords) {
 //	disturbance += pnoise1(distPol+(u_random4 + u_random8), 20.0+(u_random7 + u_random8)*40.0) * 0.025;
 //	disturbance += pnoise1(distPol+(u_random5 + u_random8), 20.0+(u_random8 + u_random8)*80.0) * 0.0125;
 //	disturbance = disturbance*disturbance*2.0;
-	float noiseFactor = (u_random6 + u_random9) * 0.3;
+	float noiseFactor = (u_random6 + u_random9) * 0.1;
 	float noiseDistEquator = noise * noiseFactor * disturbance;
 	return noiseDistEquator;
 }
