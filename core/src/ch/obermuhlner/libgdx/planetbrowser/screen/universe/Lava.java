@@ -75,11 +75,9 @@ public class Lava extends AbstractPlanet {
 		String heightFunction = random.nextProbability(
 				p(1, TerrestrialAttribute.SMOOTH),
 				p(1, TerrestrialAttribute.SMOOTH + TerrestrialAttribute.POWER_2),
-				p(2, TerrestrialAttribute.CONTINENT_POWER_2),
-				p(2, TerrestrialAttribute.CONTINENT_POWER_3),
-				p(2, TerrestrialAttribute.functionPower(1.5f)),
-				p(5, TerrestrialAttribute.CONTINENT_POWER_2),
-				p(5, TerrestrialAttribute.CONTINENT_POWER_3),
+				p(3, TerrestrialAttribute.CONTINENT_POWER_2),
+				p(3, TerrestrialAttribute.CONTINENT_POWER_3),
+				p(3, TerrestrialAttribute.functionPower(1.5f)),
 				p(5, TerrestrialAttribute.functionPowerMid0(0.7f)), // I really like this one with its broad channels of lava
 				p(10, TerrestrialAttribute.functionPowerMid0(heightPower))
 				);
