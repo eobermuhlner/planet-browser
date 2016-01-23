@@ -115,7 +115,14 @@ public class Earth extends AbstractPlanet {
 		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.7f, water);
 		int heightFrequency = random.nextInt(3, 5);
 		float iceLevel = (float) MathUtil.transform(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50), 1f, -1f, planetData.temperature);
-
+		@SuppressWarnings("unchecked")
+		String heightFunction = random.nextProbability(
+				p(10, TerrestrialAttribute.CONTINENT_POWER_2),
+				p(4, TerrestrialAttribute.POWER_2),
+				p(3, TerrestrialAttribute.POWER_3),
+				p(2, TerrestrialAttribute.LINEAR)
+				);
+		
 //		System.out.println("texture=" + textureName);
 //		System.out.println("water=" + water);
 //		System.out.println("temperature=" + planetData.temperature);
@@ -130,7 +137,7 @@ public class Earth extends AbstractPlanet {
 		terrestrialAttribute.heightMax = heightMax;
 		terrestrialAttribute.heightFrequency = heightFrequency;
 		terrestrialAttribute.iceLevel = iceLevel;
-		terrestrialAttribute.heightFunction = TerrestrialAttribute.CONTINENT_POWER_2;
+		terrestrialAttribute.heightFunction = heightFunction;
 
 		materialAttributes.add(terrestrialAttribute);
 
