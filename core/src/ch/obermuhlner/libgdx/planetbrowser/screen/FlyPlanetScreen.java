@@ -85,10 +85,10 @@ public class FlyPlanetScreen extends AbstractScreen {
 		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.near = 1f;
-		camera.far = 600f;
-		camera.position.set(0, 150, 0);
-		camera.lookAt(1000, 100, 1000);
+		camera.near = 10f;
+		camera.far = 3000f;
+		camera.position.set(0, 400, 0);
+		camera.lookAt(1000, 200, 1000);
 		camera.update(true);
 		
 //		float ambientLight = 0.1f;
@@ -125,8 +125,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 		terrain.planetStep = 0.01f;
 		terrain.terrainX = 0f;
 		terrain.terrainY = 0f;
-		terrain.terrainStep = 80f;
-		terrain.bumpFactor = 60f;
+		terrain.terrainStep = 400f;
+		terrain.bumpFactor = 400f;
 	}
 	
 	private TerrainLod[] toLod(TerrainQuality terrainQuality) {

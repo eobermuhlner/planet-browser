@@ -42,7 +42,7 @@ public class Jupiter extends AbstractGasPlanet {
 
 		planetData.atmosphereScatterColor = ColorUtil.randomColor(random, random.next(GAS_PLANET_COLORS), 0.2f, 0.2f);
 		planetData.atmospherePassColor = ColorUtil.randomColor(random, new Color(0xf26666ff), 0.2f, 0.2f);
-		planetData.fogLevel = random.nextDouble(0.005, 0.01);
+		planetData.fogLevel = random.nextDouble(0.0005, 0.001);
 		//planetData.fogLevel = 0.0;
 		
 		// see: https://en.wikipedia.org/wiki/Sudarsky%27s_gas_giant_classification

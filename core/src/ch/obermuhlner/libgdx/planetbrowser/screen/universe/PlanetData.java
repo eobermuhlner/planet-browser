@@ -60,7 +60,7 @@ public class PlanetData {
 			if (atmosphere == null) {
 				fogLevel = 0.0;
 			} else {
-				fogLevel = random.nextDouble(0.001, 0.005);
+				fogLevel = random.nextDouble(0.0001, 0.002);
 			}
 		}
 		
