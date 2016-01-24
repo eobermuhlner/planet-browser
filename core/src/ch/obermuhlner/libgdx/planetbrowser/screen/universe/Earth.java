@@ -141,8 +141,9 @@ public class Earth extends AbstractPlanet {
 
 		materialAttributes.add(terrestrialAttribute);
 
-		if (random.nextBoolean(0.2)) {
+		if (random.nextBoolean(0.4)) {
 			terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
+			terrestrialAttribute.craterProbability = random.nextFloat(0.0f, 0.4f);			
 		}
 
 		Material material = new Material(materialAttributes);

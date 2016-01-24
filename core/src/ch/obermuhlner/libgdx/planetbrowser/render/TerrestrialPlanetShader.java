@@ -40,6 +40,7 @@ public class TerrestrialPlanetShader implements Shader {
 	private int u_heightFrequency;
 	private int u_heightWater;
 	private int u_craterBaseGrid;
+	private int u_craterProbability;
 	private int u_iceLevel;
 	
 	private int u_random0;
@@ -101,6 +102,7 @@ public class TerrestrialPlanetShader implements Shader {
 		u_heightFrequency = program.getUniformLocation("u_heightFrequency");
 		u_heightWater = program.getUniformLocation("u_heightWater");
 		u_craterBaseGrid = program.getUniformLocation("u_craterBaseGrid");
+		u_craterProbability = program.getUniformLocation("u_craterProbability");
 		u_iceLevel = program.getUniformLocation("u_iceLevel");
 		
 		u_planetColor0 = program.getUniformLocation("u_planetColor0");
@@ -238,6 +240,7 @@ public class TerrestrialPlanetShader implements Shader {
 		program.setUniformf(u_iceLevel, terrestrialAttribute.iceLevel);
 		
 		program.setUniformf(u_craterBaseGrid, terrestrialAttribute.craterBaseGrid);
+		program.setUniformf(u_craterProbability, terrestrialAttribute.craterProbability);
 		
 		// planet color array
 		if (terrestrialAttribute.planetColors != null) {

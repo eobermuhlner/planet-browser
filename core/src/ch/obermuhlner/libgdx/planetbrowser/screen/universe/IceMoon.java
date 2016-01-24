@@ -64,6 +64,7 @@ public class IceMoon extends AbstractPlanet {
 
 		if (random.nextBoolean(0.7)) {
 			terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
+			terrestrialAttribute.craterProbability = random.nextFloat(0.0f, 1.0f);			
 		}
 
 		materialAttributes.add(terrestrialAttribute);

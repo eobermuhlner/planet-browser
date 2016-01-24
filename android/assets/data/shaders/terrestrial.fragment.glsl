@@ -24,6 +24,7 @@ uniform float u_heightMountains;
 
 #ifdef cratersFlag
 uniform float u_craterBaseGrid;
+uniform float u_craterProbability;
 #endif
 
 uniform float u_iceLevel;
@@ -463,6 +464,9 @@ float addCraterComplexSteps(float height, float craterBaseHeight, vec2 pos, floa
 	float craterAngleSin;
 	calculateCrater(pos, grid, random1, random2, 
 		craterPos, craterDistance, craterRadius, craterHeight, craterAngleSin);
+	if (rand(craterPos) >= u_craterProbability) {
+		return height;
+	}
 	float crater = craterComplexSteps(craterDistance, craterPos, asin(craterAngleSin), pos, craterNoise, random1);
 	return height + crater * craterBaseHeight * craterRadius * (0.6 + craterHeight * 0.4);
 }
@@ -475,6 +479,9 @@ float addCraterComplexFlat(float height, float craterBaseHeight, vec2 pos, float
 	float craterAngleSin;
 	calculateCrater(pos, grid, random1, random2, 
 		craterPos, craterDistance, craterRadius, craterHeight, craterAngleSin);
+	if (rand(craterPos) >= u_craterProbability) {
+		return height;
+	}
 	float crater = craterComplexFlat(craterDistance, craterPos, craterNoise, random1);
 	return height + crater * craterBaseHeight * craterRadius * (0.3 + craterHeight * 0.4);
 }
@@ -487,6 +494,9 @@ float addCraterSimpleFlat(float height, float craterBaseHeight, vec2 pos, float 
 	float craterAngleSin;
 	calculateCrater(pos, grid, random1, random2, 
 		craterPos, craterDistance, craterRadius, craterHeight, craterAngleSin);
+	if (rand(craterPos) >= u_craterProbability) {
+		return height;
+	}
 	float crater = craterSimpleFlat(craterDistance, craterPos, craterNoise, random1);
 	return height + crater * craterBaseHeight * craterRadius * (0.3 + craterHeight * 0.4);
 }
@@ -499,6 +509,9 @@ float addCraterSimpleRound(float height, float craterBaseHeight, vec2 pos, float
 	float craterAngleSin;
 	calculateCrater(pos, grid, random1, random2, 
 		craterPos, craterDistance, craterRadius, craterHeight, craterAngleSin);
+	if (rand(craterPos) >= u_craterProbability) {
+		return height;
+	}
 	float crater = craterSimpleRound(craterDistance, craterPos, craterNoise, random1);
 	return height + crater * craterBaseHeight * craterRadius * (0.3 + craterHeight * 0.4);
 }

@@ -100,6 +100,7 @@ public class Lava extends AbstractPlanet {
 
 		if (random.nextBoolean(0.6)) {
 			terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
+			terrestrialAttribute.craterProbability = random.nextFloat(0.0f, 0.7f);			
 		}
 
 		materialAttributes.add(terrestrialAttribute);

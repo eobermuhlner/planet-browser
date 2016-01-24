@@ -48,6 +48,7 @@ public class TerrestrialAttribute extends AbstractRandomAttribute {
 	public float heightWater = 0.0f;
 	public float iceLevel = 0.0f;
 	public int craterBaseGrid = 0;
+	public float craterProbability = 1.0f;
 	public String heightFunction = LINEAR;
 	
 	public Color[] planetColors;
@@ -110,6 +111,7 @@ public class TerrestrialAttribute extends AbstractRandomAttribute {
 		copy.heightWater = heightWater;
 		copy.iceLevel = iceLevel;
 		copy.craterBaseGrid = craterBaseGrid;
+		copy.craterProbability = craterProbability;
 		copy.heightFunction = heightFunction;
 		copy.planetColors = planetColors;
 		copy.planetColorFrequencies = planetColorFrequencies;
