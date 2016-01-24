@@ -86,7 +86,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 10f;
-		camera.far = 3000f;
+		camera.far = 10000f;
 		camera.position.set(0, 800, 0);
 		camera.lookAt(1000, 200, 1000);
 		camera.update(true);
@@ -134,33 +134,37 @@ public class FlyPlanetScreen extends AbstractScreen {
 		
 		switch(terrainQuality) {
 		case Best:
-			lod = new TerrainLod[2];
+			lod = new TerrainLod[3];
 			lod[0] = new TerrainLod(5, 512, 64);
-			lod[1] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
+			lod[1] = new TerrainLod(7, 256, 64);
+			lod[2] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
 			return lod;
 		case VeryGood:
-			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(5, 256, 64);
-			lod[1] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
+			lod = new TerrainLod[3];
+			lod[0] = new TerrainLod(3, 512, 64);
+			lod[1] = new TerrainLod(5, 256, 64);
+			lod[2] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
 			return lod;
 		case Good:
-			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(3, 256, 64);
-			lod[1] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
+			lod = new TerrainLod[3];
+			lod[0] = new TerrainLod(5, 256, 64);
+			lod[1] = new TerrainLod(7, 128, 64);
+			lod[2] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
 			return lod;
 		case Poor:
-			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(5, 256, 64);
-			lod[1] = new TerrainLod(Integer.MAX_VALUE, 16, 16);
+			lod = new TerrainLod[3];
+			lod[0] = new TerrainLod(5, 128, 64);
+			lod[1] = new TerrainLod(7, 64, 64);
+			lod[2] = new TerrainLod(Integer.MAX_VALUE, 16, 16);
 			return lod;
 		case VeryPoor:
 			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(3, 256, 64);
+			lod[0] = new TerrainLod(5, 128, 64);
 			lod[1] = new TerrainLod(Integer.MAX_VALUE, 16, 16);
 			return lod;
 		case Worst:
 			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(1, 256, 64);
+			lod[0] = new TerrainLod(3, 128, 64);
 			lod[1] = new TerrainLod(Integer.MAX_VALUE, 16, 16);
 			return lod;
 		case SimpleBest:
