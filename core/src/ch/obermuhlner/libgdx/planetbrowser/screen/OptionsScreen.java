@@ -136,6 +136,8 @@ public class OptionsScreen extends AbstractStageScreen {
 		case SimpleGood:
 			return 9;
 		case SimplePoor:
+			return 7;
+		case SimpleWorst:
 			return 5;
 		default:
 			break;

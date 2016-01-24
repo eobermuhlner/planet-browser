@@ -135,12 +135,12 @@ public class FlyPlanetScreen extends AbstractScreen {
 		switch(terrainQuality) {
 		case Best:
 			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(4, 512, 64);
+			lod[0] = new TerrainLod(5, 512, 64);
 			lod[1] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
 			return lod;
 		case VeryGood:
 			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(3, 256, 64);
+			lod[0] = new TerrainLod(5, 256, 64);
 			lod[1] = new TerrainLod(Integer.MAX_VALUE, 32, 16);
 			return lod;
 		case Good:
@@ -150,12 +150,12 @@ public class FlyPlanetScreen extends AbstractScreen {
 			return lod;
 		case Poor:
 			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(2, 256, 64);
+			lod[0] = new TerrainLod(5, 256, 64);
 			lod[1] = new TerrainLod(Integer.MAX_VALUE, 16, 16);
 			return lod;
 		case VeryPoor:
 			lod = new TerrainLod[2];
-			lod[0] = new TerrainLod(2, 256, 64);
+			lod[0] = new TerrainLod(3, 256, 64);
 			lod[1] = new TerrainLod(Integer.MAX_VALUE, 16, 16);
 			return lod;
 		case Worst:
@@ -174,6 +174,10 @@ public class FlyPlanetScreen extends AbstractScreen {
 		case SimplePoor:
 			lod = new TerrainLod[1];
 			lod[0] = new TerrainLod(Integer.MAX_VALUE, 256, 64);
+			return lod;
+		case SimpleWorst:
+			lod = new TerrainLod[1];
+			lod[0] = new TerrainLod(Integer.MAX_VALUE, 256, 32);
 			return lod;
 		default:
 			break;
