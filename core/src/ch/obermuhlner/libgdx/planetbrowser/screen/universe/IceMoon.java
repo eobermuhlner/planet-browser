@@ -62,9 +62,11 @@ public class IceMoon extends AbstractPlanet {
 		terrestrialAttribute.planetColors = randomColors;
 		//terrestrialAttribute.planetColorFrequencies = createPlanetColorFrequencies(random);
 
-		if (random.nextBoolean(0.7)) {
-			terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
-			terrestrialAttribute.craterProbability = random.nextFloat(0.0f, 1.0f);			
+		terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
+		if (random.nextBoolean(0.6)) {
+			terrestrialAttribute.craterProbability = random.nextFloat(0.7f, 1.0f);
+		} else {
+			terrestrialAttribute.craterProbability = random.nextFloat(0.0f, 0.7f);
 		}
 
 		materialAttributes.add(terrestrialAttribute);

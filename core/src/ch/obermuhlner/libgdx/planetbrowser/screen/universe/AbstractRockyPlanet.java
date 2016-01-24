@@ -147,9 +147,11 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 				terrestrialAttribute.craterProbability = random.nextFloat(0.0f, 0.5f);
 			}
 		} else {
+			terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
 			if (random.nextBoolean(0.8)) {
-				terrestrialAttribute.craterBaseGrid = random.nextInt(5, 15);
-				terrestrialAttribute.craterProbability = random.nextFloat(0.3f, 1.0f);
+				terrestrialAttribute.craterProbability = random.nextFloat(0.7f, 1.0f);
+			} else {
+				terrestrialAttribute.craterProbability = random.nextFloat(0.0f, 0.7f);
 			}
 		}
 
