@@ -14,6 +14,10 @@ public class MathUtil {
 		return x * (1-a) + y * a;
 	}
 	
+	public static double mix(double x, double y, double a) {
+		return x * (1-a) + y * a;
+	}
+	
 	public static float clamp(float value, float min, float max) {
 		if (value < min) {
 			return min;
