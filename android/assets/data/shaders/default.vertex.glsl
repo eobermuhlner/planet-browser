@@ -316,7 +316,7 @@ void main() {
 	
 	#ifdef bumpTextureFlag
 		//float bump = texture2D(u_bumpTexture, v_texCoords0).r * 3.0;
-		float bump = decode_rgb888(texture2D(u_bumpTexture, v_texCoords0).rgb) * 10.0;
+		float bump = decode_rgb888(texture2D(u_bumpTexture, v_texCoords0).rgb) * 100.0;
 		pos.y = pos.y + bump * u_bumpFactor;
 	#endif
 		

@@ -39,6 +39,7 @@ public class TerrestrialPlanetShader implements Shader {
 	private int u_heightMax;
 	private int u_heightFrequency;
 	private int u_heightWater;
+	private int u_heightFunctionValue;
 	private int u_craterBaseGrid;
 	private int u_craterProbability;
 	private int u_iceLevel;
@@ -101,6 +102,7 @@ public class TerrestrialPlanetShader implements Shader {
 		u_heightMax = program.getUniformLocation("u_heightMax");
 		u_heightFrequency = program.getUniformLocation("u_heightFrequency");
 		u_heightWater = program.getUniformLocation("u_heightWater");
+		u_heightFunctionValue = program.getUniformLocation("u_heightFunctionValue");
 		u_craterBaseGrid = program.getUniformLocation("u_craterBaseGrid");
 		u_craterProbability = program.getUniformLocation("u_craterProbability");
 		u_iceLevel = program.getUniformLocation("u_iceLevel");
@@ -237,6 +239,7 @@ public class TerrestrialPlanetShader implements Shader {
 		program.setUniformf(u_heightMax, terrestrialAttribute.heightMax);
 		program.setUniformf(u_heightFrequency, heightFrequency);
 		program.setUniformf(u_heightWater, terrestrialAttribute.heightWater);
+		program.setUniformf(u_heightFunctionValue, terrestrialAttribute.heightFunctionValue);
 		program.setUniformf(u_iceLevel, terrestrialAttribute.iceLevel);
 		
 		program.setUniformf(u_craterBaseGrid, terrestrialAttribute.craterBaseGrid);

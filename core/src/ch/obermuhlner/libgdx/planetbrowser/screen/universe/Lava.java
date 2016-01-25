@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute;
@@ -65,22 +64,19 @@ public class Lava extends AbstractPlanet {
 	public Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize, DisposableContainer disposables) {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
-		float temperatureAsPower = (float)MathUtil.transform(
-				Units.celsiusToKelvin(500), Units.celsiusToKelvin(1200),
-				-1.0, 1.0,
-				planetData.temperature);
-		float heightPower = MathUtils.floor(MathUtil.pow(10, temperatureAsPower) * 10f) * 0.1f;
 		float heightFlatGround = random.nextFloat(0.0f, 0.5f);
+		float heightFunctionValue = random.nextFloat(0.5f, 3.0f);
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
 				p(1, TerrestrialAttribute.SMOOTH),
-				p(1, TerrestrialAttribute.SMOOTH + TerrestrialAttribute.POWER_2),
-				p(3, TerrestrialAttribute.CONTINENT_POWER_2),
-				p(3, TerrestrialAttribute.CONTINENT_POWER_3),
-				p(3, TerrestrialAttribute.functionPower(1.5f)),
-				p(5, TerrestrialAttribute.functionPowerMid0(0.7f)), // I really like this one with its broad channels of lava
-				p(10, TerrestrialAttribute.functionPowerMid0(heightPower))
+				p(1, TerrestrialAttribute.SMOOTH + TerrestrialAttribute.POWER),
+				p(3, TerrestrialAttribute.CONTINENT_POWER),
+				p(3, TerrestrialAttribute.POWER),
+				p(10, TerrestrialAttribute.POWER_MID_0)
+				//p(5, TerrestrialAttribute.functionPowerMid0(0.7f)), // I really like this one with its broad channels of lava
 				);
+		System.out.println(heightFunction);
+		System.out.println(heightFunctionValue);
 		
 		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
 		terrestrialAttribute.heightMin = 0.0f;
@@ -88,6 +84,7 @@ public class Lava extends AbstractPlanet {
 		terrestrialAttribute.heightWater = heightFlatGround;
 		terrestrialAttribute.heightFrequency = random.nextInt(2, 4);
 		terrestrialAttribute.heightFunction = heightFunction;
+		terrestrialAttribute.heightFunctionValue = heightFunctionValue;
 		terrestrialAttribute.planetColors = new Color[] {
 				new Color(0xff0000ff), // red
 				new Color(0xee2200ff), // red-orange

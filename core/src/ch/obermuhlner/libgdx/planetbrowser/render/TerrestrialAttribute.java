@@ -13,49 +13,45 @@ public class TerrestrialAttribute extends AbstractRandomAttribute {
 
 	public static final String LINEAR = "h = h;";
 	public static final String SMOOTH = "h = smoothstep(0.0, 1.0, h);";
-	public static final String POWER_2 = "h = h * h;";
-	public static final String POWER_3 = "h = h * h * h;";
+	public static final String POWER = "h = pow(h, u_heightFunctionValue);";
 	public static final String SQRT = "h = sqrt(h);";
 	public static final String MID_0 = "h = abs(h - 0.5) * 2.0;";
 	public static final String POWER_2_MID_0 = "h = abs((h - 0.5) * (h - 0.5)) * 2.0;";
+	public static final String POWER_MID_0 = "h = abs(pow(h - 0.5, u_heightFunctionValue)) * 2.0;";
 	public static final String SQRT_MID_0 = "h = sqrt(abs(h - 0.5) * 2.0);";
-	public static final String CONTINENT_POWER_2 = ""
+	public static final String CONTINENT_POWER = ""
 			+ "if (h <= u_heightWater) {"
 			+ "  return h;"
 			+ "} else {"
 			+ "  h = (h - u_heightWater) / (1.0 - u_heightWater);"
-			+ "  return h * h * (1.0 - u_heightWater) + u_heightWater;"
-			+ "}";
-	public static final String CONTINENT_POWER_3 = ""
-			+ "if (h <= u_heightWater) {"
-			+ "  return h;"
-			+ "} else {"
-			+ "  h = (h - u_heightWater) / (1.0 - u_heightWater);"
-			+ "  return h * h * h * (1.0 - u_heightWater) + u_heightWater;"
+			+ "  return pow(h, u_heightFunctionValue) * (1.0 - u_heightWater) + u_heightWater;"
 			+ "}";
 
-	public static String functionPowerMid0(float power) {
-		return "h = abs(pow(h - 0.5, " + power + ")) * 2.0;";
-	}
-	
-	public static String functionPower(float power) {
-		return "h = pow(h, " + power + ");";
-	}
-	
 	public int heightFrequency = 5;
 	public float heightMin = 0.1f;
 	public float heightMax = 0.9f;
 	public float heightWater = 0.0f;
+	public String heightFunction = LINEAR;
+	public float heightFunctionValue = 1.0f;
 	public float iceLevel = 0.0f;
 	public int craterBaseGrid = 0;
 	public float craterProbability = 1.0f;
-	public String heightFunction = LINEAR;
 	
 	public Color[] planetColors;
 	public int[] planetColorFrequencies = null;
 	
 	protected TerrestrialAttribute(long type, float[] randomValues) {
 		super(type, randomValues);
+	}
+
+	public void setHeightFunctionPowerMid0(float power) {
+		heightFunction = POWER_MID_0;
+		heightFunctionValue = power;
+	}
+	
+	public void setHeightFunctionPower(float power) {
+		heightFunction = POWER;
+		heightFunctionValue = power;
 	}
 
 	@Override
@@ -94,6 +90,10 @@ public class TerrestrialAttribute extends AbstractRandomAttribute {
 		if (cmp != 0) {
 			return cmp;
 		}
+		cmp = CompareUtil.compare(heightFunctionValue, other.heightFunctionValue);
+		if (cmp != 0) {
+			return cmp;
+		}
 		cmp = CompareUtil.compare(planetColors, other.planetColors);
 		if (cmp != 0) {
 			return cmp;
@@ -109,10 +109,11 @@ public class TerrestrialAttribute extends AbstractRandomAttribute {
 		copy.heightMin = heightMin;
 		copy.heightMax = heightMax;
 		copy.heightWater = heightWater;
+		copy.heightFunction = heightFunction;
+		copy.heightFunctionValue = heightFunctionValue;
 		copy.iceLevel = iceLevel;
 		copy.craterBaseGrid = craterBaseGrid;
 		copy.craterProbability = craterProbability;
-		copy.heightFunction = heightFunction;
 		copy.planetColors = planetColors;
 		copy.planetColorFrequencies = planetColorFrequencies;
 		return copy;

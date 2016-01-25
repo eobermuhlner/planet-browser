@@ -49,7 +49,8 @@ public class IceMoon extends AbstractPlanet {
 		
 		Color[] randomColors = ColorUtil.randomColors(random, 6, colors, 0.02f, 0.1f);
 
-		String heightFunction = TerrestrialAttribute.functionPowerMid0(1.2f);
+		String heightFunction = TerrestrialAttribute.POWER_MID_0;
+		float heightFunctionValue = random.nextFloat(1.2f, 1.5f);
 
 		float heightMin = 0.3f;
 		float heightMax = random.nextFloat(0.5f, 0.7f);
@@ -59,6 +60,7 @@ public class IceMoon extends AbstractPlanet {
 		terrestrialAttribute.heightMax = heightMax;
 		terrestrialAttribute.heightFrequency = 3;
 		terrestrialAttribute.heightFunction = heightFunction;
+		terrestrialAttribute.heightFunctionValue = heightFunctionValue;
 		terrestrialAttribute.planetColors = randomColors;
 		//terrestrialAttribute.planetColorFrequencies = createPlanetColorFrequencies(random);
 

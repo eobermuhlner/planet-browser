@@ -29,6 +29,7 @@ uniform float u_craterProbability;
 
 uniform float u_iceLevel;
 uniform float u_heightWater;
+uniform float u_heightFunctionValue;
 
 #ifdef colorNoiseFlag
 uniform float u_colorNoise;
@@ -608,7 +609,7 @@ void main() {
 	#endif
 
 	#if defined(createBumpFlag)
-		bumpColor = encode_rgb888((height - u_heightWater) * 0.1);
+		bumpColor = encode_rgb888((height - u_heightWater) * 0.01);
 	#endif
 
 	#if defined(createDiffuseFlag)
