@@ -132,7 +132,7 @@ public class Earth extends AbstractPlanet {
 //		System.out.println();
 		
 		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
-		terrestrialAttribute.heightWater = 0.46f;
+		terrestrialAttribute.heightWater = 0.45f;
 		terrestrialAttribute.heightMin = heightMin;
 		terrestrialAttribute.heightMax = heightMax;
 		terrestrialAttribute.heightFrequency = heightFrequency;
