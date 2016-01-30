@@ -78,7 +78,8 @@ public class FlyPlanetScreen extends AbstractScreen {
 	@Override
 	public void show() {
 		planetData = factory.createPlanetData(new Random(randomSeed));
-
+		Random random = new Random(randomSeed);
+		
 		// setup rendering
 		stage = new Stage();
 		
@@ -95,7 +96,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 //		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight, ambientLight, ambientLight, 1f));
 
 		DirectionalLight light = new DirectionalLight();
-		light.set(Color.WHITE, 0, -10f, -10);
+		light.set(Color.WHITE, random.nextFloat(-20f, 20f), random.nextFloat(-7f, -10f), random.nextFloat(-20f, 20f));
 		environment.add(light);
 
 //		PointLight light = new PointLight();
