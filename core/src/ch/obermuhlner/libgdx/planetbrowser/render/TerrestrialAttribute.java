@@ -27,6 +27,14 @@ public class TerrestrialAttribute extends AbstractRandomAttribute {
 			+ "  return pow(h, u_heightFunctionValue) * (1.0 - u_heightWater) + u_heightWater;"
 			+ "}";
 
+	public static enum FractalFunction {
+		SimpleWeight,
+		SignalDependentWeight
+	}
+	
+	public FractalFunction fractalFunction = FractalFunction.SignalDependentWeight;
+	public int fractalOctaveCount = 14;
+	
 	public int heightFrequency = 5;
 	public float heightMin = 0.1f;
 	public float heightMax = 0.9f;
@@ -105,6 +113,8 @@ public class TerrestrialAttribute extends AbstractRandomAttribute {
 	@Override
 	public Attribute copy() {
 		TerrestrialAttribute copy = new TerrestrialAttribute(type, randomValues);
+		copy.fractalFunction = fractalFunction;
+		copy.fractalOctaveCount = fractalOctaveCount;
 		copy.heightFrequency = heightFrequency;
 		copy.heightMin = heightMin;
 		copy.heightMax = heightMax;

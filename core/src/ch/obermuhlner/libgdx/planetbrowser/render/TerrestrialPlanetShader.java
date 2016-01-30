@@ -35,6 +35,8 @@ public class TerrestrialPlanetShader implements Shader {
 
 	private int u_normalStep;
 
+	private int u_fractalOctaveCount;
+
 	private int u_heightMin;
 	private int u_heightMax;
 	private int u_heightFrequency;
@@ -85,6 +87,7 @@ public class TerrestrialPlanetShader implements Shader {
 	public void init () {
 		StopWatch watch = new StopWatch();
 		program = new ShaderProgram(prefix + vertexProgram, prefix + fragmentProgram);
+		System.out.println(prefix);
 		System.out.println("Compiled terrestrial shader in " + watch);
 		if (!program.isCompiled()) {
 			throw new GdxRuntimeException(ShaderUtils.createErrorMessage(program));
@@ -97,6 +100,8 @@ public class TerrestrialPlanetShader implements Shader {
 		u_time = program.getUniformLocation("u_time");
 
 		u_normalStep = program.getUniformLocation("u_normalStep");
+
+		u_fractalOctaveCount = program.getUniformLocation("u_fractalOctaveCount");
 
 		u_heightMin = program.getUniformLocation("u_heightMin");
 		u_heightMax = program.getUniformLocation("u_heightMax");
@@ -135,6 +140,8 @@ public class TerrestrialPlanetShader implements Shader {
 		StringBuilder prefix = new StringBuilder();
 		
 		TerrestrialAttribute terrestrialAttribute = (TerrestrialAttribute) renderable.material.get(TerrestrialAttribute.Terrestrial);
+		
+		prefix.append("#define fractalFunction" + terrestrialAttribute.fractalFunction + "Flag\n");
 		
 		if (terrestrialAttribute.planetColors != null) {
 			prefix.append("#define planetColorsFlag\n");
@@ -231,7 +238,10 @@ public class TerrestrialPlanetShader implements Shader {
 
 		// additional data
 		program.setUniformf(u_normalStep, getFloatAttributeValue(renderable, MoreFloatAttribute.NormalStep, 0.0001f));
-		
+
+		// fractal function
+		program.setUniformf(u_fractalOctaveCount, terrestrialAttribute.fractalOctaveCount);
+
 		// planet data
 		int heightFrequencyPowerOfTwo = terrestrialAttribute.heightFrequency;
 		float heightFrequency = MathUtil.powerOfTwo(heightFrequencyPowerOfTwo);

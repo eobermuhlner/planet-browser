@@ -14,6 +14,8 @@ precision highp float;
 
 uniform float u_normalStep;
 
+uniform float u_fractalOctaveCount;
+
 uniform float u_heightMin;
 uniform float u_heightMax;
 uniform float u_heightFrequency;
@@ -273,22 +275,42 @@ vec4 if_then_else(float condition, vec4 trueValue, vec4 falseValue) {
 	return result;
 }
 
+#ifdef fractalFunctionSimpleWeightFlag
 float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
+	float frequency = baseFrequency;
+	float weight = baseFactor;
 	float noise = 0.0;
-	noise += pnoise2(P+vec2(u_random0+u_random4, u_random1+u_random6), baseFrequency * 1.0) * baseFactor / 1.0;
-	noise += pnoise2(P+vec2(u_random2+u_random4, u_random3+u_random6), baseFrequency * 2.0) * baseFactor / 2.0;
-	noise += pnoise2(P+vec2(u_random4+u_random4, u_random5+u_random6), baseFrequency * 4.0) * baseFactor / 4.0;
-	noise += pnoise2(P+vec2(u_random6+u_random4, u_random7+u_random6), baseFrequency * 8.0) * baseFactor / 8.0;
-	noise += pnoise2(P+vec2(u_random8+u_random4, u_random9+u_random6), baseFrequency * 16.0) * baseFactor / 16.0;
-	noise += pnoise2(P+vec2(u_random0+u_random5, u_random7+u_random7), baseFrequency * 32.0) * baseFactor / 32.0;
-	noise += pnoise2(P+vec2(u_random2+u_random5, u_random5+u_random7), baseFrequency * 64.0) * baseFactor / 64.0;
-	noise += pnoise2(P+vec2(u_random4+u_random5, u_random3+u_random7), baseFrequency * 128.0) * baseFactor / 128.0;
+	vec2 r = P;
+	for(int i=0; i<u_fractalOctaveCount; i++) {
+		r += vec2(u_random0, u_random1);
+		float signal = pnoise2(r, frequency);
+		noise += signal * weight;
+		weight *= 0.5;
+		frequency *= 2.0;
+	}
 
-	noise += pnoise2(P+vec2(u_random6+u_random5, u_random1+u_random7), baseFrequency * 256.0) * baseFactor / 256.0;
-	noise += pnoise2(P+vec2(u_random8+u_random5, u_random3+u_random7), baseFrequency * 512.0) * baseFactor / 512.0;
-	noise += pnoise2(P+vec2(u_random0+u_random5, u_random7+u_random8), baseFrequency * 1024.0) * baseFactor / 1024.0;
-	return noise;
+	return noise * 0.5 + 0.5;
 }
+#endif
+
+#ifdef fractalFunctionSignalDependentWeightFlag
+float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
+	float frequency = baseFrequency;
+	float weight = baseFactor;
+	float noise = 0.0;
+	vec2 r = P;
+	for(int i=0; i<u_fractalOctaveCount; i++) {
+		r += vec2(u_random0, u_random1);
+		float signal = pnoise2(r, frequency) * 0.5 + 0.5;
+		noise += signal * weight;
+		weight *= signal;
+		frequency *= 2.0;
+	}
+
+	return noise * 0.5;
+}
+#endif
+
 
 float fractalNoiseCheap(vec2 P, float baseFrequency, float baseFactor) {
 	float noise = 0.0;
@@ -520,11 +542,10 @@ float addCraterSimpleRound(float height, float craterBaseHeight, vec2 pos, float
 #endif // cratersFlag
 
 float calculateHeight(vec2 P) {
-	float baseHeight = u_heightMin + (u_heightMax - u_heightMin) / 2.0; 
 	float base = u_heightFrequency;
 	float range = u_heightMax - u_heightMin;
 
-	float height = baseHeight;
+	float height = u_heightMin;
 	height += fractalNoise(P, base, range);
 
 	#ifdef mountainsFlag

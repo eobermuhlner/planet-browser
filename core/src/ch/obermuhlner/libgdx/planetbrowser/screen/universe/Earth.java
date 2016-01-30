@@ -115,12 +115,10 @@ public class Earth extends AbstractPlanet {
 		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.7f, water);
 		int heightFrequency = random.nextInt(3, 5);
 		float iceLevel = (float) MathUtil.transform(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50), 1f, -1f, planetData.temperature);
-		float heightFunctionValue = random.nextFloat(2.0f, 3.0f);
+		float heightFunctionValue = random.nextFloat(0.9f, 2.0f);
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
-				p(10, TerrestrialAttribute.CONTINENT_POWER),
-				p(5, TerrestrialAttribute.POWER),
-				p(2, TerrestrialAttribute.LINEAR)
+				p(20, TerrestrialAttribute.POWER)
 				);
 		
 //		System.out.println("texture=" + textureName);

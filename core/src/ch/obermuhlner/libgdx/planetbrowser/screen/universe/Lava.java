@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute.FractalFunction;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
@@ -65,20 +66,16 @@ public class Lava extends AbstractPlanet {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		float heightFlatGround = random.nextFloat(0.0f, 0.5f);
-		float heightFunctionValue = random.nextFloat(0.5f, 3.0f);
+		float heightFunctionValue = random.nextFloat(0.5f, 3.0f); // 0.7 gives nice rivers of lava
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
-				p(1, TerrestrialAttribute.SMOOTH),
-				p(1, TerrestrialAttribute.SMOOTH + TerrestrialAttribute.POWER),
-				p(3, TerrestrialAttribute.CONTINENT_POWER),
 				p(3, TerrestrialAttribute.POWER),
 				p(10, TerrestrialAttribute.POWER_MID_0)
-				//p(5, TerrestrialAttribute.functionPowerMid0(0.7f)), // I really like this one with its broad channels of lava
 				);
-		System.out.println(heightFunction);
-		System.out.println(heightFunctionValue);
+		FractalFunction fractalFunction = heightFunction.equals(TerrestrialAttribute.POWER_MID_0) ? FractalFunction.SignalDependentWeight : FractalFunction.SimpleWeight;
 		
 		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
+		terrestrialAttribute.fractalFunction = fractalFunction;
 		terrestrialAttribute.heightMin = 0.0f;
 		terrestrialAttribute.heightMax = 1.0f;
 		terrestrialAttribute.heightWater = heightFlatGround;
