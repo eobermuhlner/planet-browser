@@ -29,10 +29,12 @@ public class TerrestrialAttribute extends AbstractRandomAttribute {
 
 	public static enum FractalFunction {
 		SimpleWeight,
-		SignalDependentWeight
+		SimpleWeightRidged,
+		SignalDependentWeight,
+		SignalDependentWeightRidged
 	}
 	
-	public FractalFunction fractalFunction = FractalFunction.SignalDependentWeight;
+	public FractalFunction fractalFunction = FractalFunction.SignalDependentWeightRidged;
 	public int fractalOctaveCount = 14;
 	
 	public int heightFrequency = 5;

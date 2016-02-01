@@ -293,6 +293,24 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 }
 #endif
 
+#ifdef fractalFunctionSimpleWeightRidgedFlag
+float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
+	float frequency = baseFrequency;
+	float weight = baseFactor;
+	float noise = 0.0;
+	vec2 r = P;
+	for(int i=0; i<u_fractalOctaveCount; i++) {
+		r += vec2(u_random0, u_random1);
+		float signal = 1.0 - abs(pnoise2(r, frequency));
+		noise += signal * weight;
+		weight *= 0.5;
+		frequency *= 2.0;
+	}
+
+	return noise * 0.5;
+}
+#endif
+
 #ifdef fractalFunctionSignalDependentWeightFlag
 float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	float frequency = baseFrequency;
@@ -302,6 +320,24 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	for(int i=0; i<u_fractalOctaveCount; i++) {
 		r += vec2(u_random0, u_random1);
 		float signal = pnoise2(r, frequency) * 0.5 + 0.5;
+		noise += signal * weight;
+		weight *= signal;
+		frequency *= 2.0;
+	}
+
+	return noise * 0.5;
+}
+#endif
+
+#ifdef fractalFunctionSignalDependentWeightRidgedFlag
+float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
+	float frequency = baseFrequency;
+	float weight = baseFactor;
+	float noise = 0.0;
+	vec2 r = P;
+	for(int i=0; i<u_fractalOctaveCount; i++) {
+		r += vec2(u_random0, u_random1);
+		float signal = (1.0 - abs(pnoise2(r, frequency))) * 0.75;
 		noise += signal * weight;
 		weight *= signal;
 		frequency *= 2.0;

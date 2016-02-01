@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute;
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute.FractalFunction;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
@@ -117,12 +118,13 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		float heightMax = 0.8f;
 		int heightFrequency = random.nextInt(3, 5);
 		float heightFunctionValue = random.nextFloat(0.9f, 1.5f);
+		String heightFunction = TerrestrialAttribute.POWER;
 		@SuppressWarnings("unchecked")
-		String heightFunction = random.nextProbability(
-				p(2, TerrestrialAttribute.POWER)
-//				p(2, TerrestrialAttribute.SMOOTH),
-//				p(3, TerrestrialAttribute.SMOOTH + TerrestrialAttribute.POWER)
-//				p(8, TerrestrialAttribute.CONTINENT_POWER)
+		FractalFunction fractalFunction = random.nextProbability(
+				p(2, TerrestrialAttribute.FractalFunction.SignalDependentWeight),
+				p(10, TerrestrialAttribute.FractalFunction.SignalDependentWeightRidged),
+				p(1, TerrestrialAttribute.FractalFunction.SimpleWeight),
+				p(4, TerrestrialAttribute.FractalFunction.SimpleWeightRidged)
 				);
 		Color[] randomColors = ColorUtil.randomColors(random, 6, colors, 0.01f, 0.1f);
 		for (int i = 0; i < randomColors.length; i++) {
@@ -131,6 +133,7 @@ public abstract class AbstractRockyPlanet extends AbstractPlanet {
 		}
 		
 		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
+		terrestrialAttribute.fractalFunction = fractalFunction;
 		//terrestrialAttribute.heightWater = 0.45f;
 		terrestrialAttribute.heightMin = heightMin;
 		terrestrialAttribute.heightMax = heightMax;

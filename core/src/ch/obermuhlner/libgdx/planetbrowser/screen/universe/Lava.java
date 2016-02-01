@@ -12,11 +12,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Array;
 
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute;
-import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute.FractalFunction;
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
-import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -66,14 +65,20 @@ public class Lava extends AbstractPlanet {
 		Array<Attribute> materialAttributes = new Array<Attribute>();
 
 		float heightFlatGround = random.nextFloat(0.0f, 0.5f);
-		float heightFunctionValue = random.nextFloat(0.5f, 3.0f); // 0.7 gives nice rivers of lava
+		float heightFunctionValue = random.nextBoolean(0.5) ? random.nextFloat(0.5f, 0.8f) : random.nextFloat(0.5f, 3.0f); // 0.7 gives nice rivers of lava with POWER_MID_0
 		@SuppressWarnings("unchecked")
 		String heightFunction = random.nextProbability(
 				p(3, TerrestrialAttribute.POWER),
 				p(10, TerrestrialAttribute.POWER_MID_0)
 				);
-		FractalFunction fractalFunction = heightFunction.equals(TerrestrialAttribute.POWER_MID_0) ? FractalFunction.SignalDependentWeight : FractalFunction.SimpleWeight;
-		
+		@SuppressWarnings("unchecked")
+		FractalFunction fractalFunction = random.nextProbability(
+				p(2, TerrestrialAttribute.FractalFunction.SignalDependentWeight),
+				p(10, TerrestrialAttribute.FractalFunction.SignalDependentWeightRidged),
+				p(heightFunction.equals(TerrestrialAttribute.POWER_MID_0) ? 40 : 1, TerrestrialAttribute.FractalFunction.SimpleWeight),
+				p(4, TerrestrialAttribute.FractalFunction.SimpleWeightRidged)
+				);
+
 		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
 		terrestrialAttribute.fractalFunction = fractalFunction;
 		terrestrialAttribute.heightMin = 0.0f;
