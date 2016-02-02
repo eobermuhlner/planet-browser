@@ -275,6 +275,10 @@ vec4 if_then_else(float condition, vec4 trueValue, vec4 falseValue) {
 	return result;
 }
 
+float rand(vec2 x){
+    return fract(sin(dot(x.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
 #ifdef fractalFunctionSimpleWeightFlag
 float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	float frequency = baseFrequency;
@@ -330,14 +334,22 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 #endif
 
 #ifdef fractalFunctionSignalDependentWeightRidgedFlag
+float smoothAbs(float x) {
+	return sqrt(x * x + 0.00001);
+}
+
 float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	float frequency = baseFrequency;
+	vec2 r = P + vec2(u_random2, u_random3);
+	float signalFactorBase = u_random4 * 0.15  + 0.50;
+	float signalFactorVariation = u_random5 * 0.20 + 0.05;
+	float signalFactor = (pnoise2(r, frequency) * 0.5 + 0.5) * signalFactorVariation + signalFactorBase;
+
 	float weight = baseFactor;
 	float noise = 0.0;
-	vec2 r = P;
 	for(int i=0; i<u_fractalOctaveCount; i++) {
 		r += vec2(u_random0, u_random1);
-		float signal = (1.0 - abs(pnoise2(r, frequency))) * 0.75;
+		float signal = (1.0 - smoothAbs(pnoise2(r, frequency))) * signalFactor;
 		noise += signal * weight;
 		weight *= signal;
 		frequency *= 2.0;
@@ -371,10 +383,6 @@ float transform(float fromMin, float fromMax, float toMin, float toMax, float va
 	return (value - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
 }
 
-
-float rand(vec2 x){
-    return fract(sin(dot(x.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
 
 #ifdef cratersFlag
 float roundInnerRim(float x) {
