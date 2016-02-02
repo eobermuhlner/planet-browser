@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute;
 import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialPlanetShader;
+import ch.obermuhlner.libgdx.planetbrowser.render.TerrestrialAttribute.FractalFunction;
 import ch.obermuhlner.libgdx.planetbrowser.util.ColorUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
 import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
@@ -116,10 +117,7 @@ public class Earth extends AbstractPlanet {
 		int heightFrequency = random.nextInt(3, 5);
 		float iceLevel = (float) MathUtil.transform(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50), 1f, -1f, planetData.temperature);
 		float heightFunctionValue = random.nextFloat(0.9f, 2.0f);
-		@SuppressWarnings("unchecked")
-		String heightFunction = random.nextProbability(
-				p(20, TerrestrialAttribute.POWER)
-				);
+		String heightFunction = TerrestrialAttribute.POWER;
 		
 //		System.out.println("texture=" + textureName);
 //		System.out.println("water=" + water);
@@ -130,6 +128,7 @@ public class Earth extends AbstractPlanet {
 //		System.out.println();
 		
 		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
+		terrestrialAttribute.fractalFunction = FractalFunction.SignalDependentWeightRidged;
 		terrestrialAttribute.heightWater = 0.45f;
 		terrestrialAttribute.heightMin = heightMin;
 		terrestrialAttribute.heightMax = heightMax;
