@@ -51,6 +51,7 @@ import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
 import ch.obermuhlner.libgdx.planetbrowser.ui.SimpleHtml;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
+import ch.obermuhlner.libgdx.planetbrowser.util.GraphicsUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -60,6 +61,8 @@ public class PlanetScreen extends AbstractScreen {
 	
 	private static final boolean SHOW_DEBUG_INFO = true;
 
+	private static final boolean AUTO_TAKE_SCREENSHOTS = false;
+	
 	private static final PlanetFactory[] ALL_PLANET_FACTORIES = new PlanetFactory[] {
 		new Earth(),
 		new Moon(),
@@ -73,6 +76,7 @@ public class PlanetScreen extends AbstractScreen {
 	private static final String RANDOM_FACTORY_NAME = "Random";
 	private static String currentPlanetFactoryName = RANDOM_FACTORY_NAME;
 	private static final Map<String, PlanetFactory[]> mapPlanetFactories = new HashMap<String, PlanetFactory[]>();
+
 	static {
 		planetFactoryNames.add(RANDOM_FACTORY_NAME);
 		mapPlanetFactories.put(RANDOM_FACTORY_NAME, ALL_PLANET_FACTORIES);
@@ -572,7 +576,9 @@ public class PlanetScreen extends AbstractScreen {
 		
 		stage.draw();
 		
-		if (false) {
+		if (AUTO_TAKE_SCREENSHOTS) {
+			GraphicsUtil.screenShot("planet-" + randomSeed + ".png");
+			
 			System.out.println("Automatic switch to: " + (randomSeed + 1));
 			PlanetBrowser.INSTANCE.setScreen(new PlanetScreen(randomSeed + 1));
 		}
