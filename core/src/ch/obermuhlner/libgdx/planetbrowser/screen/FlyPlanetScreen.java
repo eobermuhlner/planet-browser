@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -128,6 +129,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		terrain.terrainY = 0f;
 		terrain.terrainStep = 400f;
 		terrain.bumpFactor = 400f;
+		terrain.surfaceBounds.set(terrain.terrainStep, terrain.terrainStep, terrain.terrainStep);
 	}
 	
 	private TerrainLod[] toLod(TerrainQuality terrainQuality) {
@@ -358,6 +360,9 @@ public class FlyPlanetScreen extends AbstractScreen {
 		private TerrainChunk[] terrainCopy;
 		private int[] terrainLodIndex;
 
+		private final Vector3 positionForIsVisible = new Vector3();
+		private final Vector3 surfaceBounds = new Vector3();
+
 		public Terrain(int chunkCount, TerrainLod lod[]) {
 			this.chunkCount = chunkCount;
 			this.lod = lod;
@@ -458,14 +463,22 @@ public class FlyPlanetScreen extends AbstractScreen {
 					float chunkTerrainX = terrainX + (chunkX - centerChunk) * terrainStep;
 					float chunkTerrainY = terrainY + (chunkY - centerChunk) * terrainStep;
 					surface.transform.setTranslation(chunkTerrainX, 0, chunkTerrainY);
-					
-					modelBatch.render(surface, environment);
+				
+					if (isVisible(surface)) {
+						modelBatch.render(surface, environment);
+					}
 				}
 			}
 			if (createTimeText != null) {
 				createTimeText.append(" ms");
 				createTimeLabel.setText(createTimeText.toString());
 			}
+		}
+
+		private boolean isVisible(ModelInstance surface) {
+			// FPS 39 when full visible, FPS 53 when black
+			surface.transform.getTranslation(positionForIsVisible);
+			return camera.frustum.boundsInFrustum(positionForIsVisible, surfaceBounds);
 		}
 
 		@Override
