@@ -78,121 +78,86 @@ uniform float u_planetColorFrequency3;
 #define M_PI 3.1415926535897932384626433832795
 
 //
-// GLSL textureless classic 2D noise "cnoise",
-// with an RSL-style periodic variant "pnoise".
-// Author:  Stefan Gustavson (stefan.gustavson@liu.se)
-// Version: 2011-08-22
+//  Wombat
+//  An efficient texture-free GLSL procedural noise library
+//  Source: https://github.com/BrianSharpe/Wombat
+//  Derived from: https://github.com/BrianSharpe/GPU-Noise-Lib
 //
-// Many thanks to Ian McEwan of Ashima Arts for the
-// ideas for permutation and gradient selection.
+//  I'm not one for copyrights.  Use the code however you wish.
+//  All I ask is that credit be given back to the blog or myself when appropriate.
+//  And also to let me know if you come up with any changes, improvements, thoughts or interesting uses for this stuff. :)
+//  Thanks!
 //
-// Copyright (c) 2011 Stefan Gustavson. All rights reserved.
-// Distributed under the MIT license. See LICENSE file.
-// https://github.com/ashima/webgl-noise
+//  Brian Sharpe
+//  brisharpe CIRCLE_A yahoo DOT com
+//  http://briansharpe.wordpress.com
+//  https://github.com/BrianSharpe
 //
 
-vec4 mod289(vec4 x)
+//
+//  This is a modified version of Stefan Gustavson's and Ian McEwan's work at http://github.com/ashima/webgl-noise
+//  Modifications are...
+//  - faster random number generation
+//  - analytical final normalization
+//  - space scaled can have an approx feature size of 1.0
+//
+
+//
+//  Simplex Perlin Noise 2D
+//  Return value range of -1.0->1.0
+//
+float SimplexPerlin2D( vec2 P )
 {
-  return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
+    //  https://github.com/BrianSharpe/Wombat/blob/master/SimplexPerlin2D.glsl
 
-vec4 permute(vec4 x)
-{
-  return mod289(((x*34.0)+1.0)*x);
-}
+    //  simplex math constants
+    const float SKEWFACTOR = 0.36602540378443864676372317075294;            // 0.5*(sqrt(3.0)-1.0)
+    const float UNSKEWFACTOR = 0.21132486540518711774542560974902;          // (3.0-sqrt(3.0))/6.0
+    const float SIMPLEX_TRI_HEIGHT = 0.70710678118654752440084436210485;    // sqrt( 0.5 )	height of simplex triangle
+    const vec3 SIMPLEX_POINTS = vec3( 1.0-UNSKEWFACTOR, -UNSKEWFACTOR, 1.0-2.0*UNSKEWFACTOR );  //  simplex triangle geo
 
-vec4 taylorInvSqrt(vec4 r)
-{
-  return 1.79284291400159 - 0.85373472095314 * r;
-}
+    //  establish our grid cell.
+    P *= SIMPLEX_TRI_HEIGHT;    // scale space so we can have an approx feature size of 1.0
+    vec2 Pi = floor( P + dot( P, vec2( SKEWFACTOR ) ) );
 
-vec2 fade(vec2 t) {
-  return t*t*t*(t*(t*6.0-15.0)+10.0);
-}
+    // calculate the hash
+    vec4 Pt = vec4( Pi.xy, Pi.xy + 1.0 );
+    Pt = Pt - floor(Pt * ( 1.0 / 71.0 )) * 71.0;
+    Pt += vec2( 26.0, 161.0 ).xyxy;
+    Pt *= Pt;
+    Pt = Pt.xzxz * Pt.yyww;
+    vec4 hash_x = fract( Pt * ( 1.0 / 951.135664 ) );
+    vec4 hash_y = fract( Pt * ( 1.0 / 642.949883 ) );
 
-// Classic Perlin noise
-float cnoise(vec2 P)
-{
-  vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
-  vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
-  Pi = mod289(Pi); // To avoid truncation effects in permutation
-  vec4 ix = Pi.xzxz;
-  vec4 iy = Pi.yyww;
-  vec4 fx = Pf.xzxz;
-  vec4 fy = Pf.yyww;
+    //  establish vectors to the 3 corners of our simplex triangle
+    vec2 v0 = Pi - dot( Pi, vec2( UNSKEWFACTOR ) ) - P;
+    vec4 v1pos_v1hash = (v0.x < v0.y) ? vec4(SIMPLEX_POINTS.xy, hash_x.y, hash_y.y) : vec4(SIMPLEX_POINTS.yx, hash_x.z, hash_y.z);
+    vec4 v12 = vec4( v1pos_v1hash.xy, SIMPLEX_POINTS.zz ) + v0.xyxy;
 
-  vec4 i = permute(permute(ix) + iy);
+    //  calculate the dotproduct of our 3 corner vectors with 3 random normalized vectors
+    vec3 grad_x = vec3( hash_x.x, v1pos_v1hash.z, hash_x.w ) - 0.49999;
+    vec3 grad_y = vec3( hash_y.x, v1pos_v1hash.w, hash_y.w ) - 0.49999;
+    vec3 grad_results = inversesqrt( grad_x * grad_x + grad_y * grad_y ) * ( grad_x * vec3( v0.x, v12.xz ) + grad_y * vec3( v0.y, v12.yw ) );
 
-  vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
-  vec4 gy = abs(gx) - 0.5 ;
-  vec4 tx = floor(gx + 0.5);
-  gx = gx - tx;
+    //	Normalization factor to scale the final result to a strict 1.0->-1.0 range
+    //	http://briansharpe.wordpress.com/2012/01/13/simplex-noise/#comment-36
+    const float FINAL_NORMALIZATION = 99.204334582718712976990005025589;
 
-  vec2 g00 = vec2(gx.x,gy.x);
-  vec2 g10 = vec2(gx.y,gy.y);
-  vec2 g01 = vec2(gx.z,gy.z);
-  vec2 g11 = vec2(gx.w,gy.w);
-
-  vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
-  g00 *= norm.x;  
-  g01 *= norm.y;  
-  g10 *= norm.z;  
-  g11 *= norm.w;  
-
-  float n00 = dot(g00, vec2(fx.x, fy.x));
-  float n10 = dot(g10, vec2(fx.y, fy.y));
-  float n01 = dot(g01, vec2(fx.z, fy.z));
-  float n11 = dot(g11, vec2(fx.w, fy.w));
-
-  vec2 fade_xy = fade(Pf.xy);
-  vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
-  float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
-  return 2.3 * n_xy;
-}
-
-// Classic Perlin noise, periodic variant
-float pnoise(vec2 P, vec2 rep)
-{
-  vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
-  vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
-  Pi = mod(Pi, rep.xyxy); // To create noise with explicit period
-  Pi = mod289(Pi);        // To avoid truncation effects in permutation
-  vec4 ix = Pi.xzxz;
-  vec4 iy = Pi.yyww;
-  vec4 fx = Pf.xzxz;
-  vec4 fy = Pf.yyww;
-
-  vec4 i = permute(permute(ix) + iy);
-
-  vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
-  vec4 gy = abs(gx) - 0.5 ;
-  vec4 tx = floor(gx + 0.5);
-  gx = gx - tx;
-
-  vec2 g00 = vec2(gx.x,gy.x);
-  vec2 g10 = vec2(gx.y,gy.y);
-  vec2 g01 = vec2(gx.z,gy.z);
-  vec2 g11 = vec2(gx.w,gy.w);
-
-  vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
-  g00 *= norm.x;  
-  g01 *= norm.y;  
-  g10 *= norm.z;  
-  g11 *= norm.w;  
-
-  float n00 = dot(g00, vec2(fx.x, fy.x));
-  float n10 = dot(g10, vec2(fx.y, fy.y));
-  float n01 = dot(g01, vec2(fx.z, fy.z));
-  float n11 = dot(g11, vec2(fx.w, fy.w));
-
-  vec2 fade_xy = fade(Pf.xy);
-  vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
-  float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
-  return 2.3 * n_xy;
+    //	evaluate and return
+    vec3 m = vec3( v0.x, v12.xz ) * vec3( v0.x, v12.xz ) + vec3( v0.y, v12.yw ) * vec3( v0.y, v12.yw );
+    m = max(0.5 - m, 0.0);
+    m = m*m;
+    return dot(m*m, grad_results) * FINAL_NORMALIZATION;
 }
 
 float pnoise2(vec2 P, float period) {
-	return pnoise(P*period, vec2(period, period));
+	vec2 pos = P; //vec2(fract(P.x), P.y);
+	float noise = SimplexPerlin2D(pos * period);
+	if (v_texCoords0.s > 0.95) {
+		float noise2 = SimplexPerlin2D((pos - vec2(1.0, 0.0)) * period);
+		noise = mix(noise, noise2, smoothstep(0.95, 1.0, v_texCoords0.s));
+	}
+	return noise;
 }
 
 float pnoise1(float x, float period) {
@@ -335,15 +300,16 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 
 #ifdef fractalFunctionSignalDependentWeightRidgedFlag
 float smoothAbs(float x) {
-	return sqrt(x * x + 0.00001);
+	return sqrt(x * x + 0.0001);
 }
 
 float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	float frequency = baseFrequency;
 	vec2 r = P + vec2(u_random2, u_random3);
-	float signalFactorBase = u_random4 * 0.15  + 0.50;
-	float signalFactorVariation = u_random5 * 0.20 + 0.05;
-	float signalFactor = (pnoise2(r, frequency) * 0.5 + 0.5) * signalFactorVariation + signalFactorBase;
+	//float signalFactorBase = u_random4 * 0.15  + 0.50;
+	//float signalFactorVariation = u_random5 * 0.20 + 0.05;
+	//float signalFactor = (pnoise2(r, frequency) * 0.5 + 0.5) * signalFactorVariation + signalFactorBase;
+	float signalFactor = 0.8;
 
 	float weight = baseFactor;
 	float noise = 0.0;
@@ -355,7 +321,8 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 		frequency *= 2.0;
 	}
 
-	return noise * 0.5;
+	noise = noise * 0.5;
+	return noise;
 }
 #endif
 
