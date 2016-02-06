@@ -129,7 +129,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 		terrain.terrainY = 0f;
 		terrain.terrainStep = 400f;
 		terrain.bumpFactor = 400f;
-		terrain.surfaceBounds.set(terrain.terrainStep, terrain.terrainStep, terrain.terrainStep);
+		terrain.surfaceBounds.set(terrain.terrainStep, terrain.terrainStep * 4.0f, terrain.terrainStep);
 	}
 	
 	private TerrainLod[] toLod(TerrainQuality terrainQuality) {
