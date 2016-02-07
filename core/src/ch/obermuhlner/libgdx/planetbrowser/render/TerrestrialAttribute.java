@@ -19,6 +19,7 @@ public class TerrestrialAttribute extends AbstractRandomAttribute {
 	public static final String POWER_2_MID_0 = "h = abs((h - 0.5) * (h - 0.5)) * 2.0;";
 	public static final String POWER_MID_0 = "h = abs(pow(h - 0.5, u_heightFunctionValue)) * 2.0;";
 	public static final String SQRT_MID_0 = "h = sqrt(abs(h - 0.5) * 2.0);";
+	public static final String STEPS = "h = (floor(h * u_heightFunctionValue) + smoothstep(0.9, 1.0, fract(h * u_heightFunctionValue))) / u_heightFunctionValue;";
 	public static final String CONTINENT_POWER = ""
 			+ "if (h <= u_heightWater) {"
 			+ "  return h;"
