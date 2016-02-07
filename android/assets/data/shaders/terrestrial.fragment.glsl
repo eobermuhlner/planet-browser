@@ -151,7 +151,7 @@ float SimplexPerlin2D( vec2 P )
 }
 
 float pnoise2(vec2 P, float period) {
-	vec2 pos = P; //vec2(fract(P.x), P.y);
+	vec2 pos = P;
 	float noise = SimplexPerlin2D(pos * period);
 	if (v_texCoords0.s > 0.95) {
 		float noise2 = SimplexPerlin2D((pos - vec2(1.0, 0.0)) * period);
@@ -299,30 +299,38 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 #endif
 
 #ifdef fractalFunctionSignalDependentWeightRidgedFlag
-float smoothAbs(float x) {
-	return sqrt(x * x + 0.0001);
+float smoothAbs(float x, float smoothness) {
+	return sqrt(x * x + smoothness);
 }
 
 float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	float frequency = baseFrequency;
 	vec2 r = P + vec2(u_random2, u_random3);
-	//float signalFactorBase = u_random4 * 0.15  + 0.50;
-	//float signalFactorVariation = u_random5 * 0.20 + 0.05;
-	//float signalFactor = (pnoise2(r, frequency) * 0.5 + 0.5) * signalFactorVariation + signalFactorBase;
-	float signalFactor = 0.8;
+	float signalFactorBase = u_random4 * 0.20  + 0.50;
+	float signalFactorVariation = u_random5 * 0.10 + 0.20;
+	float signalFactor = (pnoise2(r, frequency) * 0.5 + 0.5) * signalFactorVariation + signalFactorBase;
+	float lacunarity = u_random6 * 0.4 + 1.8;
+
+	//signalFactor = 0.8;
+	//lacunarity = 2.0;
 
 	float weight = baseFactor;
 	float noise = 0.0;
 	for(int i=0; i<u_fractalOctaveCount; i++) {
 		r += vec2(u_random0, u_random1);
-		float signal = (1.0 - smoothAbs(pnoise2(r, frequency))) * signalFactor;
+
+		float signal = pnoise2(r, frequency);
+		//signal = signal * 0.5 + 0.5; // linear
+		//signal = 1.0 - abs(signal); // ridged edge
+		signal = 1.0 - smoothAbs(signal, u_random9 / frequency); // ridged smoothed edge
+		signal *= signalFactor;
+		
 		noise += signal * weight;
 		weight *= signal;
-		frequency *= 2.0;
+		frequency *= lacunarity;
 	}
 
-	noise = noise * 0.5;
-	return noise;
+	return noise * 0.5;
 }
 #endif
 
