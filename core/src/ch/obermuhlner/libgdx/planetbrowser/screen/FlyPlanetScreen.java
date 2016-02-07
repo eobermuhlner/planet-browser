@@ -97,7 +97,7 @@ public class FlyPlanetScreen extends AbstractScreen {
 //		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight, ambientLight, ambientLight, 1f));
 
 		DirectionalLight light = new DirectionalLight();
-		light.set(Color.WHITE, random.nextFloat(-20f, 20f), random.nextFloat(-7f, -10f), random.nextFloat(-20f, 20f));
+		light.set(Color.WHITE, random.nextFloat(-20f, 20f), random.nextFloat(-8f, -20f), random.nextFloat(-20f, 20f));
 		environment.add(light);
 
 //		PointLight light = new PointLight();
