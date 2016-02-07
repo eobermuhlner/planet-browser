@@ -244,6 +244,10 @@ float rand(vec2 x){
     return fract(sin(dot(x.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
+float smoothAbs(float x, float smoothness) {
+	return sqrt(x * x + smoothness);
+}
+
 #ifdef fractalFunctionSimpleWeightFlag
 float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	float frequency = baseFrequency;
@@ -299,20 +303,17 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 #endif
 
 #ifdef fractalFunctionSignalDependentWeightRidgedFlag
-float smoothAbs(float x, float smoothness) {
-	return sqrt(x * x + smoothness);
-}
-
 float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 	float frequency = baseFrequency;
 	vec2 r = P + vec2(u_random2, u_random3);
+	float terrainType = smoothstep(0.0, 1.0, pnoise2(r, frequency) * 0.5 + 0.5);
 	float signalFactorBase = u_random4 * 0.20  + 0.50;
 	float signalFactorVariation = u_random5 * 0.10 + 0.20;
-	float signalFactor = (pnoise2(r, frequency) * 0.5 + 0.5) * signalFactorVariation + signalFactorBase;
+	float signalFactor = terrainType * signalFactorVariation + signalFactorBase;
 	float lacunarity = u_random6 * 0.4 + 1.8;
 
-	//signalFactor = 0.8;
-	//lacunarity = 2.0;
+	signalFactor = 0.8;
+	lacunarity = 2.0;
 
 	float weight = baseFactor;
 	float noise = 0.0;
@@ -320,9 +321,7 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 		r += vec2(u_random0, u_random1);
 
 		float signal = pnoise2(r, frequency);
-		//signal = signal * 0.5 + 0.5; // linear
-		//signal = 1.0 - abs(signal); // ridged edge
-		signal = 1.0 - smoothAbs(signal, u_random9 / frequency); // ridged smoothed edge
+		signal = 1.0 - smoothAbs(signal, u_random9 / frequency);
 		signal *= signalFactor;
 		
 		noise += signal * weight;
@@ -334,6 +333,42 @@ float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
 }
 #endif
 
+
+#ifdef fractalFunctionRandomizedFlag
+float fractalNoise(vec2 P, float baseFrequency, float baseFactor) {
+	float frequency = baseFrequency;
+	vec2 r = P + vec2(u_random2, u_random3);
+	float terrainType1 = smoothstep(0.333, 0.666, pnoise2(r, frequency) * 0.5 + 0.5);
+	float signalFactorBase = u_random4 * 0.20  + 0.20;
+	float signalFactorVariation = u_random5 * 0.30 + 0.20;
+	float signalFactor = terrainType1 * signalFactorVariation + signalFactorBase;
+	float lacunarity = u_random6 * 0.4 + 1.8;
+
+	signalFactor = 0.8;
+	lacunarity = 2.0;
+
+	float weight = baseFactor;
+	float noise = 0.0;
+	for(int i=0; i<u_fractalOctaveCount; i++) {
+		r += vec2(u_random0, u_random1);
+
+		float signal = pnoise2(r, frequency);
+		//signal = signal * 0.5 + 0.5; // linear
+		//signal = 1.0 - abs(signal); // ridged edge
+		//signal = 1.0 - smoothAbs(signal, u_random9 / frequency); // ridged smoothed edge
+		float signal1 = signal * 0.5 + 0.5; // linear
+		float signal2 = 1.0 - smoothAbs(signal, u_random9 / frequency); // ridged smoothed edge
+		signal = mix(signal1, signal2, terrainType1);
+		signal *= signalFactor;
+
+		noise += signal * weight;
+		weight *= signal;
+		frequency *= lacunarity;
+	}
+
+	return noise * 0.5;
+}
+#endif
 
 float fractalNoiseCheap(vec2 P, float baseFrequency, float baseFactor) {
 	float noise = 0.0;
@@ -384,6 +419,7 @@ float craterComplexSteps(float distance, vec2 craterPos, float craterAngle, vec2
 	float step = rimRadius - stepDelta * stepCount;
 	float stepNoiseFactor = 0.05;
 	float craterDepth = 0.8;
+	float heightNoise = 0.07;
 	
 	float centralToFlat = mix(
 		0.1 + craterNoise * 0.6,
@@ -392,30 +428,30 @@ float craterComplexSteps(float distance, vec2 craterPos, float craterAngle, vec2
 	float noise1 = pnoise2(craterPos + craterAngle + random + u_random1, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step1 = mix(
 		centralToFlat,
-		0.2 + craterNoise * 0.1,
+		0.2 + craterNoise * heightNoise,
 		smoothstep(step, step + stepSmooth, distance + noise1));
 	step += stepDelta;
 	float noise2 = pnoise2(craterPos + craterAngle + random + u_random2, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step2 = mix(
 		step1,
-		0.4 + craterNoise * 0.1,
+		0.4 + craterNoise * heightNoise,
 		smoothstep(step, step + stepSmooth, distance + noise2));
 	step += stepDelta;
 	float noise3 = pnoise2(craterPos + craterAngle + random + u_random3, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step3 = mix(
 		step2,
-		0.6 + craterNoise * 0.1,
+		0.6 + craterNoise * heightNoise,
 		smoothstep(step, step + stepSmooth, distance + noise3));
 	float noise4 = pnoise2(craterPos + craterAngle + random + u_random3, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step4 = mix(
 		step3,
-		0.8 + craterNoise * 0.1,
+		0.8 + craterNoise * heightNoise,
 		smoothstep(step, step + stepSmooth, distance + noise4));
 	step += stepDelta;
 	float noise5 = pnoise2(craterPos + craterAngle + random + u_random4, 2.0 * M_PI * 0.3) * stepNoiseFactor;
 	float step5 = mix(
 		step4,
-		1.0 + craterNoise * 0.1,
+		1.0 + craterNoise * heightNoise * 0.5,
 		smoothstep(step, step + stepSmooth, distance + noise5));
 	step += stepDelta;
 	float fadeOut = mix(
