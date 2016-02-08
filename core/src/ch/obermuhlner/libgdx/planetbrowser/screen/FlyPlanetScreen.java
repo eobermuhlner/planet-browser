@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
+import ch.obermuhlner.libgdx.planetbrowser.Config;
 import ch.obermuhlner.libgdx.planetbrowser.Options.TerrainQuality;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.control.Player;
@@ -87,10 +88,10 @@ public class FlyPlanetScreen extends AbstractScreen {
 		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
 		
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.near = 10f;
-		camera.far = 10000f;
-		camera.position.set(0, 800, 0);
-		camera.lookAt(1000, 200, 1000);
+		camera.near = Config.terrainZoomFactor * 0.01f;
+		camera.far = Config.terrainZoomFactor * 10f;
+		camera.position.set(0, Config.terrainZoomFactor * 1f, 0);
+		camera.lookAt(Config.terrainZoomFactor * 10f, Config.terrainZoomFactor * 0.1f, Config.terrainZoomFactor * 10f);
 		camera.update(true);
 		
 //		float ambientLight = 0.1f;
@@ -124,12 +125,12 @@ public class FlyPlanetScreen extends AbstractScreen {
 		terrain = new Terrain(chunkCount, lod);
 		terrain.planetX = 0.5f;
 		terrain.planetY = 0.5f;
-		terrain.planetStep = 0.01f;
+		terrain.planetStep = 10.0f / Config.terrainZoomFactor;
 		terrain.terrainX = 0f;
 		terrain.terrainY = 0f;
-		terrain.terrainStep = 400f;
-		terrain.bumpFactor = 400f;
-		terrain.surfaceBounds.set(terrain.terrainStep, terrain.terrainStep * 4.0f, terrain.terrainStep);
+		terrain.terrainStep = Config.terrainZoomFactor;
+		terrain.bumpFactor = Config.terrainZoomFactor * 0.5f;
+		terrain.surfaceBounds.set(terrain.terrainStep, terrain.terrainStep * 10.0f, terrain.terrainStep);
 	}
 	
 	private TerrainLod[] toLod(TerrainQuality terrainQuality) {

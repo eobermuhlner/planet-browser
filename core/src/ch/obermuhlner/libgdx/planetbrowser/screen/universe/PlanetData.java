@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.Color;
 
+import ch.obermuhlner.libgdx.planetbrowser.Config;
 import ch.obermuhlner.libgdx.planetbrowser.util.Molecule;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -60,7 +61,7 @@ public class PlanetData {
 			if (atmosphere == null) {
 				fogLevel = 0.0;
 			} else {
-				fogLevel = random.nextDouble(0.0001, 0.002);
+				fogLevel = random.nextDouble(0.1f / Config.terrainZoomFactor, 2f / Config.terrainZoomFactor * 0.2);
 			}
 		}
 		

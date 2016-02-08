@@ -9,6 +9,8 @@ public class Config {
 
 	public static float screenDensityFactor = 1.0f;
 
+	public static float terrainZoomFactor = 1000.0f;
+
 	public static SkinFactory skinFactory = new DefaultSkinFactory();
 	
 	private static Skin skin;
