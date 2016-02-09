@@ -109,4 +109,8 @@ public class MathUtil {
 	public static float pow(float x, float y) {
 		return (float) Math.pow(x, y);
 	}
+
+	public static float sqrt(float x) {
+		return (float) Math.sqrt(x);
+	}
 }
