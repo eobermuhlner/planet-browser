@@ -42,6 +42,7 @@ import ch.obermuhlner.libgdx.planetbrowser.screen.universe.PlanetFactory;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui;
 import ch.obermuhlner.libgdx.planetbrowser.ui.Gui.TableLayout;
 import ch.obermuhlner.libgdx.planetbrowser.util.DisposableContainer;
+import ch.obermuhlner.libgdx.planetbrowser.util.MathUtil;
 import ch.obermuhlner.libgdx.planetbrowser.util.Random;
 import ch.obermuhlner.libgdx.planetbrowser.util.StopWatch;
 import ch.obermuhlner.libgdx.planetbrowser.util.Units;
@@ -87,11 +88,12 @@ public class FlyPlanetScreen extends AbstractScreen {
 		
 		modelBatch = new ModelBatch(new PlanetUberShaderProvider());
 		
+		float startHeight = Config.terrainZoomFactor * 10f * Config.terrainZoomFactor * 0.001f;
 		camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = Config.terrainZoomFactor * 0.01f;
 		camera.far = Config.terrainZoomFactor * 10f;
-		camera.position.set(0, Config.terrainZoomFactor * 1f, 0);
-		camera.lookAt(Config.terrainZoomFactor * 10f, Config.terrainZoomFactor * 0.1f, Config.terrainZoomFactor * 10f);
+		camera.position.set(0, startHeight, 0);
+		camera.lookAt(Config.terrainZoomFactor * 10f, startHeight * 0.1f, Config.terrainZoomFactor * 10f);
 		camera.update(true);
 		
 //		float ambientLight = 0.1f;
@@ -125,12 +127,12 @@ public class FlyPlanetScreen extends AbstractScreen {
 		terrain = new Terrain(chunkCount, lod);
 		terrain.planetX = 0.5f;
 		terrain.planetY = 0.5f;
-		terrain.planetStep = 10.0f / Config.terrainZoomFactor;
+		terrain.planetStep = 1.0f / Config.terrainZoomFactor;
 		terrain.terrainX = 0f;
 		terrain.terrainY = 0f;
-		terrain.terrainStep = Config.terrainZoomFactor;
-		terrain.bumpFactor = Config.terrainZoomFactor * 0.5f;
-		terrain.surfaceBounds.set(terrain.terrainStep, terrain.terrainStep * 10.0f, terrain.terrainStep);
+		terrain.terrainStep = Config.terrainZoomFactor * 1f;
+		terrain.bumpFactor = Config.terrainZoomFactor * 7f * Config.terrainZoomFactor * 0.001f;
+		terrain.surfaceBounds.set(terrain.terrainStep, terrain.terrainStep * 100.0f, terrain.terrainStep);
 	}
 	
 	private TerrainLod[] toLod(TerrainQuality terrainQuality) {
@@ -466,6 +468,12 @@ public class FlyPlanetScreen extends AbstractScreen {
 					surface.transform.setTranslation(chunkTerrainX, 0, chunkTerrainY);
 				
 					if (isVisible(surface)) {
+						if (true) {
+							float distance = MathUtil.sqrt(chunkTerrainX * chunkTerrainX + chunkTerrainY * chunkTerrainY);
+							camera.near = distance * 0.001f;
+							camera.far = distance * 10f;
+							camera.update();
+						}
 						modelBatch.render(surface, environment);
 					}
 				}
