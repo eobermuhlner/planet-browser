@@ -22,6 +22,15 @@ import ch.obermuhlner.libgdx.planetbrowser.util.Units;
 
 public class Lava extends AbstractPlanet {
 
+	private static final Color[] LAVA_COLORS = new Color[] {
+			new Color(0xff0000ff), // red
+			new Color(0xee2200ff), // red-orange
+			new Color(0xff5500ff), // orange
+			new Color(0.30f, 0.30f, 0.30f, 1.0f),
+			new Color(0.20f, 0.20f, 0.20f, 1.0f),
+			new Color(0.15f, 0.15f, 0.15f, 1.0f),
+	};
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public PlanetData createPlanetData(Random random) {
@@ -87,14 +96,7 @@ public class Lava extends AbstractPlanet {
 		terrestrialAttribute.heightFrequency = random.nextInt(2, 4);
 		terrestrialAttribute.heightFunction = heightFunction;
 		terrestrialAttribute.heightFunctionValue = heightFunctionValue;
-		terrestrialAttribute.planetColors = new Color[] {
-				new Color(0xff0000ff), // red
-				new Color(0xee2200ff), // red-orange
-				new Color(0xff5500ff), // orange
-				new Color(0.30f, 0.30f, 0.30f, 1.0f),
-				new Color(0.20f, 0.20f, 0.20f, 1.0f),
-				new Color(0.15f, 0.15f, 0.15f, 1.0f),
-		};
+		terrestrialAttribute.planetColors = LAVA_COLORS;
 		terrestrialAttribute.planetColorFrequencies = createPlanetColorFrequencies(random);
 
 		if (random.nextBoolean(0.6)) {
