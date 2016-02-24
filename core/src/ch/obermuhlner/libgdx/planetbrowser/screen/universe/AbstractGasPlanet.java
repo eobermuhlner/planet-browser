@@ -29,8 +29,8 @@ public abstract class AbstractGasPlanet extends AbstractPlanet {
 	@Override
 	public Map<Long, Texture> createTextures(Random random, PlanetData planetData, float xFrom, float xTo, float yFrom, float yTo, long textureTypes, int textureSize, DisposableContainer disposables) {
 		GasPlanetAttribute gasPlanetAttribute = GasPlanetAttribute.createGasPlanet(random);
-		float deltaColor = random.nextFloat(0.01f, 0.5f);
-		float deltaLuminance = random.nextFloat(0.01f, 0.2f);
+		float deltaColor = random.nextFloat(0.01f, random.nextBoolean(0.5) ? 0.5f : 1.0f);
+		float deltaLuminance = random.nextFloat(0.01f, random.nextBoolean(0.2) ? 0.8f : 0.2f);
 		gasPlanetAttribute.planetColors = ColorUtil.randomColors(random, 3, colors, deltaColor, deltaLuminance);
 
 		Material material = new Material(gasPlanetAttribute);
