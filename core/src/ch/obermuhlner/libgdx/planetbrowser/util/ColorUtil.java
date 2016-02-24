@@ -24,5 +24,14 @@ public class ColorUtil {
 			MathUtil.clamp(color.b * random.nextFloat(1 - deltaColor, 1 + deltaColor) * randomLuminance, 0.0f, 1.0f),
 			1.0f);
 	}
+	
+	public static Color randomColor(Random random) {
+		return new Color(
+			random.nextFloat(),
+			random.nextFloat(),
+			random.nextFloat(),
+			1.0f
+			);
+	}
 
 }
