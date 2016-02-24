@@ -100,23 +100,22 @@ public class Earth extends AbstractPlanet {
 				p(hot ? 15 :  3, "terrestrial_coastlife"), // life at the coasts
 				p(hot ? 10 : 20, "terrestrial_earthlife"), // earth-like life
 				p(hot ? 10 : 10, "terrestrial_earthvariantlife"), // earth-life life with more variations
-				p(hot ? 20 :  0, "terrestrial_highlife"), // life only in cold climate (high altitude
+				p(hot ? 20 :  0, "terrestrial_highlife"), // life only in cold climate
 				p(hot ?  5 :  2, "terrestrial_spotlife"), // life only in some spots
 				p(hot ? 10 :  1, "terrestrial_waterlife") // life only in the water
 				);
 		if (!planetData.hasLife) {
 			textureName = "terrestrial_nolife";
 		}
-		//textureName = "terrestrial_spotlife";
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Diffuse, PlanetBrowser.getTexture(textureName + "_diffuse_map.png")));
 		materialAttributes.add(new TextureAttribute(TextureAttribute.Specular, PlanetBrowser.getTexture(textureName + "_specular_map.png")));
 		
 		float water = (float) planetData.liquidSurface;
 		float heightMin = MathUtil.transform(0f, 1f, 0.5f, 0.0f, water);
-		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.7f, water);
-		int heightFrequency = random.nextInt(3, 5);
+		float heightMax = MathUtil.transform(0f, 1f, 1.0f, 0.8f, water);
+		int heightFrequency = random.nextInt(1, 4);
 		float iceLevel = (float) MathUtil.transform(Units.celsiusToKelvin(-20), Units.celsiusToKelvin(50), 1f, -1f, planetData.temperature);
-		float heightFunctionValue = random.nextFloat(0.9f, 2.0f);
+		float heightFunctionValue = random.nextFloat(0.8f, 1.5f);
 		String heightFunction = TerrestrialAttribute.POWER;
 		
 //		System.out.println("texture=" + textureName);
@@ -125,6 +124,7 @@ public class Earth extends AbstractPlanet {
 //		System.out.println("ice=" + iceLevel);
 //		System.out.println("height=" + heightMin + " - " + heightMax);
 //		System.out.println("heightFrequency=" + heightFrequency);
+//		System.out.println("heightFunctionValue=" + heightFunctionValue);
 //		System.out.println();
 		
 		TerrestrialAttribute terrestrialAttribute = TerrestrialAttribute.createTerrestrial(random);
