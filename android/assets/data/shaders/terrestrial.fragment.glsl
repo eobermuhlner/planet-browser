@@ -14,7 +14,7 @@ precision highp float;
 
 uniform float u_normalStep;
 
-uniform float u_fractalOctaveCount;
+uniform int u_fractalOctaveCount;
 
 uniform float u_heightMin;
 uniform float u_heightMax;
@@ -614,7 +614,7 @@ float calculateHeight(vec2 P) {
 	height = max(height + 0.05, 0.05);
 
 	#ifdef cratersFlag
-		float craterNoise = fractalNoiseCheap(P + u_random4, 512, 4.0) * 0.5 + 0.5;
+		float craterNoise = fractalNoiseCheap(P + u_random4, 512.0, 4.0) * 0.5 + 0.5;
 		float craterHeightRange = range * 10.0 / u_craterBaseGrid;
 		height = addCraterComplexSteps(height, craterHeightRange / 1.0, P, u_craterBaseGrid * 1.0, craterNoise, vec2(u_random9+u_random0, u_random8+u_random0), vec2(u_random8+u_random9, u_random7+u_random9));
 		height = addCraterComplexSteps(height, craterHeightRange / 2.0, P, u_craterBaseGrid * 2.0, craterNoise, vec2(u_random9+u_random1, u_random8+u_random1), vec2(u_random8+u_random8, u_random7+u_random8));

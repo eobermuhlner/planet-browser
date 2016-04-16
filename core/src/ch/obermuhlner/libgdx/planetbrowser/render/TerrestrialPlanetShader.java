@@ -240,7 +240,7 @@ public class TerrestrialPlanetShader implements Shader {
 		program.setUniformf(u_normalStep, getFloatAttributeValue(renderable, MoreFloatAttribute.NormalStep, 0.0001f));
 
 		// fractal function
-		program.setUniformf(u_fractalOctaveCount, terrestrialAttribute.fractalOctaveCount);
+		program.setUniformi(u_fractalOctaveCount, terrestrialAttribute.fractalOctaveCount);
 
 		// planet data
 		int heightFrequencyPowerOfTwo = terrestrialAttribute.heightFrequency;
