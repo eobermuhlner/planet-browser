@@ -52,8 +52,8 @@ public class Jupiter extends AbstractGasPlanet {
 		if (planetData.temperature < 150) {
 			// Sudarsky Type 1 (Ammonia clouds)
 			//Jupiter
-			//The upper clouds, located in the pressure range 0.6–0.9 bar, are made of ammonia ice.
-			//Below these ammonia ice clouds, denser clouds made of ammonium hydrosulfide or ammonium sulfide (between 1–2 bar) and water (3–7 bar) are thought to exist
+			//The upper clouds, located in the pressure range 0.6-0.9 bar, are made of ammonia ice.
+			//Below these ammonia ice clouds, denser clouds made of ammonium hydrosulfide or ammonium sulfide (between 1-2 bar) and water (3-7 bar) are thought to exist
 			planetData.clouds = random.nextProbabilityMap(
 					p(random.nextDouble(10, 40), Molecule.NH3),
 					p(random.nextDouble(10, 40), Molecule.NH4SH),
@@ -75,7 +75,7 @@ public class Jupiter extends AbstractGasPlanet {
 		} else if (planetData.temperature < 800) {
 			// Sudarsky Type 3 (700K - 800K) (Cloudless + cirrus)
 			// featureless blue (similar Neptune)
-			// Above 700 K (800 °F, 430 °C), sulfides and chlorides might provide cirrus-like clouds
+			// Above 700 K (800 F, 430 C), sulfides and chlorides might provide cirrus-like clouds
 			planetData.clouds = random.nextProbabilityMap(
 					p(random.nextDouble(10, 40), Molecule.S_2),
 					p(random.nextDouble(10, 40), Molecule.Cl_)
