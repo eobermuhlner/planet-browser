@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Config {
 
+	public static final boolean SCREENSHOTS = false;
+
 	public static float screenDensityFactor = 1.0f;
 
 	public static float terrainZoomFactor = 1000.0f;

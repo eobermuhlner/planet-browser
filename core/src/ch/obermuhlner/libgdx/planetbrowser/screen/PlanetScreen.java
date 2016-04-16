@@ -36,6 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
+import ch.obermuhlner.libgdx.planetbrowser.Config;
 import ch.obermuhlner.libgdx.planetbrowser.PlanetBrowser;
 import ch.obermuhlner.libgdx.planetbrowser.render.PlanetUberShaderProvider;
 import ch.obermuhlner.libgdx.planetbrowser.screen.universe.Earth;
@@ -61,7 +62,7 @@ public class PlanetScreen extends AbstractScreen {
 	
 	private static final boolean SHOW_DEBUG_INFO = true;
 
-	private static final boolean AUTO_TAKE_SCREENSHOTS = false;
+	private static final boolean AUTO_TAKE_SCREENSHOTS = Config.SCREENSHOTS;
 	
 	private static final PlanetFactory[] ALL_PLANET_FACTORIES = new PlanetFactory[] {
 		new Earth(),
@@ -198,6 +199,11 @@ public class PlanetScreen extends AbstractScreen {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(calendar.get(Calendar.YEAR), 0, 1, 0, 0);
 		shipYearStartMillis = calendar.getTimeInMillis();
+		
+		if (AUTO_TAKE_SCREENSHOTS) {
+			toggleInfoWindow();
+		}
+
 	}
 	
 	private void prepareStage() {
