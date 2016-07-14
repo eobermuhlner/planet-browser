@@ -13,6 +13,8 @@ public class RingAttribute extends AbstractRandomAttribute {
 
 	public Color color = Color.WHITE;
 	public float opacity = 0.5f;
+	public float innerRadius = 0.2f;
+	public float outerRadius = 0.4f;
 	
 	protected RingAttribute(long type, float[] randomValues) {
 		super(type, randomValues);
@@ -31,6 +33,14 @@ public class RingAttribute extends AbstractRandomAttribute {
 			return cmp;
 		}
 		cmp = CompareUtil.compare(color, other.color);
+		if (cmp != 0) {
+			return cmp;
+		}
+		cmp = CompareUtil.compare(innerRadius, other.innerRadius);
+		if (cmp != 0) {
+			return cmp;
+		}
+		cmp = CompareUtil.compare(outerRadius, other.outerRadius);
 		return cmp;
 	}
 
@@ -39,6 +49,8 @@ public class RingAttribute extends AbstractRandomAttribute {
 		RingAttribute copy = new RingAttribute(type, randomValues);
 		copy.color = color;
 		copy.opacity = opacity;
+		copy.innerRadius = innerRadius;
+		copy.outerRadius = outerRadius;
 		return copy;
 	}
 

@@ -28,6 +28,8 @@ uniform float u_random9;
 
 uniform mat4 u_worldTrans;
 uniform float u_opacity;
+uniform float u_innerRadius;
+uniform float u_outerRadius;
  
 uniform vec4 u_diffuseColor;
 
@@ -173,7 +175,7 @@ void main() {
 	a += pnoise2(vec2(radius, u_random1), 2.0 + u_random2 * 5.0) * (u_random3 * 0.6 + 0.4);
 	a += pnoise2(vec2(radius, u_random4), 40.0 + u_random5 * 20.0) * (u_random6 * 0.6 + 0.4);
 	a = a * 0.8 + 0.2;
-	a = a * (smoothstep(innerRadius, innerRadius + 0.1, radius) - smoothstep(outerRadius, outerRadius + 0.1, radius));
+	a = a * (smoothstep(u_innerRadius, u_innerRadius + 0.1, radius) - smoothstep(u_outerRadius - 0.1, u_outerRadius, radius));
 	
 	gl_FragColor.rgb = u_diffuseColor.rgb;
 	gl_FragColor.a = u_opacity * a;

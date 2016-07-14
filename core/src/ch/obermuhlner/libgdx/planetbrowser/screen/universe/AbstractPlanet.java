@@ -105,13 +105,17 @@ public abstract class AbstractPlanet implements PlanetFactory {
 			return null;
 		}
 
-		float radius = Units.toRenderUnit(planetData.radius) * random.nextFloat(2.0f, 4.0f);
+		float planetRadius = Units.toRenderUnit(planetData.radius); 
+		float ringRadius = planetRadius * random.nextFloat(2.0f, 4.0f);
+		ringRadius = planetRadius * 4.0f;
 		float alpha = random.nextFloat(0.4f, 0.9f);
 		Color color = ColorUtil.randomColor(random, Color.WHITE, 0.1f, 0.5f);
 
 		RingAttribute ringAttribute = RingAttribute.createRing(random);
 		ringAttribute.color = color;
 		ringAttribute.opacity = alpha;
+		ringAttribute.innerRadius = random.nextFloat(0.1f, 0.2f);
+		ringAttribute.outerRadius = random.nextFloat(0.4f, 0.5f);
 		
 		Material material = new Material(ringAttribute);
 		
@@ -119,10 +123,10 @@ public abstract class AbstractPlanet implements PlanetFactory {
 		modelBuilder.begin();
 		modelBuilder.part("ring", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates, material)
 		.rect(
-			radius, 0f, -radius,
-			-radius, 0f, -radius,
-			-radius, 0f, radius,	
-			radius, 0f, radius,
+			ringRadius, 0f, -ringRadius,
+			-ringRadius, 0f, -ringRadius,
+			-ringRadius, 0f, ringRadius,	
+			ringRadius, 0f, ringRadius,
 			0f, 1f, 0f);
 		model = modelBuilder.end();
 		

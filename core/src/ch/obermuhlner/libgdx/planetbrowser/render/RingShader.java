@@ -38,6 +38,8 @@ public class RingShader implements Shader {
 	
 	private int u_diffuseColor;
 	private int u_opacity;
+	private int u_innerRadius;
+	private int u_outerRadius;
 
 	public RingShader (String vertexProgram, String fragmentProgram, String prefix) {
 		this.prefix = prefix;
@@ -76,6 +78,8 @@ public class RingShader implements Shader {
 		
 		u_diffuseColor = program.getUniformLocation("u_diffuseColor");
 		u_opacity = program.getUniformLocation("u_opacity");
+		u_innerRadius = program.getUniformLocation("u_innerRadius");
+		u_outerRadius = program.getUniformLocation("u_outerRadius");
 	}
 
 	@Override
@@ -116,10 +120,14 @@ public class RingShader implements Shader {
 		program.setUniformf(u_random9, ringAttribute.randomValues[9]);
 
 		// color
-		program.setUniformf(u_diffuseColor, ringAttribute.color);			
+		program.setUniformf(u_diffuseColor, ringAttribute.color);
 
 		// opacity
-		program.setUniformf(u_opacity, ringAttribute.opacity);			
+		program.setUniformf(u_opacity, ringAttribute.opacity);
+
+		// radius
+		program.setUniformf(u_innerRadius, ringAttribute.innerRadius);			
+		program.setUniformf(u_outerRadius, ringAttribute.outerRadius);			
 
 		// mesh
 		renderable.meshPart.render(program);
